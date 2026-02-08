@@ -319,7 +319,8 @@
 {#if $user}
 	<div class="app relative">
 		<div
-			class=" text-gray-700 dark:text-gray-100 bg-white dark:bg-gray-900 h-screen max-h-[100dvh] overflow-auto flex flex-row justify-end"
+			class=" text-gray-100 bg-[#050505] h-screen max-h-[100dvh] overflow-auto flex flex-row justify-end"
+			style="background: radial-gradient(ellipse at 50% 0%, #1a1a2e 0%, #0a0a0f 50%, #050505 100%);"
 		>
 			{#if !['user', 'admin'].includes($user?.role)}
 				<AccountPending />
@@ -382,7 +383,11 @@
 				<Sidebar />
 
 				{#if loaded}
-					<slot />
+					<div
+						class="flex-1 h-[calc(100vh-20px)] my-2.5 mr-2.5 ml-0 rounded-[2rem] bg-white/5 dark:bg-[#0a0a0a]/40 backdrop-blur-2xl border border-white/5 dark:border-white/5 shadow-2xl overflow-hidden relative ring-1 ring-white/10"
+					>
+						<slot />
+					</div>
 				{:else}
 					<div
 						class="w-full flex-1 h-full flex items-center justify-center {$showSidebar

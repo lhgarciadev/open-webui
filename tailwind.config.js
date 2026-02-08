@@ -21,6 +21,20 @@ export default {
 					850: 'var(--color-gray-850, #262626)',
 					900: 'var(--color-gray-900, #171717)',
 					950: 'var(--color-gray-950, #0d0d0d)'
+				},
+				primary: {
+					50: 'var(--color-primary-50, #eff6ff)',
+					100: 'var(--color-primary-100, #dbeafe)',
+					200: 'var(--color-primary-200, #bfdbfe)',
+					300: 'var(--color-primary-300, #93c5fd)',
+					400: 'var(--color-primary-400, #60a5fa)',
+					DEFAULT: 'var(--app-color-primary, #3b82f6)',
+					500: 'var(--color-primary-500, #3b82f6)',
+					600: 'var(--color-primary-600, #2563eb)',
+					700: 'var(--color-primary-700, #1d4ed8)',
+					800: 'var(--color-primary-800, #1e40af)',
+					900: 'var(--color-primary-900, #1e3a8a)',
+					950: 'var(--color-primary-950, #172554)'
 				}
 			},
 			typography: {
@@ -39,6 +53,11 @@ export default {
 			},
 			transitionProperty: {
 				width: 'width'
+			},
+			fontFamily: {
+				sans: ['Inter', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+				serif: ['InstrumentSerif', 'ui-serif', 'Georgia', 'Cambria', 'Times New Roman', 'Times', 'serif'],
+				mono: ['JetBrains Mono', 'ui-monospace', 'SFMono-Regular', 'Menlo', 'Monaco', 'Consolas', 'Liberation Mono', 'Courier New', 'monospace']
 			}
 		}
 	},

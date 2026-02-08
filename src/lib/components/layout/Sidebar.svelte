@@ -378,8 +378,8 @@
 		selectedChatId = null;
 	};
 
-	const MIN_WIDTH = 220;
-	const MAX_WIDTH = 480;
+	const MIN_WIDTH = 180;
+	const MAX_WIDTH = 360;
 
 	let isResizing = false;
 
@@ -648,7 +648,7 @@
 
 {#if !$mobile && !$showSidebar}
 	<div
-		class=" pt-[7px] pb-2 px-2 flex flex-col justify-between text-black dark:text-white hover:bg-gray-50/30 dark:hover:bg-gray-950/30 h-full z-10 transition-all border-e-[0.5px] border-gray-50 dark:border-gray-850/30"
+		class="m-2 rounded-3xl pt-[7px] pb-2 px-2 flex flex-col justify-between text-black dark:text-white bg-white/5 dark:bg-black/20 backdrop-blur-xl hover:bg-white/10 dark:hover:bg-black/40 h-[calc(100vh-16px)] z-10 transition-all border border-gray-100/10 dark:border-gray-800/50 shadow-2xl"
 		id="sidebar"
 	>
 		<button

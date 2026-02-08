@@ -1055,7 +1055,7 @@
 			<div
 				class="{($settings?.widescreenMode ?? null)
 					? 'max-w-full'
-					: 'max-w-6xl'} px-2.5 mx-auto inset-x-0"
+					: 'max-w-4xl'} px-4 mx-auto inset-x-0 mb-6 z-50 relative"
 			>
 				<div class="">
 					<input
@@ -1116,9 +1116,9 @@
 
 						<div
 							id="message-input-container"
-							class="flex-1 flex flex-col relative w-full shadow-lg rounded-3xl border {$temporaryChatEnabled
-								? 'border-dashed border-gray-100 dark:border-gray-800 hover:border-gray-200 focus-within:border-gray-200 hover:dark:border-gray-700 focus-within:dark:border-gray-700'
-								: ' border-gray-100/30 dark:border-gray-850/30 hover:border-gray-200 focus-within:border-gray-100 hover:dark:border-gray-800 focus-within:dark:border-gray-800'}  transition px-1 bg-white/5 dark:bg-gray-500/5 backdrop-blur-sm dark:text-gray-100"
+							class="flex-1 flex flex-col relative w-full rounded-[2.5rem] border transition px-2 py-1 text-gray-100 backdrop-blur-3xl bg-[#0a0a0a]/80 shadow-[0_10px_40px_-5px_rgba(0,0,0,0.5)] ring-1 ring-white/10 {$temporaryChatEnabled
+								? 'border-dashed border-gray-500/30 hover:border-gray-400/50 focus-within:border-blue-500/50'
+								: 'border-white/5 hover:border-white/10 focus-within:border-blue-500/40 focus-within:shadow-[0_0_30px_rgba(59,130,246,0.3)]'}"
 							dir={$settings?.chatDirection ?? 'auto'}
 						>
 							{#if atSelectedModel !== undefined}

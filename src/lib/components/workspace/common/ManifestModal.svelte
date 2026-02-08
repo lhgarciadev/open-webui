@@ -2,6 +2,7 @@
 	import { toast } from 'svelte-sonner';
 	import { createEventDispatcher } from 'svelte';
 	import { onMount, getContext } from 'svelte';
+	import { APP_NAME } from '$lib/constants';
 
 	import Modal from '../../common/Modal.svelte';
 	import XMark from '$lib/components/icons/XMark.svelte';
@@ -44,7 +45,7 @@
 
 						<div class="my-2">
 							{$i18n.t(
-								'Your entire contribution will go directly to the plugin developer; Open WebUI does not take any percentage. However, the chosen funding platform might have its own fees.'
+								'Your entire contribution will go directly to the plugin developer; {{APP_NAME}} does not take any percentage. However, the chosen funding platform might have its own fees.', { APP_NAME }
 							)}
 						</div>
 

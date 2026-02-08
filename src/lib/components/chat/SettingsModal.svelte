@@ -5,6 +5,7 @@
 	import { updateUserSettings } from '$lib/apis/users';
 	import { getModels as _getModels } from '$lib/apis';
 	import { goto } from '$app/navigation';
+	import { APP_NAME } from '$lib/constants';
 
 	import Modal from '../common/Modal.svelte';
 	import Account from './Settings/Account.svelte';
@@ -424,12 +425,12 @@
 			keywords: [
 				'about app',
 				'about me',
-				'about open webui',
+				`about ${APP_NAME.toLowerCase()}`,
 				'about page',
 				'about us',
 				'aboutapp',
 				'aboutme',
-				'aboutopenwebui',
+				`about${APP_NAME.toLowerCase().replace(' ', '')}`,
 				'aboutpage',
 				'aboutus',
 				'check for updates',

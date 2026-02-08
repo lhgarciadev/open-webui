@@ -381,7 +381,7 @@
 		id="model-selector-{id}-button"
 	>
 		<div
-			class="flex w-full text-left px-0.5 bg-transparent truncate {triggerClassName} justify-between {($settings?.highContrastMode ??
+			class="flex w-full text-left px-3 py-1.5 rounded-full bg-gray-100/50 dark:bg-gray-900/30 hover:bg-gray-200/50 dark:hover:bg-gray-800/50 transition truncate {triggerClassName} justify-between {($settings?.highContrastMode ??
 			false)
 				? 'dark:placeholder-gray-100 placeholder-gray-800'
 				: 'placeholder-gray-400'}"
@@ -406,7 +406,7 @@
 	<DropdownMenu.Content
 		class=" z-40 {$mobile
 			? `w-full`
-			: `${className}`} max-w-[calc(100vw-1rem)] justify-start rounded-2xl  bg-white dark:bg-gray-850 dark:text-white shadow-lg  outline-hidden"
+			: `${className}`} max-w-[calc(100vw-1rem)] justify-start rounded-3xl  bg-white dark:bg-gray-850 dark:text-white shadow-xl outline-hidden border border-gray-100 dark:border-gray-800"
 		transition={flyAndScale}
 		side={$mobile ? 'bottom' : 'bottom-start'}
 		sideOffset={2}

@@ -21,7 +21,7 @@
 - Update `backend/main.py` (or equivalent entry point) if it defines custom titles for Swagger UI / Redoc.
 
 ### Verification Scripts
-- **Script**: `scripts/verify_branding.sh`
+- **Script**: `scripts/verify_compliance.sh`
 - **Logic**:
     - recursive grep for "Open WebUI" in `src/`.
     - Exclude: `LICENSE`, `planning/`, `README.md` (where attribution might be legally required or historical).

@@ -55,3 +55,10 @@ You can only legally proceed with the rebranding if you meet one of these criter
 To fulfill the request lawfully, we must know the **deployment scale**.
 - If **Internal/Small**: We burn the branding down. (Plan remains valid).
 - If **Public/Large**: We must keep a "Powered by" watermark. (Plan needs adjustment).
+
+## Decision Gate (Required)
+Before any branding removal work starts, the team must record one of the following:
+- **Path A (Allowed to remove branding)**: Deployment is strictly limited to < 50 end users in any rolling 30-day period, or there is a signed enterprise agreement.
+- **Path B (Branding must remain visible)**: Deployment may exceed 50 users or will be distributed widely.
+
+This decision must be documented in the PR description or a planning update before Phase 1 work proceeds.

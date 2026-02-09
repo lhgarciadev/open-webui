@@ -1,5 +1,9 @@
 # Pull Request Checklist
 
+## Fork Compliance (Required)
+- [ ] I ran the compliance gate in [planning/compliance_checklist.md](planning/compliance_checklist.md).
+- [ ] If this is an upstream sync, I followed [planning/upstream_sync_playbook.md](planning/upstream_sync_playbook.md) and documented the sync date.
+
 ### Note to first-time contributors: Please open a discussion post in [Discussions](https://github.com/open-webui/open-webui/discussions) to discuss your idea/fix with the community before creating a pull request, and describe your changes before submitting a pull request.
 
 This is to ensure large feature PRs are discussed with the community first, before starting work on it. If the community does not want this feature or it is not relevant for Open WebUI as a project, it can be identified in the discussion before working on the feature and submitting the PR.

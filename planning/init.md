@@ -18,6 +18,7 @@
     - Rename application title and meta tags.
     - Modify distinct visual elements (color palette, typography) to avoid resemblance.
 - **Verification**: visual and grep search for "Open WebUI" in `src/` and `static/`.
+- **Legal Gate**: Confirm Path A in [planning/legal_compliance.md](planning/legal_compliance.md) before removing branding. If Path B applies, retain required visible branding.
 
 ## 3. Core Architecture
 - **Frontend**: SvelteKit + TailwindCSS (Custom Design System).

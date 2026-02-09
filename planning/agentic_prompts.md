@@ -10,6 +10,7 @@ These prompts are designed to be used by an autonomous agent to execute the [Imp
 **Objective**: Remove "Open WebUI" branding to comply with strict license requirements.
 
 **Steps**:
+0.  **Legal Decision Gate**: Confirm Path A in planning/legal_compliance.md. If Path B applies, stop and adapt Phase 1 to retain visible branding.
 1.  **Create Identity Constant**: Create `src/lib/constants/identity.ts` exporting `APP_NAME = "Agentic WebUI"` (or placeholder) and branding colors.
 2.  **Create Verification Script**: Create `scripts/verify_compliance.sh`. Content: valid bash script that recursively greps `src/` for "Open WebUI" (case-insensitive) and fails if found. Make it executable.
 3.  **Refactor Frontend**:

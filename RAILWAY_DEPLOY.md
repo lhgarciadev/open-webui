@@ -124,8 +124,40 @@ Add a Railway PostgreSQL database:
 
 ---
 
+## MCPO Service (MCP Tools)
+
+MCPO is a satellite service that exposes MCP (Model Context Protocol) servers as OpenAPI endpoints, enabling Cognitia to use tools like PowerPoint generation.
+
+### Deploy MCPO Service
+
+1. In your Railway project, click **New Service** → **GitHub Repo**
+2. Select the same repository
+3. Go to **Settings** → **Source**:
+   - **Root Directory**: Leave empty
+   - **Config File Path**: `/mcpo-service/railway.json`
+4. Set **PORT** variable to `8000`
+5. Deploy
+
+### Connect MCPO to Cognitia
+
+1. In Cognitia, go to **Settings** → **Tools** → **Tool Servers**
+2. Add new server:
+   - **URL**: `https://mcpo-production-xxxx.up.railway.app`
+   - Or use internal: `http://mcpo.railway.internal:8000`
+3. Save and the PowerPoint tools will be available
+
+### MCPO Files
+
+- `Dockerfile.mcpo` - MCPO container with PowerPoint MCP server
+- `mcpo-service/config.json` - MCP server configuration
+- `mcpo-service/railway.json` - Railway config for MCPO service
+
+---
+
 ## Files Created for Railway
 
-- `Dockerfile.railway` - Optimized slim build
-- `railway.json` - Railway configuration
+- `Dockerfile.railway` - Optimized slim build for Cognitia
+- `Dockerfile.mcpo` - MCPO service with PowerPoint tools
+- `railway.json` - Railway configuration for main app
+- `mcpo-service/` - MCPO service configuration
 - `RAILWAY_DEPLOY.md` - This guide

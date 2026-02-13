@@ -1813,10 +1813,12 @@ async def process_chat_payload(request, form_data, user, metadata, model):
         .get("capabilities", {})
         .get("builtin_tools", True)
     )
-    if (
-        metadata.get("params", {}).get("function_calling") == "native"
-        and builtin_tools_enabled
-    ):
+    # Check function calling mode: per-chat setting takes priority, then global default
+    function_calling_mode = metadata.get("params", {}).get("function_calling")
+    if not function_calling_mode:
+        function_calling_mode = getattr(request.app.state.config, "DEFAULT_FUNCTION_CALLING_MODE", "") or ""
+
+    if function_calling_mode == "native" and builtin_tools_enabled:
         # Add file context to user messages
         chat_id = metadata.get("chat_id")
         form_data["messages"] = add_file_context(
@@ -1836,7 +1838,7 @@ async def process_chat_payload(request, form_data, user, metadata, model):
                 tools_dict[name] = tool_dict
 
     if tools_dict:
-        if metadata.get("params", {}).get("function_calling") == "native":
+        if function_calling_mode == "native":
             # If the function calling is native, then call the tools function calling handler
             metadata["tools"] = tools_dict
             form_data["tools"] = [

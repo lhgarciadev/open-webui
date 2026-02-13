@@ -2005,6 +2005,14 @@ TOOLS_FUNCTION_CALLING_PROMPT_TEMPLATE = PersistentConfig(
     os.environ.get("TOOLS_FUNCTION_CALLING_PROMPT_TEMPLATE", ""),
 )
 
+# Default function calling mode: "native" enables builtin tools (presentations, etc.)
+# Set to "native" to enable AI agents to use builtin tools by default
+DEFAULT_FUNCTION_CALLING_MODE = PersistentConfig(
+    "DEFAULT_FUNCTION_CALLING_MODE",
+    "task.tools.default_function_calling_mode",
+    os.environ.get("DEFAULT_FUNCTION_CALLING_MODE", ""),
+)
+
 
 DEFAULT_TOOLS_FUNCTION_CALLING_PROMPT_TEMPLATE = """Available Tools: {{TOOLS}}
 

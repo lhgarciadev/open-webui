@@ -1,0 +1,22 @@
+# MCPO Service - MCP-to-OpenAPI Proxy for Cognitia
+# Self-contained in mcpo-service directory
+
+FROM ghcr.io/open-webui/mcpo:main
+
+# Install PowerPoint MCP server
+RUN pip install --no-cache-dir office-powerpoint-mcp-server python-pptx
+
+# Create directories
+RUN mkdir -p /app/data/presentations /app/config
+
+# Copy config (relative to mcpo-service directory)
+COPY config.json /app/config/config.json
+
+# Environment
+ENV PORT=8000
+ENV OUTPUT_DIR=/app/data/presentations
+
+EXPOSE 8000
+
+# Run MCPO with config
+CMD ["sh", "-c", "mcpo --port ${PORT} --config /app/config/config.json"]

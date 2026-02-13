@@ -848,3 +848,51 @@ async def delete_file_by_id(
             status_code=status.HTTP_404_NOT_FOUND,
             detail=ERROR_MESSAGES.NOT_FOUND,
         )
+
+
+############################
+# Download Generated Presentation
+############################
+
+
+@router.get("/presentations/{filename}")
+async def download_presentation(
+    filename: str,
+    user=Depends(get_verified_user),
+):
+    """
+    Download a generated PowerPoint presentation.
+    Files are stored in DATA_DIR/presentations/
+    """
+    # Validate filename to prevent path traversal
+    if ".." in filename or "/" in filename or "\\" in filename:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Invalid filename",
+        )
+
+    # Get presentations directory
+    base_dir = Path(os.environ.get("DATA_DIR", "/app/backend/data"))
+    presentations_dir = base_dir / "presentations"
+    file_path = presentations_dir / filename
+
+    if not file_path.is_file():
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Presentation not found",
+        )
+
+    # Verify the file is actually inside the presentations directory (security check)
+    try:
+        file_path.resolve().relative_to(presentations_dir.resolve())
+    except ValueError:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Invalid file path",
+        )
+
+    return FileResponse(
+        path=file_path,
+        filename=filename,
+        media_type="application/vnd.openxmlformats-officedocument.presentationml.presentation",
+    )

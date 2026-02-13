@@ -73,6 +73,11 @@ from open_webui.tools.builtin import (
     query_knowledge_files,
     view_knowledge_file,
 )
+from open_webui.tools.presentations import (
+    get_available_templates,
+    get_available_icons,
+    generate_presentation,
+)
 
 import copy
 
@@ -405,6 +410,9 @@ def get_builtin_tools(
 
     # Time utilities - always available for date calculations
     builtin_functions.extend([get_current_timestamp, calculate_timestamp])
+
+    # Presentation tools - always available for creating PowerPoint presentations
+    builtin_functions.extend([get_available_templates, get_available_icons, generate_presentation])
 
     # Knowledge base tools - conditional injection based on model knowledge
     # If model has attached knowledge (any type), only provide query_knowledge_files

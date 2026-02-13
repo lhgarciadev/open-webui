@@ -5,24 +5,32 @@ FROM python:3.11-slim
 
 WORKDIR /app
 
-# Install dependencies
+# Install system dependencies
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    curl \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install Python dependencies
 RUN pip install --no-cache-dir \
     mcpo \
     office-powerpoint-mcp-server \
     python-pptx
 
-# Create output directory for presentations
-RUN mkdir -p /app/data/presentations
+# Create directories
+RUN mkdir -p /app/data/presentations /app/config
 
 # Copy config
 COPY config.json /app/config/config.json
 
 # Environment
 ENV PORT=8000
-ENV MCPO_API_KEY=""
 ENV OUTPUT_DIR=/app/data/presentations
 
 EXPOSE 8000
 
-# Run MCPO with PowerPoint MCP server
-CMD ["sh", "-c", "mcpo --port $PORT --config /app/config/config.json"]
+# Healthcheck
+HEALTHCHECK --interval=30s --timeout=10s --start-period=60s --retries=3 \
+    CMD curl -sf http://localhost:${PORT}/ || exit 1
+
+# Run MCPO
+CMD mcpo --port ${PORT} --config /app/config/config.json

@@ -1,12 +1,3 @@
 {
-  "mcpServers": {
-    "powerpoint": {
-      "command": "python",
-      "args": ["-m", "office_powerpoint_mcp_server"],
-      "env": {
-        "OUTPUT_DIR": "/app/backend/data/presentations",
-        "DEFAULT_TEMPLATE": "professional"
-      }
-    }
-  }
+  "mcpServers": {}
 }

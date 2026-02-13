@@ -1,0 +1,72 @@
+# ==============================================================================
+# docker-compose.whitelabel.yaml - Cognitia White-Label Deployment
+# ==============================================================================
+# Usage: docker-compose -f docker-compose.whitelabel.yaml up -d
+# With custom env: docker-compose --env-file .env.whitelabel -f docker-compose.whitelabel.yaml up -d
+
+services:
+  cognitia-ai:
+    build:
+      context: .
+      dockerfile: Dockerfile.whitelabel
+      args:
+        BRAND_NAME: ${BRAND_NAME:-Cognitia}
+        USE_CUDA: ${USE_CUDA:-false}
+        USE_OLLAMA: ${USE_OLLAMA:-false}
+        USE_SLIM: ${USE_SLIM:-false}
+        BUILD_HASH: ${BUILD_HASH:-dev}
+    image: ${REGISTRY:-local}/cognitia-ai:${VERSION:-latest}
+    container_name: cognitia-ai
+    restart: unless-stopped
+    environment:
+      - WEBUI_NAME=${BRAND_NAME:-Cognitia}
+      - WEBUI_SECRET_KEY=${SECRET_KEY:-}
+      - OLLAMA_BASE_URL=${OLLAMA_URL:-http://ollama:11434}
+      - OPENAI_API_BASE_URL=${OPENAI_API_BASE_URL:-}
+      - OPENAI_API_KEY=${OPENAI_API_KEY:-}
+      - ENABLE_SIGNUP=${ENABLE_SIGNUP:-true}
+      - DEFAULT_USER_ROLE=${DEFAULT_USER_ROLE:-pending}
+      - SCARF_NO_ANALYTICS=true
+      - DO_NOT_TRACK=true
+      - ANONYMIZED_TELEMETRY=false
+    ports:
+      - "${PORT:-3000}:8080"
+    volumes:
+      - cognitia-data:/app/backend/data
+    networks:
+      - cognitia-network
+    depends_on:
+      ollama:
+        condition: service_started
+    healthcheck:
+      test: ["CMD", "curl", "-sf", "http://localhost:8080/health"]
+      interval: 30s
+      timeout: 10s
+      start_period: 60s
+      retries: 3
+
+  ollama:
+    image: ollama/ollama:latest
+    container_name: cognitia-ollama
+    restart: unless-stopped
+    volumes:
+      - ollama-models:/root/.ollama
+    networks:
+      - cognitia-network
+    healthcheck:
+      test: ["CMD", "curl", "-sf", "http://localhost:11434/"]
+      interval: 30s
+      timeout: 10s
+      start_period: 30s
+      retries: 3
+
+volumes:
+  cognitia-data:
+    name: cognitia-data
+  ollama-models:
+    name: cognitia-ollama-models
+
+networks:
+  cognitia-network:
+    name: cognitia-network
+    driver: bridge

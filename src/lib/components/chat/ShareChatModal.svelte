@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { getContext, onMount } from 'svelte';
 	import { models, config } from '$lib/stores';
+	import { APP_NAME } from '$lib/constants/identity';
 
 	import { toast } from 'svelte-sonner';
 	import { deleteSharedChatById, getChatById, shareChatById } from '$lib/apis/chats';
@@ -31,7 +32,7 @@
 		const _chat = chat.chat;
 		console.log('share', _chat);
 
-		toast.success($i18n.t('Redirecting you to Agentic WebUI Community'));
+		toast.success($i18n.t('Redirecting you to {{name}} Community', { name: APP_NAME }));
 		const url = 'https://openwebui.com';
 		// const url = 'http://localhost:5173';
 
@@ -135,7 +136,7 @@
 										show = false;
 									}}
 								>
-									{$i18n.t('Share to Agentic WebUI Community')}
+									{$i18n.t('Share to {{name}} Community', { name: APP_NAME })}
 								</button>
 							{/if}
 

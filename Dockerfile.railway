@@ -1,0 +1,117 @@
+# syntax=docker/dockerfile:1
+# ==============================================================================
+# Dockerfile.railway - Cognitia optimized for Railway deployment
+# ==============================================================================
+# Optimized for Railway: slim build, no Ollama, OpenAI API only
+# Deploy: railway up
+
+ARG NODE_VERSION=22
+ARG PYTHON_VERSION=3.11.14
+
+# Build args
+ARG BUILD_HASH=railway
+ARG BRAND_NAME="Cognitia"
+
+# ============================================
+# STAGE 1: Frontend Build
+# ============================================
+FROM --platform=$BUILDPLATFORM node:${NODE_VERSION}-alpine3.20 AS build
+
+ARG BUILD_HASH
+ARG BRAND_NAME
+
+WORKDIR /app
+
+# Install git for revision tracking
+RUN apk add --no-cache git
+
+COPY package.json package-lock.json ./
+RUN npm ci --legacy-peer-deps
+
+COPY . .
+
+ENV APP_BUILD_HASH=${BUILD_HASH}
+ENV BRAND_NAME=${BRAND_NAME}
+
+RUN npm run build
+
+# ============================================
+# STAGE 2: Python Runtime (Slim)
+# ============================================
+FROM python:${PYTHON_VERSION}-slim-bookworm AS base
+
+ARG BRAND_NAME
+ARG BUILD_HASH
+
+# Python settings
+ENV PYTHONUNBUFFERED=1
+
+# Runtime configuration
+ENV ENV=prod \
+    PORT=8080 \
+    USE_OLLAMA_DOCKER=false \
+    USE_CUDA_DOCKER=false \
+    USE_SLIM_DOCKER=true
+
+# White-label branding
+ENV WEBUI_NAME="${BRAND_NAME}" \
+    WEBUI_BUILD_VERSION=${BUILD_HASH}
+
+# API Configuration - set via Railway environment variables
+ENV OLLAMA_BASE_URL="" \
+    OPENAI_API_BASE_URL="" \
+    OPENAI_API_KEY="" \
+    WEBUI_SECRET_KEY=""
+
+# Privacy settings
+ENV SCARF_NO_ANALYTICS=true \
+    DO_NOT_TRACK=true \
+    ANONYMIZED_TELEMETRY=false
+
+# Model settings (will download on first use)
+ENV RAG_EMBEDDING_MODEL="sentence-transformers/all-MiniLM-L6-v2" \
+    SENTENCE_TRANSFORMERS_HOME="/app/backend/data/cache/embedding/models" \
+    TIKTOKEN_ENCODING_NAME="cl100k_base" \
+    TIKTOKEN_CACHE_DIR="/app/backend/data/cache/tiktoken" \
+    HF_HOME="/app/backend/data/cache/embedding/models"
+
+WORKDIR /app/backend
+
+ENV HOME=/root
+
+# Setup directories
+RUN mkdir -p $HOME/.cache/chroma && \
+    echo -n 00000000-0000-0000-0000-000000000000 > $HOME/.cache/chroma/telemetry_user_id
+
+# Install system dependencies (minimal for Railway)
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+    git curl jq \
+    ffmpeg \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install python dependencies
+COPY ./backend/requirements.txt ./requirements.txt
+
+RUN pip3 install --no-cache-dir uv && \
+    pip3 install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cpu --no-cache-dir && \
+    uv pip install --system -r requirements.txt --no-cache-dir && \
+    mkdir -p /app/backend/data /app/backend/data/presentations && \
+    rm -rf /var/lib/apt/lists/*
+
+# Copy built frontend files
+COPY --from=build /app/build /app/build
+COPY --from=build /app/CHANGELOG.md /app/CHANGELOG.md
+COPY --from=build /app/package.json /app/package.json
+
+# Copy backend files
+COPY ./backend .
+
+EXPOSE 8080
+
+HEALTHCHECK --interval=30s --timeout=10s --start-period=120s --retries=3 \
+    CMD curl --silent --fail http://localhost:${PORT:-8080}/health | jq -ne 'input.status == true' || exit 1
+
+ENV DOCKER=true
+
+CMD [ "bash", "start.sh"]

@@ -4,6 +4,7 @@
 	const { saveAs } = fileSaver;
 
 	import { WEBUI_NAME, config, functions as _functions, models, settings, user } from '$lib/stores';
+	import { APP_NAME } from '$lib/constants/identity';
 	import { onMount, getContext, tick } from 'svelte';
 
 	import { goto } from '$app/navigation';
@@ -99,7 +100,7 @@
 			return null;
 		});
 
-		toast.success($i18n.t('Redirecting you to Agentic WebUI Community'));
+		toast.success($i18n.t('Redirecting you to {{name}} Community', { name: APP_NAME }));
 
 		const url = 'https://openwebui.com';
 
@@ -595,7 +596,7 @@
 		{#if $config?.features.enable_community_sharing}
 			<div class=" my-16">
 				<div class=" text-xl font-medium mb-1 line-clamp-1">
-					{$i18n.t('Made by Agentic WebUI Community')}
+					{$i18n.t('Made by {{name}} Community', { name: APP_NAME })}
 				</div>
 
 				<a

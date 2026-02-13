@@ -1,15 +1,23 @@
 {
-    "name": "Premium Agentic WebUI",
-    "short_name": "Agentic",
-    "start_url": "/",
-    "display": "standalone",
-    "background_color": "#0a0a0a",
-    "theme_color": "#0a0a0a",
-    "icons": [
-        {
-            "src": "favicon.png",
-            "sizes": "192x192",
-            "type": "image/png"
-        }
-    ]
+	"name": "Cognitia",
+	"short_name": "Cognitia",
+	"description": "Plataforma de Inteligencia Artificial Empresarial",
+	"start_url": "/",
+	"display": "standalone",
+	"background_color": "#0f172a",
+	"theme_color": "#3b82f6",
+	"icons": [
+		{
+			"src": "/static/web-app-manifest-192x192.png",
+			"sizes": "192x192",
+			"type": "image/png",
+			"purpose": "maskable"
+		},
+		{
+			"src": "/static/web-app-manifest-512x512.png",
+			"sizes": "512x512",
+			"type": "image/png",
+			"purpose": "maskable"
+		}
+	]
 }

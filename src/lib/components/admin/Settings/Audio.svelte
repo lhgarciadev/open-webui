@@ -11,6 +11,7 @@
 		getVoices as _getVoices
 	} from '$lib/apis/audio';
 	import { config, settings } from '$lib/stores';
+	import { APP_NAME } from '$lib/constants/identity';
 
 	import Spinner from '$lib/components/common/Spinner.svelte';
 	import SensitiveInput from '$lib/components/common/SensitiveInput.svelte';
@@ -481,7 +482,7 @@
 						</div>
 
 						<div class="mt-2 mb-1 text-xs text-gray-400 dark:text-gray-500">
-							{$i18n.t(`Agentic WebUI uses faster-whisper internally.`)}
+							{$i18n.t(`{{name}} uses faster-whisper internally.`, { name: APP_NAME })}
 
 							<a
 								class=" hover:underline dark:text-gray-200 text-gray-800"
@@ -627,7 +628,7 @@
 								</div>
 							</div>
 							<div class="mt-2 mb-1 text-xs text-gray-400 dark:text-gray-500">
-								{$i18n.t(`Agentic WebUI uses SpeechT5 and CMU Arctic speaker embeddings.`)}
+								{$i18n.t(`{{name}} uses SpeechT5 and CMU Arctic speaker embeddings.`, { name: APP_NAME })}
 
 								To learn more about SpeechT5,
 

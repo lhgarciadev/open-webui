@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { WEBUI_API_BASE_URL, WEBUI_BASE_URL } from '$lib/constants';
+	import { APP_NAME } from '$lib/constants/identity';
 	import { marked } from 'marked';
 
 	import { config, user, models as _models, temporaryChatEnabled } from '$lib/stores';
@@ -69,7 +70,7 @@
 				<h1
 					class="text-6xl md:text-7xl font-secondary font-light tracking-tight text-transparent bg-clip-text bg-gradient-to-b from-gray-100 to-gray-500/80 pb-2"
 				>
-					Agentic WebUI
+					{APP_NAME}
 				</h1>
 				<div
 					class="absolute -inset-10 bg-blue-500/5 blur-3xl -z-10 rounded-full opacity-0 animate-pulse"

@@ -24,6 +24,7 @@
 	import ChevronUp from '$lib/components/icons/ChevronUp.svelte';
 	import ChevronDown from '$lib/components/icons/ChevronDown.svelte';
 	import { WEBUI_API_BASE_URL, WEBUI_BASE_URL } from '$lib/constants';
+	import { APP_NAME } from '$lib/constants/identity';
 	import { config } from '$lib/stores';
 	import Spinner from '$lib/components/common/Spinner.svelte';
 
@@ -97,7 +98,7 @@
 	};
 
 	const shareHandler = async () => {
-		toast.success($i18n.t('Redirecting you to Agentic WebUI Community'));
+		toast.success($i18n.t('Redirecting you to {{name}} Community', { name: APP_NAME }));
 
 		// remove snapshot from feedbacks
 		const feedbacksToShare = feedbacks.map((f) => {

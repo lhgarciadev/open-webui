@@ -33,6 +33,34 @@
 /* --app-text-scale is updated via the UI Scale slider (Interface.svelte) */
 :root {
 	--app-text-scale: 1;
+
+	/* Brand Colors - Blue Corporate (Cognitia) */
+	--color-brand-50: 239 246 255;
+	--color-brand-100: 219 234 254;
+	--color-brand-200: 191 219 254;
+	--color-brand-300: 147 197 253;
+	--color-brand-400: 96 165 250;
+	--color-brand-500: 59 130 246;
+	--color-brand-600: 37 99 235;
+	--color-brand-700: 29 78 216;
+	--color-brand-800: 30 64 175;
+	--color-brand-900: 30 58 138;
+
+	/* Surface Colors - Dark Theme */
+	--color-surface-base: 15 23 42;
+	--color-surface-elevated: 30 41 59;
+	--color-surface-overlay: 51 65 85;
+
+	/* Text Colors */
+	--color-text-primary: 248 250 252;
+	--color-text-secondary: 148 163 184;
+	--color-text-muted: 100 116 139;
+
+	/* Semantic Colors */
+	--color-success: 34 197 94;
+	--color-warning: 245 158 11;
+	--color-error: 239 68 68;
+	--color-info: 59 130 246;
 }
 
 html {

@@ -7,6 +7,7 @@
 	const i18n = getContext('i18n');
 
 	import { models, settings, toolServers, user } from '$lib/stores';
+	import { APP_NAME } from '$lib/constants/identity';
 
 	import Switch from '$lib/components/common/Switch.svelte';
 	import Spinner from '$lib/components/common/Spinner.svelte';
@@ -111,7 +112,7 @@
 							{$i18n.t('Connect to your own OpenAPI compatible external tool servers.')}
 							<br />
 							{$i18n.t(
-								'CORS must be properly configured by the provider to allow requests from Agentic WebUI.'
+								'CORS must be properly configured by the provider to allow requests from {{name}}.', { name: APP_NAME }
 							)}
 						</div>
 					</div>

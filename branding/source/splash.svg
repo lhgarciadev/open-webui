@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="none">
+  <!-- Splash screen - Light mode -->
+
+  <!-- Light background -->
+  <rect width="512" height="512" fill="#f8fafc"/>
+
+  <!-- Hexagonal brain/cognition symbol -->
+  <g transform="translate(256, 220)">
+    <!-- Outer hexagon ring -->
+    <path d="M0 -80 L69 -40 L69 40 L0 80 L-69 40 L-69 -40 Z"
+          stroke="#3b82f6" stroke-width="5" fill="none"/>
+
+    <!-- Inner neural nodes -->
+    <circle cx="0" cy="0" r="10" fill="#3b82f6"/>
+    <circle cx="0" cy="-46" r="8" fill="#3b82f6"/>
+    <circle cx="40" cy="-23" r="8" fill="#3b82f6"/>
+    <circle cx="40" cy="23" r="8" fill="#3b82f6"/>
+    <circle cx="0" cy="46" r="8" fill="#3b82f6"/>
+    <circle cx="-40" cy="23" r="8" fill="#3b82f6"/>
+    <circle cx="-40" cy="-23" r="8" fill="#3b82f6"/>
+
+    <!-- Neural connections from center -->
+    <line x1="0" y1="0" x2="0" y2="-46" stroke="#3b82f6" stroke-width="2.5"/>
+    <line x1="0" y1="0" x2="40" y2="-23" stroke="#3b82f6" stroke-width="2.5"/>
+    <line x1="0" y1="0" x2="40" y2="23" stroke="#3b82f6" stroke-width="2.5"/>
+    <line x1="0" y1="0" x2="0" y2="46" stroke="#3b82f6" stroke-width="2.5"/>
+    <line x1="0" y1="0" x2="-40" y2="23" stroke="#3b82f6" stroke-width="2.5"/>
+    <line x1="0" y1="0" x2="-40" y2="-23" stroke="#3b82f6" stroke-width="2.5"/>
+
+    <!-- Outer ring connections -->
+    <line x1="0" y1="-46" x2="40" y2="-23" stroke="#3b82f6" stroke-width="2" opacity="0.5"/>
+    <line x1="40" y1="-23" x2="40" y2="23" stroke="#3b82f6" stroke-width="2" opacity="0.5"/>
+    <line x1="40" y1="23" x2="0" y2="46" stroke="#3b82f6" stroke-width="2" opacity="0.5"/>
+    <line x1="0" y1="46" x2="-40" y2="23" stroke="#3b82f6" stroke-width="2" opacity="0.5"/>
+    <line x1="-40" y1="23" x2="-40" y2="-23" stroke="#3b82f6" stroke-width="2" opacity="0.5"/>
+    <line x1="-40" y1="-23" x2="0" y2="-46" stroke="#3b82f6" stroke-width="2" opacity="0.5"/>
+  </g>
+
+  <!-- Brand name text -->
+  <text x="256" y="380" text-anchor="middle"
+        font-family="system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif"
+        font-size="48" font-weight="600" fill="#0f172a">
+    Cognitia
+  </text>
+</svg>

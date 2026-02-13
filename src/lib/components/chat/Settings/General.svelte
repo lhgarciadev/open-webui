@@ -5,6 +5,7 @@
 	const dispatch = createEventDispatcher();
 
 	import { config, models, settings, theme, user } from '$lib/stores';
+	import { APP_NAME } from '$lib/constants/identity';
 
 	const i18n = getContext('i18n');
 
@@ -250,7 +251,7 @@
 						href="https://github.com/open-webui/open-webui/blob/main/docs/CONTRIBUTING.md#-translations-and-internationalization"
 						target="_blank"
 					>
-						Help us translate Agentic WebUI!
+						Help us translate {APP_NAME}!
 					</a>
 				</div>
 			{/if}

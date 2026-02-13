@@ -5,6 +5,7 @@
 
 	import { exportChatStats, exportSingleChatStats, downloadChatStats } from '$lib/apis/chats';
 	import { getVersion } from '$lib/apis';
+	import { APP_NAME } from '$lib/constants/identity';
 
 	import Modal from '$lib/components/common/Modal.svelte';
 	import Tooltip from '$lib/components/common/Tooltip.svelte';
@@ -369,12 +370,12 @@
 
 			<div class="px-5 pt-2 pb-5">
 				<div class="text-sm text-gray-500 dark:text-gray-400">
-					{$i18n.t('Do you want to sync your usage stats with Agentic WebUI Community?')}
+					{$i18n.t('Do you want to sync your usage stats with {{name}} Community?', { name: APP_NAME })}
 				</div>
 
 				<div class="mt-2 text-xs text-gray-500">
 					{$i18n.t(
-						'Participate in community leaderboards and evaluations! Syncing aggregated usage stats helps drive research and improvements to Agentic WebUI. Your privacy is paramount: no message content is ever shared.'
+						'Participate in community leaderboards and evaluations! Syncing aggregated usage stats helps drive research and improvements to {{name}}. Your privacy is paramount: no message content is ever shared.', { name: APP_NAME }
 					)}
 				</div>
 
@@ -383,7 +384,7 @@
 						{$i18n.t('What is shared:')}
 					</div>
 					<ul class="list-disc list-inside space-y-0.5 ml-1 mb-2">
-						<li>{$i18n.t('Agentic WebUI version')}</li>
+						<li>{$i18n.t('{{name}} version', { name: APP_NAME })}</li>
 						<li>{$i18n.t('Model names and usage frequency')}</li>
 						<li>{$i18n.t('Message counts and response timestamps')}</li>
 						<li>{$i18n.t('Content lengths (character counts only)')}</li>

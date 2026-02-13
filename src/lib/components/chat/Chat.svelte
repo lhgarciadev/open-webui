@@ -138,6 +138,7 @@
 	let imageGenerationEnabled = false;
 	let webSearchEnabled = false;
 	let codeInterpreterEnabled = false;
+	let presentationsEnabled = false;
 
 	let showCommands = false;
 
@@ -199,6 +200,7 @@
 						webSearchEnabled = input.webSearchEnabled;
 						imageGenerationEnabled = input.imageGenerationEnabled;
 						codeInterpreterEnabled = input.codeInterpreterEnabled;
+						presentationsEnabled = input.presentationsEnabled;
 					}
 				} catch (e) {}
 			} else {
@@ -259,6 +261,7 @@
 		webSearchEnabled = false;
 		imageGenerationEnabled = false;
 		codeInterpreterEnabled = false;
+		presentationsEnabled = false;
 
 		if (selectedModelIds.filter((id) => id).length > 0) {
 			setDefaults();
@@ -584,6 +587,7 @@
 			webSearchEnabled = false;
 			imageGenerationEnabled = false;
 			codeInterpreterEnabled = false;
+			presentationsEnabled = false;
 
 			try {
 				const input = JSON.parse(storageChatInput);
@@ -596,6 +600,7 @@
 					webSearchEnabled = input.webSearchEnabled;
 					imageGenerationEnabled = input.imageGenerationEnabled;
 					codeInterpreterEnabled = input.codeInterpreterEnabled;
+					presentationsEnabled = input.presentationsEnabled;
 				}
 			} catch (e) {}
 		}
@@ -1808,6 +1813,11 @@
 					($user?.role === 'admin' || $user?.permissions?.features?.code_interpreter)
 						? codeInterpreterEnabled
 						: false,
+				presentations:
+					$config?.features?.enable_presentations &&
+					($user?.role === 'admin' || $user?.permissions?.features?.presentations !== false)
+						? presentationsEnabled
+						: false,
 				web_search:
 					$config?.features?.enable_web_search &&
 					($user?.role === 'admin' || $user?.permissions?.features?.web_search)
@@ -2548,6 +2558,7 @@
 									bind:selectedFilterIds
 									bind:imageGenerationEnabled
 									bind:codeInterpreterEnabled
+									bind:presentationsEnabled
 									bind:webSearchEnabled
 									bind:atSelectedModel
 									bind:showCommands
@@ -2590,6 +2601,7 @@
 									bind:selectedFilterIds
 									bind:imageGenerationEnabled
 									bind:codeInterpreterEnabled
+									bind:presentationsEnabled
 									bind:webSearchEnabled
 									bind:atSelectedModel
 									bind:showCommands

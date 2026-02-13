@@ -408,16 +408,17 @@ def get_builtin_tools(
     # Time utilities - always available for date calculations
     builtin_functions.extend([get_current_timestamp, calculate_timestamp])
 
-    # Presentation tools - lazy import to avoid startup issues with python-pptx
-    try:
-        from open_webui.tools.presentations import (
-            get_available_templates,
-            get_available_icons,
-            generate_presentation,
-        )
-        builtin_functions.extend([get_available_templates, get_available_icons, generate_presentation])
-    except ImportError as e:
-        log.warning(f"Presentation tools not available: {e}")
+    # Presentation tools - conditional on feature flag
+    if features.get("presentations"):
+        try:
+            from open_webui.tools.presentations import (
+                get_available_templates,
+                get_available_icons,
+                generate_presentation,
+            )
+            builtin_functions.extend([get_available_templates, get_available_icons, generate_presentation])
+        except ImportError as e:
+            log.warning(f"Presentation tools not available: {e}")
 
     # Knowledge base tools - conditional injection based on model knowledge
     # If model has attached knowledge (any type), only provide query_knowledge_files

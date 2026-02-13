@@ -138,6 +138,7 @@ from open_webui.config import (
     CODE_EXECUTION_JUPYTER_AUTH_PASSWORD,
     CODE_EXECUTION_JUPYTER_TIMEOUT,
     ENABLE_CODE_INTERPRETER,
+    ENABLE_PRESENTATIONS,
     CODE_INTERPRETER_ENGINE,
     CODE_INTERPRETER_PROMPT_TEMPLATE,
     CODE_INTERPRETER_JUPYTER_URL,
@@ -1099,6 +1100,7 @@ app.state.config.CODE_EXECUTION_JUPYTER_AUTH_PASSWORD = (
 app.state.config.CODE_EXECUTION_JUPYTER_TIMEOUT = CODE_EXECUTION_JUPYTER_TIMEOUT
 
 app.state.config.ENABLE_CODE_INTERPRETER = ENABLE_CODE_INTERPRETER
+app.state.config.ENABLE_PRESENTATIONS = ENABLE_PRESENTATIONS
 app.state.config.CODE_INTERPRETER_ENGINE = CODE_INTERPRETER_ENGINE
 app.state.config.CODE_INTERPRETER_PROMPT_TEMPLATE = CODE_INTERPRETER_PROMPT_TEMPLATE
 
@@ -1942,6 +1944,7 @@ async def get_app_config(request: Request):
                     "enable_web_search": app.state.config.ENABLE_WEB_SEARCH,
                     "enable_code_execution": app.state.config.ENABLE_CODE_EXECUTION,
                     "enable_code_interpreter": app.state.config.ENABLE_CODE_INTERPRETER,
+                    "enable_presentations": app.state.config.ENABLE_PRESENTATIONS,
                     "enable_image_generation": app.state.config.ENABLE_IMAGE_GENERATION,
                     "enable_autocomplete_generation": app.state.config.ENABLE_AUTOCOMPLETE_GENERATION,
                     "enable_community_sharing": app.state.config.ENABLE_COMMUNITY_SHARING,

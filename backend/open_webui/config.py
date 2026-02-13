@@ -2102,6 +2102,12 @@ ENABLE_CODE_INTERPRETER = PersistentConfig(
     os.environ.get("ENABLE_CODE_INTERPRETER", "True").lower() == "true",
 )
 
+ENABLE_PRESENTATIONS = PersistentConfig(
+    "ENABLE_PRESENTATIONS",
+    "presentations.enable",
+    os.environ.get("ENABLE_PRESENTATIONS", "True").lower() == "true",
+)
+
 ENABLE_MEMORIES = PersistentConfig(
     "ENABLE_MEMORIES",
     "memories.enable",

@@ -1073,14 +1073,16 @@ async def generate_presentation(
         filepath = output_dir / filename
         prs.save(str(filepath))
 
-        # Return result
+        # Return result with clear download instructions
+        download_path = f"/api/v1/files/presentations/{filename}"
         return json.dumps({
             "success": True,
             "file_path": str(filepath),
             "filename": filename,
             "slides_count": len(valid_slides),
-            "download_url": f"/api/v1/files/presentations/{filename}",
-            "message": f"Presentation '{title}' created successfully with {len(valid_slides)} slides."
+            "download_url": download_path,
+            "message": f"Presentation '{title}' created successfully with {len(valid_slides)} slides.",
+            "user_instructions": f"Para descargar la presentación, usa este enlace: {download_path} (NO uses prefijo 'sandbox:'). Muestra el enlace como un link de markdown normal apuntando a esa ruta relativa."
         }, ensure_ascii=False)
 
     except Exception as e:

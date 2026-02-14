@@ -1,24 +1,20 @@
 """
-Cognitia Slides - Presentation generation tool.
+Cognitia Slides - Reveal.js Presentation Generator
 
-Enables AI agents to create professional PowerPoint presentations
-with brand-consistent templates and styling.
+Generates professional HTML presentations using Reveal.js framework.
+Clean, modern design with smooth animations and full browser compatibility.
 """
 
 import json
 import logging
 import os
+import re
 import uuid
 from datetime import datetime
-from typing import Optional, List, Dict, Any
 from pathlib import Path
+from typing import Optional, List, Dict, Any
 
 from fastapi import Request
-from pptx import Presentation
-from pptx.util import Inches, Pt
-from pptx.dml.color import RGBColor
-from pptx.enum.text import PP_ALIGN, MSO_ANCHOR
-from pptx.enum.shapes import MSO_SHAPE
 
 log = logging.getLogger(__name__)
 
@@ -27,64 +23,475 @@ log = logging.getLogger(__name__)
 # =============================================================================
 
 BRAND_COLORS = {
-    "primary": RGBColor(59, 130, 246),      # #3b82f6 - Blue 500
-    "primary_dark": RGBColor(30, 64, 175),   # #1e40af - Blue 800
-    "surface": RGBColor(15, 23, 42),         # #0f172a - Slate 900
-    "surface_light": RGBColor(30, 41, 59),   # #1e293b - Slate 800
-    "text_primary": RGBColor(248, 250, 252), # #f8fafc - Slate 50
-    "text_secondary": RGBColor(148, 163, 184), # #94a3b8 - Slate 400
-    "accent_success": RGBColor(34, 197, 94),  # #22c55e - Green 500
-    "accent_warning": RGBColor(245, 158, 11), # #f59e0b - Amber 500
-    "accent_error": RGBColor(239, 68, 68),    # #ef4444 - Red 500
-    "white": RGBColor(255, 255, 255),
-    "black": RGBColor(0, 0, 0),
+    "primary": "#3b82f6",      # Blue 500
+    "primary_dark": "#1e40af", # Blue 800
+    "primary_light": "#60a5fa", # Blue 400
+    "surface": "#0f172a",      # Slate 900
+    "surface_light": "#1e293b", # Slate 800
+    "text_primary": "#f8fafc", # Slate 50
+    "text_secondary": "#94a3b8", # Slate 400
+    "accent": "#22c55e",       # Green 500
+    "white": "#ffffff",
 }
 
-AVAILABLE_ICONS = [
-    {"name": "chart", "description": "Bar chart icon for data/analytics"},
-    {"name": "users", "description": "People icon for team/users"},
-    {"name": "rocket", "description": "Rocket icon for launch/growth"},
-    {"name": "target", "description": "Target icon for goals/objectives"},
-    {"name": "lightbulb", "description": "Lightbulb icon for ideas/innovation"},
-    {"name": "shield", "description": "Shield icon for security/protection"},
-    {"name": "globe", "description": "Globe icon for global/international"},
-    {"name": "clock", "description": "Clock icon for time/schedule"},
-    {"name": "check", "description": "Checkmark icon for completion/success"},
-    {"name": "star", "description": "Star icon for highlights/favorites"},
-    {"name": "heart", "description": "Heart icon for favorites/health"},
-    {"name": "gear", "description": "Gear icon for settings/technical"},
-    {"name": "database", "description": "Database icon for data/storage"},
-    {"name": "cloud", "description": "Cloud icon for cloud services"},
-    {"name": "lock", "description": "Lock icon for security/privacy"},
-]
+# =============================================================================
+# REVEAL.JS HTML TEMPLATE
+# =============================================================================
 
-SLIDE_TEMPLATES = [
-    "title",           # Title slide with subtitle
-    "content",         # Title + bullet points
-    "two_column",      # Two column layout
-    "section",         # Section divider
-    "image",           # Title + image placeholder
-    "comparison",      # Side by side comparison
-    "quote",           # Quote/testimonial
-    "stats",           # Statistics/metrics display
-    "timeline",        # Timeline/roadmap
-    "closing",         # Thank you/closing slide
-]
+REVEALJS_TEMPLATE = """<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{title}</title>
 
-STORY_SPEC_TYPES = [
-    "cover",
-    "section",
-    "insight",
-    "metrics",
-    "comparison",
-    "timeline",
-    "quote",
-    "cta",
-]
+    <!-- Reveal.js CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.0.4/dist/reveal.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.0.4/dist/theme/black.css">
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        :root {{
+            --r-background-color: {surface};
+            --r-main-font: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            --r-heading-font: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            --r-main-color: {text_primary};
+            --r-heading-color: {white};
+            --r-link-color: {primary};
+            --r-link-color-hover: {primary_light};
+            --r-selection-background-color: {primary};
+        }}
+
+        .reveal {{
+            font-family: var(--r-main-font);
+        }}
+
+        .reveal h1, .reveal h2, .reveal h3 {{
+            font-weight: 600;
+            text-transform: none;
+            letter-spacing: -0.02em;
+        }}
+
+        .reveal h1 {{
+            font-size: 2.8em;
+            background: linear-gradient(135deg, {primary_light}, {primary});
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }}
+
+        .reveal h2 {{
+            font-size: 1.8em;
+            color: {white};
+            margin-bottom: 0.8em;
+        }}
+
+        .reveal h3 {{
+            font-size: 1.3em;
+            color: {primary_light};
+        }}
+
+        .reveal p, .reveal li {{
+            font-size: 1.1em;
+            line-height: 1.6;
+            color: {text_secondary};
+        }}
+
+        .reveal ul {{
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }}
+
+        .reveal li {{
+            position: relative;
+            padding-left: 1.5em;
+            margin-bottom: 0.6em;
+        }}
+
+        .reveal li::before {{
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0.5em;
+            width: 8px;
+            height: 8px;
+            background: {primary};
+            border-radius: 50%;
+        }}
+
+        /* Title Slide */
+        .slide-title {{
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+            text-align: center;
+        }}
+
+        .slide-title h1 {{
+            font-size: 3.2em;
+            margin-bottom: 0.3em;
+        }}
+
+        .slide-title .subtitle {{
+            font-size: 1.4em;
+            color: {text_secondary};
+            font-weight: 300;
+        }}
+
+        .slide-title .brand {{
+            position: absolute;
+            bottom: 40px;
+            font-size: 0.9em;
+            color: {text_secondary};
+            opacity: 0.7;
+        }}
+
+        /* Content Slide */
+        .slide-content {{
+            text-align: left;
+            padding: 0 2em;
+        }}
+
+        .slide-content h2 {{
+            border-bottom: 3px solid {primary};
+            padding-bottom: 0.3em;
+            display: inline-block;
+        }}
+
+        /* Stats Slide */
+        .stats-grid {{
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2em;
+            margin-top: 1.5em;
+        }}
+
+        .stat-card {{
+            background: linear-gradient(135deg, {surface_light}, {surface});
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            border-radius: 16px;
+            padding: 2em;
+            text-align: center;
+        }}
+
+        .stat-value {{
+            font-size: 3em;
+            font-weight: 700;
+            background: linear-gradient(135deg, {primary_light}, {accent});
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }}
+
+        .stat-label {{
+            font-size: 1em;
+            color: {text_secondary};
+            margin-top: 0.5em;
+        }}
+
+        /* Quote Slide */
+        .slide-quote {{
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 0 3em;
+        }}
+
+        .slide-quote blockquote {{
+            font-size: 1.6em;
+            font-style: italic;
+            color: {text_primary};
+            border-left: 4px solid {primary};
+            padding-left: 1em;
+            margin: 0;
+        }}
+
+        .slide-quote .author {{
+            margin-top: 1.5em;
+            font-size: 1.1em;
+            color: {primary_light};
+        }}
+
+        /* Section Slide */
+        .slide-section {{
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+            background: linear-gradient(135deg, {primary_dark}, {surface});
+        }}
+
+        .slide-section h2 {{
+            font-size: 2.5em;
+            margin-bottom: 0.3em;
+        }}
+
+        /* Closing Slide */
+        .slide-closing {{
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }}
+
+        .slide-closing h2 {{
+            font-size: 2.8em;
+            background: linear-gradient(135deg, {primary_light}, {accent});
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }}
+
+        /* Two Column Layout */
+        .two-columns {{
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3em;
+            text-align: left;
+        }}
+
+        .column h3 {{
+            margin-bottom: 0.8em;
+        }}
+
+        /* Footer */
+        .slide-footer {{
+            position: absolute;
+            bottom: 20px;
+            left: 0;
+            right: 0;
+            display: flex;
+            justify-content: space-between;
+            padding: 0 40px;
+            font-size: 0.7em;
+            color: {text_secondary};
+            opacity: 0.6;
+        }}
+
+        /* Progress bar */
+        .reveal .progress {{
+            background: rgba(255,255,255,0.1);
+            height: 4px;
+        }}
+
+        .reveal .progress span {{
+            background: linear-gradient(90deg, {primary}, {accent});
+        }}
+
+        /* Controls */
+        .reveal .controls {{
+            color: {primary};
+        }}
+
+        /* Animations */
+        .reveal .slides section .fragment {{
+            transition: all 0.3s ease;
+        }}
+
+        .reveal .slides section .fragment.visible {{
+            opacity: 1;
+            transform: none;
+        }}
+
+        .reveal .slides section .fragment.fade-up {{
+            transform: translateY(20px);
+        }}
+    </style>
+</head>
+<body>
+    <div class="reveal">
+        <div class="slides">
+{slides_html}
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/reveal.js@5.0.4/dist/reveal.js"></script>
+    <script>
+        Reveal.initialize({{
+            hash: true,
+            controls: true,
+            progress: true,
+            center: true,
+            transition: 'slide',
+            transitionSpeed: 'default',
+            backgroundTransition: 'fade',
+            viewDistance: 3,
+            width: 1280,
+            height: 720,
+            margin: 0.1,
+        }});
+    </script>
+</body>
+</html>
+"""
 
 # =============================================================================
-# HELPER FUNCTIONS
+# SLIDE GENERATORS
 # =============================================================================
+
+def _generate_title_slide(title: str, subtitle: str = "") -> str:
+    """Generate title slide HTML."""
+    subtitle_html = f'<p class="subtitle">{_escape_html(subtitle)}</p>' if subtitle else ''
+    return f"""
+            <section>
+                <div class="slide-title">
+                    <h1>{_escape_html(title)}</h1>
+                    {subtitle_html}
+                    <p class="brand">Generado con Cognitia AI</p>
+                </div>
+            </section>"""
+
+
+def _generate_content_slide(title: str, bullets: List[str], slide_num: int, total: int) -> str:
+    """Generate content slide with bullet points."""
+    bullets_html = "\n".join([
+        f'                        <li class="fragment fade-up">{_escape_html(b)}</li>'
+        for b in bullets
+    ])
+
+    return f"""
+            <section>
+                <div class="slide-content">
+                    <h2>{_escape_html(title)}</h2>
+                    <ul>
+{bullets_html}
+                    </ul>
+                </div>
+                <div class="slide-footer">
+                    <span>Cognitia</span>
+                    <span>{slide_num}/{total}</span>
+                </div>
+            </section>"""
+
+
+def _generate_stats_slide(title: str, stats: List[Dict], slide_num: int, total: int) -> str:
+    """Generate statistics slide with cards."""
+    stats_html = "\n".join([
+        f'''                        <div class="stat-card fragment fade-up">
+                            <div class="stat-value">{_escape_html(str(s.get("value", "")))}</div>
+                            <div class="stat-label">{_escape_html(s.get("label", ""))}</div>
+                        </div>'''
+        for s in stats[:4]  # Max 4 stats
+    ])
+
+    return f"""
+            <section>
+                <div class="slide-content">
+                    <h2>{_escape_html(title)}</h2>
+                    <div class="stats-grid">
+{stats_html}
+                    </div>
+                </div>
+                <div class="slide-footer">
+                    <span>Cognitia</span>
+                    <span>{slide_num}/{total}</span>
+                </div>
+            </section>"""
+
+
+def _generate_quote_slide(quote: str, author: str = "", role: str = "") -> str:
+    """Generate quote slide."""
+    author_html = ""
+    if author:
+        author_html = f'<p class="author">— {_escape_html(author)}'
+        if role:
+            author_html += f', {_escape_html(role)}'
+        author_html += '</p>'
+
+    return f"""
+            <section>
+                <div class="slide-quote">
+                    <blockquote>"{_escape_html(quote)}"</blockquote>
+                    {author_html}
+                </div>
+            </section>"""
+
+
+def _generate_section_slide(title: str, subtitle: str = "") -> str:
+    """Generate section divider slide."""
+    subtitle_html = f'<p class="subtitle">{_escape_html(subtitle)}</p>' if subtitle else ''
+    return f"""
+            <section data-background="linear-gradient(135deg, {BRAND_COLORS['primary_dark']}, {BRAND_COLORS['surface']})">
+                <div class="slide-section">
+                    <h2>{_escape_html(title)}</h2>
+                    {subtitle_html}
+                </div>
+            </section>"""
+
+
+def _generate_two_column_slide(title: str, left_items: List[str], right_items: List[str],
+                                left_title: str = "", right_title: str = "",
+                                slide_num: int = 0, total: int = 0) -> str:
+    """Generate two-column layout slide."""
+    left_bullets = "\n".join([f'<li class="fragment">{_escape_html(item)}</li>' for item in left_items])
+    right_bullets = "\n".join([f'<li class="fragment">{_escape_html(item)}</li>' for item in right_items])
+
+    left_header = f'<h3>{_escape_html(left_title)}</h3>' if left_title else ''
+    right_header = f'<h3>{_escape_html(right_title)}</h3>' if right_title else ''
+
+    return f"""
+            <section>
+                <div class="slide-content">
+                    <h2>{_escape_html(title)}</h2>
+                    <div class="two-columns">
+                        <div class="column">
+                            {left_header}
+                            <ul>{left_bullets}</ul>
+                        </div>
+                        <div class="column">
+                            {right_header}
+                            <ul>{right_bullets}</ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="slide-footer">
+                    <span>Cognitia</span>
+                    <span>{slide_num}/{total}</span>
+                </div>
+            </section>"""
+
+
+def _generate_closing_slide(title: str, subtitle: str = "", contact: str = "") -> str:
+    """Generate closing/thank you slide."""
+    subtitle_html = f'<p class="subtitle">{_escape_html(subtitle)}</p>' if subtitle else ''
+    contact_html = f'<p style="margin-top: 2em; color: {BRAND_COLORS["text_secondary"]};">{_escape_html(contact)}</p>' if contact else ''
+
+    return f"""
+            <section>
+                <div class="slide-closing">
+                    <h2>{_escape_html(title)}</h2>
+                    {subtitle_html}
+                    {contact_html}
+                    <p class="brand" style="margin-top: 3em; opacity: 0.6;">Powered by Cognitia AI</p>
+                </div>
+            </section>"""
+
+
+# =============================================================================
+# UTILITIES
+# =============================================================================
+
+def _escape_html(text: str) -> str:
+    """Escape HTML special characters."""
+    if not text:
+        return ""
+    return (str(text)
+            .replace("&", "&amp;")
+            .replace("<", "&lt;")
+            .replace(">", "&gt;")
+            .replace('"', "&quot;")
+            .replace("'", "&#39;"))
+
 
 def _get_presentations_dir() -> Path:
     """Get the presentations output directory."""
@@ -94,998 +501,213 @@ def _get_presentations_dir() -> Path:
     return presentations_dir
 
 
-def _apply_brand_background(slide, dark: bool = True):
-    """Apply brand background color to slide."""
-    background = slide.background
-    fill = background.fill
-    fill.solid()
-    fill.fore_color.rgb = BRAND_COLORS["surface"] if dark else BRAND_COLORS["white"]
-
-
-def _add_title_shape(slide, text: str, top: float = 0.5, font_size: int = 44, dark: bool = True):
-    """Add a styled title to the slide."""
-    left = Inches(0.5)
-    top = Inches(top)
-    width = Inches(9)
-    height = Inches(1)
-
-    shape = slide.shapes.add_textbox(left, top, width, height)
-    text_frame = shape.text_frame
-    text_frame.word_wrap = True
-
-    p = text_frame.paragraphs[0]
-    p.text = text
-    p.font.size = Pt(font_size)
-    p.font.bold = True
-    p.font.color.rgb = BRAND_COLORS["text_primary"] if dark else BRAND_COLORS["surface"]
-    p.alignment = PP_ALIGN.LEFT
-
-
-def _add_subtitle_shape(slide, text: str, top: float = 1.5, dark: bool = True):
-    """Add a styled subtitle to the slide."""
-    left = Inches(0.5)
-    top = Inches(top)
-    width = Inches(9)
-    height = Inches(0.75)
-
-    shape = slide.shapes.add_textbox(left, top, width, height)
-    text_frame = shape.text_frame
-    text_frame.word_wrap = True
-
-    p = text_frame.paragraphs[0]
-    p.text = text
-    p.font.size = Pt(24)
-    p.font.color.rgb = BRAND_COLORS["text_secondary"] if dark else BRAND_COLORS["surface_light"]
-    p.alignment = PP_ALIGN.LEFT
-
-
-def _add_bullets(slide, items: List[str], top: float = 2.5, dark: bool = True):
-    """Add bullet points to the slide."""
-    left = Inches(0.5)
-    top = Inches(top)
-    width = Inches(9)
-    height = Inches(4)
-
-    shape = slide.shapes.add_textbox(left, top, width, height)
-    text_frame = shape.text_frame
-    text_frame.word_wrap = True
-
-    for i, item in enumerate(items):
-        if i == 0:
-            p = text_frame.paragraphs[0]
-        else:
-            p = text_frame.add_paragraph()
-        p.text = f"• {item}"
-        p.font.size = Pt(20)
-        p.font.color.rgb = BRAND_COLORS["text_primary"] if dark else BRAND_COLORS["surface"]
-        p.space_before = Pt(12)
-        p.space_after = Pt(6)
-
-
-def _add_brand_footer(slide, dark: bool = True):
-    """Add Cognitia brand footer."""
-    left = Inches(0.5)
-    top = Inches(7)
-    width = Inches(2)
-    height = Inches(0.3)
-
-    shape = slide.shapes.add_textbox(left, top, width, height)
-    text_frame = shape.text_frame
-    p = text_frame.paragraphs[0]
-    p.text = "Cognitia"
-    p.font.size = Pt(10)
-    p.font.color.rgb = BRAND_COLORS["primary"]
-    p.font.bold = True
-
-
-def _add_accent_bar(slide):
-    """Add brand accent bar at top of slide."""
-    left = Inches(0)
-    top = Inches(0)
-    width = Inches(10)
-    height = Inches(0.1)
-
-    shape = slide.shapes.add_shape(MSO_SHAPE.RECTANGLE, left, top, width, height)
-    shape.fill.solid()
-    shape.fill.fore_color.rgb = BRAND_COLORS["primary"]
-    shape.line.fill.background()
-
-
-# =============================================================================
-# SLIDE CREATION FUNCTIONS
-# =============================================================================
-
-def _create_title_slide(prs: Presentation, title: str, subtitle: str = ""):
-    """Create a title slide."""
-    slide_layout = prs.slide_layouts[6]  # Blank
-    slide = prs.slides.add_slide(slide_layout)
-    _apply_brand_background(slide, dark=True)
-
-    # Centered title
-    left = Inches(0.5)
-    top = Inches(2.5)
-    width = Inches(9)
-    height = Inches(1.5)
-
-    shape = slide.shapes.add_textbox(left, top, width, height)
-    text_frame = shape.text_frame
-    text_frame.word_wrap = True
-
-    p = text_frame.paragraphs[0]
-    p.text = title
-    p.font.size = Pt(54)
-    p.font.bold = True
-    p.font.color.rgb = BRAND_COLORS["text_primary"]
-    p.alignment = PP_ALIGN.CENTER
-
-    if subtitle:
-        # Subtitle
-        left = Inches(0.5)
-        top = Inches(4.2)
-        width = Inches(9)
-        height = Inches(1)
-
-        shape = slide.shapes.add_textbox(left, top, width, height)
-        text_frame = shape.text_frame
-        p = text_frame.paragraphs[0]
-        p.text = subtitle
-        p.font.size = Pt(28)
-        p.font.color.rgb = BRAND_COLORS["text_secondary"]
-        p.alignment = PP_ALIGN.CENTER
-
-    _add_accent_bar(slide)
-    return slide
-
-
-def _create_content_slide(prs: Presentation, title: str, bullets: List[str]):
-    """Create a content slide with title and bullets."""
-    slide_layout = prs.slide_layouts[6]  # Blank
-    slide = prs.slides.add_slide(slide_layout)
-    _apply_brand_background(slide, dark=True)
-    _add_accent_bar(slide)
-
-    _add_title_shape(slide, title, top=0.5)
-    _add_bullets(slide, bullets, top=1.8)
-    _add_brand_footer(slide)
-
-    return slide
-
-
-def _create_two_column_slide(prs: Presentation, title: str, left_items: List[str], right_items: List[str], left_title: str = "", right_title: str = ""):
-    """Create a two-column slide."""
-    slide_layout = prs.slide_layouts[6]  # Blank
-    slide = prs.slides.add_slide(slide_layout)
-    _apply_brand_background(slide, dark=True)
-    _add_accent_bar(slide)
-
-    _add_title_shape(slide, title, top=0.5)
-
-    # Left column title
-    if left_title:
-        left = Inches(0.5)
-        top = Inches(1.6)
-        width = Inches(4.2)
-        height = Inches(0.5)
-        shape = slide.shapes.add_textbox(left, top, width, height)
-        p = shape.text_frame.paragraphs[0]
-        p.text = left_title
-        p.font.size = Pt(20)
-        p.font.bold = True
-        p.font.color.rgb = BRAND_COLORS["primary"]
-
-    # Left column items
-    left = Inches(0.5)
-    top = Inches(2.2)
-    width = Inches(4.2)
-    height = Inches(4)
-    shape = slide.shapes.add_textbox(left, top, width, height)
-    text_frame = shape.text_frame
-    for i, item in enumerate(left_items):
-        if i == 0:
-            p = text_frame.paragraphs[0]
-        else:
-            p = text_frame.add_paragraph()
-        p.text = f"• {item}"
-        p.font.size = Pt(18)
-        p.font.color.rgb = BRAND_COLORS["text_primary"]
-        p.space_before = Pt(8)
-
-    # Right column title
-    if right_title:
-        left = Inches(5.2)
-        top = Inches(1.6)
-        width = Inches(4.2)
-        height = Inches(0.5)
-        shape = slide.shapes.add_textbox(left, top, width, height)
-        p = shape.text_frame.paragraphs[0]
-        p.text = right_title
-        p.font.size = Pt(20)
-        p.font.bold = True
-        p.font.color.rgb = BRAND_COLORS["primary"]
-
-    # Right column items
-    left = Inches(5.2)
-    top = Inches(2.2)
-    width = Inches(4.2)
-    height = Inches(4)
-    shape = slide.shapes.add_textbox(left, top, width, height)
-    text_frame = shape.text_frame
-    for i, item in enumerate(right_items):
-        if i == 0:
-            p = text_frame.paragraphs[0]
-        else:
-            p = text_frame.add_paragraph()
-        p.text = f"• {item}"
-        p.font.size = Pt(18)
-        p.font.color.rgb = BRAND_COLORS["text_primary"]
-        p.space_before = Pt(8)
-
-    _add_brand_footer(slide)
-    return slide
-
-
-def _create_section_slide(prs: Presentation, title: str, subtitle: str = ""):
-    """Create a section divider slide."""
-    slide_layout = prs.slide_layouts[6]  # Blank
-    slide = prs.slides.add_slide(slide_layout)
-
-    # Use primary color as background
-    background = slide.background
-    fill = background.fill
-    fill.solid()
-    fill.fore_color.rgb = BRAND_COLORS["primary"]
-
-    # Centered title
-    left = Inches(0.5)
-    top = Inches(3)
-    width = Inches(9)
-    height = Inches(1.5)
-
-    shape = slide.shapes.add_textbox(left, top, width, height)
-    text_frame = shape.text_frame
-    p = text_frame.paragraphs[0]
-    p.text = title
-    p.font.size = Pt(48)
-    p.font.bold = True
-    p.font.color.rgb = BRAND_COLORS["white"]
-    p.alignment = PP_ALIGN.CENTER
-
-    if subtitle:
-        left = Inches(0.5)
-        top = Inches(4.5)
-        width = Inches(9)
-        height = Inches(0.75)
-
-        shape = slide.shapes.add_textbox(left, top, width, height)
-        p = shape.text_frame.paragraphs[0]
-        p.text = subtitle
-        p.font.size = Pt(24)
-        p.font.color.rgb = BRAND_COLORS["white"]
-        p.alignment = PP_ALIGN.CENTER
-
-    return slide
-
-
-def _create_stats_slide(prs: Presentation, title: str, stats: List[dict]):
-    """Create a statistics slide. Stats format: [{"value": "50%", "label": "Growth"}]"""
-    slide_layout = prs.slide_layouts[6]  # Blank
-    slide = prs.slides.add_slide(slide_layout)
-    _apply_brand_background(slide, dark=True)
-    _add_accent_bar(slide)
-
-    _add_title_shape(slide, title, top=0.5)
-
-    # Calculate positions for stats (max 4)
-    num_stats = min(len(stats), 4)
-    total_width = 9
-    stat_width = total_width / num_stats
-
-    for i, stat in enumerate(stats[:4]):
-        left = Inches(0.5 + i * stat_width)
-        top = Inches(2.5)
-        width = Inches(stat_width - 0.2)
-        height = Inches(3)
-
-        # Value
-        shape = slide.shapes.add_textbox(left, top, width, Inches(1.5))
-        p = shape.text_frame.paragraphs[0]
-        p.text = str(stat.get("value", ""))
-        p.font.size = Pt(48)
-        p.font.bold = True
-        p.font.color.rgb = BRAND_COLORS["primary"]
-        p.alignment = PP_ALIGN.CENTER
-
-        # Label
-        shape = slide.shapes.add_textbox(left, Inches(4), width, Inches(1))
-        p = shape.text_frame.paragraphs[0]
-        p.text = str(stat.get("label", ""))
-        p.font.size = Pt(18)
-        p.font.color.rgb = BRAND_COLORS["text_secondary"]
-        p.alignment = PP_ALIGN.CENTER
-
-    _add_brand_footer(slide)
-    return slide
-
-
-def _create_quote_slide(prs: Presentation, quote: str, author: str = "", role: str = ""):
-    """Create a quote/testimonial slide."""
-    slide_layout = prs.slide_layouts[6]  # Blank
-    slide = prs.slides.add_slide(slide_layout)
-    _apply_brand_background(slide, dark=True)
-
-    # Quote
-    left = Inches(1)
-    top = Inches(2)
-    width = Inches(8)
-    height = Inches(3)
-
-    shape = slide.shapes.add_textbox(left, top, width, height)
-    text_frame = shape.text_frame
-    text_frame.word_wrap = True
-    p = text_frame.paragraphs[0]
-    p.text = f'"{quote}"'
-    p.font.size = Pt(32)
-    p.font.italic = True
-    p.font.color.rgb = BRAND_COLORS["text_primary"]
-    p.alignment = PP_ALIGN.CENTER
-
-    # Author
-    if author:
-        left = Inches(1)
-        top = Inches(5.5)
-        width = Inches(8)
-        height = Inches(0.75)
-
-        shape = slide.shapes.add_textbox(left, top, width, height)
-        p = shape.text_frame.paragraphs[0]
-        author_text = f"— {author}"
-        if role:
-            author_text += f", {role}"
-        p.text = author_text
-        p.font.size = Pt(20)
-        p.font.color.rgb = BRAND_COLORS["primary"]
-        p.alignment = PP_ALIGN.CENTER
-
-    _add_brand_footer(slide)
-    return slide
-
-
-def _create_closing_slide(prs: Presentation, title: str = "Thank You", subtitle: str = "", contact: str = ""):
-    """Create a closing/thank you slide."""
-    slide_layout = prs.slide_layouts[6]  # Blank
-    slide = prs.slides.add_slide(slide_layout)
-    _apply_brand_background(slide, dark=True)
-
-    # Title
-    left = Inches(0.5)
-    top = Inches(2.5)
-    width = Inches(9)
-    height = Inches(1.5)
-
-    shape = slide.shapes.add_textbox(left, top, width, height)
-    p = shape.text_frame.paragraphs[0]
-    p.text = title
-    p.font.size = Pt(54)
-    p.font.bold = True
-    p.font.color.rgb = BRAND_COLORS["text_primary"]
-    p.alignment = PP_ALIGN.CENTER
-
-    if subtitle:
-        left = Inches(0.5)
-        top = Inches(4.2)
-        width = Inches(9)
-        height = Inches(0.75)
-
-        shape = slide.shapes.add_textbox(left, top, width, height)
-        p = shape.text_frame.paragraphs[0]
-        p.text = subtitle
-        p.font.size = Pt(24)
-        p.font.color.rgb = BRAND_COLORS["text_secondary"]
-        p.alignment = PP_ALIGN.CENTER
-
-    if contact:
-        left = Inches(0.5)
-        top = Inches(5.5)
-        width = Inches(9)
-        height = Inches(0.5)
-
-        shape = slide.shapes.add_textbox(left, top, width, height)
-        p = shape.text_frame.paragraphs[0]
-        p.text = contact
-        p.font.size = Pt(18)
-        p.font.color.rgb = BRAND_COLORS["primary"]
-        p.alignment = PP_ALIGN.CENTER
-
-    _add_accent_bar(slide)
-    return slide
-
-
-def _as_list(value: Any) -> List[Any]:
-    """Normalize unknown values into list form."""
-    if value is None:
-        return []
-    if isinstance(value, list):
-        return value
-    return [value]
-
-
-def _parse_json_like_list(value: Any) -> List[Dict[str, Any]]:
-    """
-    Normalize tool inputs that may arrive as list, dict or JSON-encoded string.
-    Returns an empty list for unsupported/invalid formats.
-    """
-    if value is None:
+def _auto_generate_slides(title: str) -> List[Dict]:
+    """Auto-generate template slides when only title is provided."""
+    return [
+        {"type": "title", "title": title, "subtitle": "Presentacion generada automaticamente"},
+        {"type": "content", "title": "Introduccion", "bullets": [
+            f"Contexto y relevancia de: {title}",
+            "Objetivos principales",
+            "Estructura del contenido"
+        ]},
+        {"type": "content", "title": "Puntos Clave", "bullets": [
+            "Punto principal 1",
+            "Punto principal 2",
+            "Punto principal 3",
+            "Punto principal 4"
+        ]},
+        {"type": "stats", "title": "Datos Relevantes", "stats": [
+            {"value": "---", "label": "Metrica 1"},
+            {"value": "---", "label": "Metrica 2"},
+            {"value": "---", "label": "Metrica 3"}
+        ]},
+        {"type": "content", "title": "Recomendaciones", "bullets": [
+            "Accion recomendada 1",
+            "Accion recomendada 2",
+            "Proximos pasos"
+        ]},
+        {"type": "closing", "title": "Gracias", "subtitle": title}
+    ]
+
+
+def _parse_slides_input(slides) -> List[Dict]:
+    """Parse slides input - handles string, list, or dict."""
+    if not slides:
         return []
 
-    parsed_value = value
-    if isinstance(value, str):
-        raw = value.strip()
-        if not raw:
-            return []
+    if isinstance(slides, str):
         try:
-            parsed_value = json.loads(raw)
-        except Exception:
+            parsed = json.loads(slides)
+            if isinstance(parsed, list):
+                return parsed
+            elif isinstance(parsed, dict):
+                return [parsed]
+        except json.JSONDecodeError:
             return []
 
-    if isinstance(parsed_value, dict):
-        parsed_value = [parsed_value]
-
-    if not isinstance(parsed_value, list):
-        return []
-
-    return [item for item in parsed_value if isinstance(item, dict)]
-
-
-def _slide_has_renderable_content(slide_def: Dict[str, Any]) -> bool:
-    """Return True when slide has meaningful payload for the selected type."""
-    slide_type = str(slide_def.get("type", "content")).lower()
-
-    if slide_type == "title":
-        return bool(str(slide_def.get("title", "")).strip() or str(slide_def.get("subtitle", "")).strip())
-
-    if slide_type in {"content", "timeline"}:
-        bullets = [
-            str(item).strip()
-            for item in _as_list(slide_def.get("bullets", []))
-            if str(item).strip()
-        ]
-        return bool(str(slide_def.get("title", "")).strip() or bullets)
-
-    if slide_type == "two_column":
-        left_items = [
-            str(item).strip()
-            for item in _as_list(slide_def.get("left_items", []))
-            if str(item).strip()
-        ]
-        right_items = [
-            str(item).strip()
-            for item in _as_list(slide_def.get("right_items", []))
-            if str(item).strip()
-        ]
-        return bool(
-            str(slide_def.get("title", "")).strip()
-            or str(slide_def.get("left_title", "")).strip()
-            or str(slide_def.get("right_title", "")).strip()
-            or left_items
-            or right_items
-        )
-
-    if slide_type == "section":
-        return bool(str(slide_def.get("title", "")).strip() or str(slide_def.get("subtitle", "")).strip())
-
-    if slide_type == "stats":
-        stats = []
-        for stat in _as_list(slide_def.get("stats", [])):
-            if isinstance(stat, dict):
-                value = str(stat.get("value", "")).strip()
-                label = str(stat.get("label", "")).strip()
-                if value or label:
-                    stats.append(stat)
-        return bool(str(slide_def.get("title", "")).strip() or stats)
-
-    if slide_type == "quote":
-        return bool(
-            str(slide_def.get("quote", "")).strip()
-            or str(slide_def.get("author", "")).strip()
-            or str(slide_def.get("role", "")).strip()
-        )
-
-    if slide_type == "closing":
-        return bool(
-            str(slide_def.get("title", "")).strip()
-            or str(slide_def.get("subtitle", "")).strip()
-            or str(slide_def.get("contact", "")).strip()
-        )
-
-    # Unknown types are treated as content-like slides.
-    bullets = [
-        str(item).strip()
-        for item in _as_list(slide_def.get("bullets", []))
-        if str(item).strip()
-    ]
-    return bool(str(slide_def.get("title", "")).strip() or bullets)
-
-
-def _auto_generate_slides_from_title(title: str) -> List[dict]:
-    """
-    Auto-generate a basic presentation structure when no slides/story_spec provided.
-    Uses the title to create a sensible default presentation.
-    """
-    # Parse title to extract potential topic keywords
-    title_words = title.lower().split()
-
-    # Default slide structure based on common presentation patterns
-    slides = [
-        {
-            "type": "title",
-            "title": title,
-            "subtitle": "Presentación generada por Cognitia AI",
-        },
-        {
-            "type": "content",
-            "title": "Introducción",
-            "bullets": [
-                f"Contexto y relevancia de: {title}",
-                "Objetivos principales de esta presentación",
-                "Estructura del contenido a cubrir",
-            ],
-        },
-        {
-            "type": "content",
-            "title": "Puntos Clave",
-            "bullets": [
-                "Punto principal 1 - Personalizar según el tema",
-                "Punto principal 2 - Agregar datos específicos",
-                "Punto principal 3 - Incluir ejemplos relevantes",
-                "Punto principal 4 - Considerar el contexto local",
-            ],
-        },
-        {
-            "type": "stats",
-            "title": "Datos Relevantes",
-            "stats": [
-                {"value": "---", "label": "Métrica 1"},
-                {"value": "---", "label": "Métrica 2"},
-                {"value": "---", "label": "Métrica 3"},
-            ],
-        },
-        {
-            "type": "content",
-            "title": "Recomendaciones",
-            "bullets": [
-                "Acción recomendada 1",
-                "Acción recomendada 2",
-                "Próximos pasos a seguir",
-            ],
-        },
-        {
-            "type": "closing",
-            "title": "¿Preguntas?",
-            "subtitle": f"Gracias por su atención - {title}",
-            "contact": "Generado con Cognitia AI",
-        },
-    ]
-
-    return slides
-
-
-def _build_slides_from_story_spec(
-    title: str,
-    story_spec: List[Dict[str, Any]],
-) -> List[dict]:
-    """
-    Convert a Gamma-style narrative spec into internal slide definitions.
-    """
-    slides: List[dict] = []
-
-    if not story_spec:
+    if isinstance(slides, list):
         return slides
 
-    first_type = str(story_spec[0].get("type", "")).lower()
-    if first_type != "cover":
-        slides.append(
-            {
-                "type": "title",
-                "title": title,
-                "subtitle": "Executive presentation generated from story spec",
-            }
-        )
+    if isinstance(slides, dict):
+        return [slides]
 
-    for block in story_spec:
-        block_type = str(block.get("type", "insight")).lower()
-        block_title = str(block.get("title", "")).strip() or "Untitled"
-
-        if block_type == "cover":
-            slides.append(
-                {
-                    "type": "title",
-                    "title": block_title or title,
-                    "subtitle": str(block.get("subtitle", "")).strip(),
-                }
-            )
-            continue
-
-        if block_type == "section":
-            slides.append(
-                {
-                    "type": "section",
-                    "title": block_title,
-                    "subtitle": str(block.get("subtitle", "")).strip(),
-                }
-            )
-            continue
-
-        if block_type == "metrics":
-            stats = []
-            for metric in _as_list(block.get("metrics", [])):
-                if isinstance(metric, dict):
-                    stats.append(
-                        {
-                            "value": str(metric.get("value", "")).strip(),
-                            "label": str(metric.get("label", "")).strip(),
-                        }
-                    )
-            if stats:
-                slides.append({"type": "stats", "title": block_title, "stats": stats[:4]})
-                continue
-
-        if block_type == "comparison":
-            slides.append(
-                {
-                    "type": "two_column",
-                    "title": block_title,
-                    "left_title": str(block.get("left_title", "Option A")).strip(),
-                    "right_title": str(block.get("right_title", "Option B")).strip(),
-                    "left_items": [str(i).strip() for i in _as_list(block.get("left_items", [])) if str(i).strip()],
-                    "right_items": [str(i).strip() for i in _as_list(block.get("right_items", [])) if str(i).strip()],
-                }
-            )
-            continue
-
-        if block_type == "timeline":
-            milestones = []
-            for milestone in _as_list(block.get("milestones", [])):
-                if isinstance(milestone, dict):
-                    label = str(milestone.get("label", "")).strip()
-                    detail = str(milestone.get("detail", "")).strip()
-                    if label and detail:
-                        milestones.append(f"{label}: {detail}")
-                    elif label:
-                        milestones.append(label)
-            slides.append(
-                {
-                    "type": "content",
-                    "title": block_title,
-                    "bullets": milestones[:8],
-                }
-            )
-            continue
-
-        if block_type == "quote":
-            slides.append(
-                {
-                    "type": "quote",
-                    "quote": str(block.get("quote", "")).strip(),
-                    "author": str(block.get("author", "")).strip(),
-                    "role": str(block.get("role", "")).strip(),
-                }
-            )
-            continue
-
-        if block_type == "cta":
-            slides.append(
-                {
-                    "type": "closing",
-                    "title": block_title or "Next Steps",
-                    "subtitle": str(block.get("subtitle", "")).strip(),
-                    "contact": str(block.get("contact", "")).strip(),
-                }
-            )
-            continue
-
-        # Default block type: insight
-        bullets = [
-            str(i).strip()
-            for i in _as_list(block.get("points", []))
-            if str(i).strip()
-        ]
-        if not bullets:
-            for k in ["insight", "evidence", "implication", "next_step"]:
-                val = str(block.get(k, "")).strip()
-                if val:
-                    bullets.append(val)
-
-        slides.append(
-            {
-                "type": "content",
-                "title": block_title,
-                "bullets": bullets[:8],
-            }
-        )
-
-    if slides and slides[-1].get("type") != "closing":
-        slides.append(
-            {
-                "type": "closing",
-                "title": "Next Steps",
-                "subtitle": "Questions and alignment",
-                "contact": "",
-            }
-        )
-
-    return slides
+    return []
 
 
 # =============================================================================
-# PUBLIC TOOL FUNCTIONS
+# MAIN GENERATOR FUNCTION
 # =============================================================================
-
-async def get_available_templates(
-    __request__: Request = None,
-    __user__: dict = None,
-) -> str:
-    """
-    Get a list of available presentation slide templates.
-
-    :return: JSON with available templates and their descriptions
-    """
-    templates = [
-        {"type": "title", "description": "Title slide with main heading and subtitle"},
-        {"type": "content", "description": "Insight slide with key points"},
-        {"type": "two_column", "description": "Comparison slide (Option A vs Option B)"},
-        {"type": "section", "description": "Section divider with accent color background"},
-        {"type": "stats", "description": "Metrics slide with prominent KPI cards"},
-        {"type": "quote", "description": "Quote or testimonial slide"},
-        {"type": "closing", "description": "Call-to-action / closing slide"},
-    ]
-
-    return json.dumps({
-        "templates": templates,
-        "brand": "Cognitia",
-        "color_scheme": "Blue corporate theme",
-        "story_spec_types": STORY_SPEC_TYPES,
-    }, ensure_ascii=False)
-
-
-async def get_available_icons(
-    __request__: Request = None,
-    __user__: dict = None,
-) -> str:
-    """
-    Get a list of available icons that can be used in presentations.
-
-    :return: JSON with available icon names and descriptions
-    """
-    return json.dumps({
-        "icons": AVAILABLE_ICONS,
-        "note": "Icons are represented as styled shapes in presentations"
-    }, ensure_ascii=False)
-
-
-async def get_story_spec_template(
-    __request__: Request = None,
-    __user__: dict = None,
-) -> str:
-    """
-    Return a Gamma-style story-spec schema for high-quality narrative slides.
-    """
-    return json.dumps(
-        {
-            "story_spec_types": STORY_SPEC_TYPES,
-            "guidelines": [
-                "Start with cover, then section/insight/metrics blocks, end with cta.",
-                "Each block should communicate one idea with concrete evidence.",
-                "Prefer short, specific points (max 8 bullets per slide).",
-                "Use metrics and comparison blocks to improve decision clarity.",
-            ],
-            "example": [
-                {
-                    "type": "cover",
-                    "title": "Q1 Product Strategy",
-                    "subtitle": "Growth and efficiency priorities",
-                },
-                {
-                    "type": "insight",
-                    "title": "Primary challenge",
-                    "points": [
-                        "Activation rate is below target in SMB segment",
-                        "Onboarding friction concentrates in first 24 hours",
-                    ],
-                },
-                {
-                    "type": "metrics",
-                    "title": "Current KPI baseline",
-                    "metrics": [
-                        {"value": "42%", "label": "Activation"},
-                        {"value": "18%", "label": "Week-4 Retention"},
-                        {"value": "$23", "label": "CAC"},
-                    ],
-                },
-                {
-                    "type": "comparison",
-                    "title": "Strategic options",
-                    "left_title": "Optimize onboarding",
-                    "left_items": ["Fast impact", "Low implementation risk"],
-                    "right_title": "Expand acquisition",
-                    "right_items": ["Higher upside", "Higher CAC volatility"],
-                },
-                {
-                    "type": "cta",
-                    "title": "Decision requested",
-                    "subtitle": "Approve onboarding-first plan for next 2 sprints",
-                },
-            ],
-        },
-        ensure_ascii=False,
-    )
-
 
 async def generate_presentation(
     title: str,
-    slides: Optional[List[dict] | Dict[str, Any] | str] = None,
-    story_spec: Optional[List[dict] | Dict[str, Any] | str] = None,
+    slides: Optional[List[Dict]] = None,
     author: str = "Cognitia AI",
-    __request__: Request = None,
-    __user__: dict = None,
+    __request__: Optional[Request] = None
 ) -> str:
     """
-    Generate a professional PowerPoint presentation with Cognitia branding.
+    Generate an HTML presentation using Reveal.js.
 
-    IMPORTANT: You MUST provide the 'slides' parameter with actual content for best results.
-    If only 'title' is provided, a basic template presentation will be auto-generated.
+    Args:
+        title: Presentation title (required)
+        slides: List of slide definitions with type and content
+        author: Author name for metadata
+        __request__: FastAPI request for URL building
 
-    :param title: REQUIRED. The presentation title (e.g., "Inteligencia Artificial en Colombia")
-    :param slides: RECOMMENDED. List of slide definitions. Each slide needs:
-        - type: "title" | "content" | "two_column" | "section" | "stats" | "quote" | "closing"
-        - title: The slide heading
-        - For "content" type: "bullets" = ["Point 1", "Point 2", "Point 3"]
-        - For "stats" type: "stats" = [{"value": "50%", "label": "Growth"}]
-        - For "two_column" type: "left_items" and "right_items" = lists of strings
-        - For "quote" type: "quote", "author", "role"
-        - For "closing" type: "subtitle", "contact"
-    :param story_spec: Alternative Gamma-style narrative blocks (auto-converted to slides)
-    :param author: Author name for metadata (default: "Cognitia AI")
-    :return: JSON with file path, download_url, and presentation details
+    Returns:
+        JSON with view_url for the presentation
 
-    CORRECT USAGE EXAMPLE - Always include slides with content:
-    generate_presentation(
-        title="Inteligencia Artificial en Colombia",
-        slides=[
-            {"type": "title", "title": "IA en Colombia", "subtitle": "Estado actual y perspectivas 2024"},
-            {"type": "content", "title": "Adopción de IA", "bullets": ["45% de empresas usan IA", "Sector financiero lidera", "Crecimiento anual del 30%"]},
-            {"type": "stats", "title": "Métricas Clave", "stats": [{"value": "45%", "label": "Adopción"}, {"value": "30%", "label": "Crecimiento"}]},
-            {"type": "content", "title": "Desafíos", "bullets": ["Falta de talento", "Infraestructura limitada", "Regulación pendiente"]},
-            {"type": "closing", "title": "Conclusiones", "subtitle": "La IA transformará la economía colombiana"}
-        ]
-    )
+    Slide types:
+        - title: {"type": "title", "title": "...", "subtitle": "..."}
+        - content: {"type": "content", "title": "...", "bullets": ["...", "..."]}
+        - stats: {"type": "stats", "title": "...", "stats": [{"value": "X", "label": "Y"}]}
+        - quote: {"type": "quote", "quote": "...", "author": "...", "role": "..."}
+        - section: {"type": "section", "title": "...", "subtitle": "..."}
+        - two_column: {"type": "two_column", "title": "...", "left_items": [...], "right_items": [...]}
+        - closing: {"type": "closing", "title": "...", "subtitle": "..."}
 
-    MINIMAL USAGE (auto-generates template slides):
-    generate_presentation(title="Inteligencia Artificial en Colombia")
+    Example:
+        generate_presentation(
+            title="AI en Colombia",
+            slides=[
+                {"type": "title", "title": "AI en Colombia", "subtitle": "Estado 2024"},
+                {"type": "content", "title": "Adopcion", "bullets": ["45% empresas", "Sector financiero lidera"]},
+                {"type": "stats", "title": "Metricas", "stats": [{"value": "45%", "label": "Adopcion"}]},
+                {"type": "closing", "title": "Gracias"}
+            ]
+        )
     """
     try:
-        normalized_slides = _parse_json_like_list(slides)
-        normalized_story_spec = _parse_json_like_list(story_spec)
+        # Parse slides input
+        parsed_slides = _parse_slides_input(slides)
 
-        if not normalized_slides and normalized_story_spec:
-            normalized_slides = _build_slides_from_story_spec(title, normalized_story_spec)
+        # Auto-generate if no slides provided
+        if not parsed_slides and title.strip():
+            log.info(f"Auto-generating slides for: {title}")
+            parsed_slides = _auto_generate_slides(title)
 
-        valid_slides = [
-            slide_def
-            for slide_def in normalized_slides
-            if _slide_has_renderable_content(slide_def)
-        ]
+        if not parsed_slides:
+            return json.dumps({
+                "success": False,
+                "error": "No slides provided and title is empty"
+            }, ensure_ascii=False)
 
-        # Auto-generate slides if none provided but we have a title
-        if not valid_slides and title.strip():
-            log.info(f"Auto-generating slides for presentation: {title}")
-            auto_slides = _auto_generate_slides_from_title(title)
-            valid_slides = [
-                slide_def
-                for slide_def in auto_slides
-                if _slide_has_renderable_content(slide_def)
-            ]
+        # Generate HTML for each slide
+        slides_html_parts = []
+        total_slides = len(parsed_slides)
 
-        if not valid_slides:
-            return json.dumps(
-                {
-                    "success": False,
-                    "error": "No slide content provided and title is empty.",
-                    "hint": "Provide a title and optionally slides/story_spec. If only title is given, slides will be auto-generated.",
-                },
-                ensure_ascii=False,
-            )
-
-        # Create presentation
-        prs = Presentation()
-        prs.slide_width = Inches(10)
-        prs.slide_height = Inches(7.5)
-
-        # Set metadata
-        prs.core_properties.title = title
-        prs.core_properties.author = author
-        prs.core_properties.comments = "Generated by Cognitia AI"
-
-        # Process each slide
-        for slide_def in valid_slides:
+        for idx, slide_def in enumerate(parsed_slides, 1):
             slide_type = slide_def.get("type", "content")
 
             if slide_type == "title":
-                _create_title_slide(
-                    prs,
+                slides_html_parts.append(_generate_title_slide(
                     slide_def.get("title", title),
                     slide_def.get("subtitle", "")
-                )
+                ))
 
             elif slide_type == "content":
-                _create_content_slide(
-                    prs,
+                slides_html_parts.append(_generate_content_slide(
                     slide_def.get("title", ""),
-                    slide_def.get("bullets", [])
-                )
+                    slide_def.get("bullets", []),
+                    idx, total_slides
+                ))
+
+            elif slide_type == "stats":
+                slides_html_parts.append(_generate_stats_slide(
+                    slide_def.get("title", ""),
+                    slide_def.get("stats", []),
+                    idx, total_slides
+                ))
+
+            elif slide_type == "quote":
+                slides_html_parts.append(_generate_quote_slide(
+                    slide_def.get("quote", ""),
+                    slide_def.get("author", ""),
+                    slide_def.get("role", "")
+                ))
+
+            elif slide_type == "section":
+                slides_html_parts.append(_generate_section_slide(
+                    slide_def.get("title", ""),
+                    slide_def.get("subtitle", "")
+                ))
 
             elif slide_type == "two_column":
-                _create_two_column_slide(
-                    prs,
+                slides_html_parts.append(_generate_two_column_slide(
                     slide_def.get("title", ""),
                     slide_def.get("left_items", []),
                     slide_def.get("right_items", []),
                     slide_def.get("left_title", ""),
-                    slide_def.get("right_title", "")
-                )
-
-            elif slide_type == "section":
-                _create_section_slide(
-                    prs,
-                    slide_def.get("title", ""),
-                    slide_def.get("subtitle", "")
-                )
-
-            elif slide_type == "stats":
-                _create_stats_slide(
-                    prs,
-                    slide_def.get("title", ""),
-                    slide_def.get("stats", [])
-                )
-
-            elif slide_type == "quote":
-                _create_quote_slide(
-                    prs,
-                    slide_def.get("quote", ""),
-                    slide_def.get("author", ""),
-                    slide_def.get("role", "")
-                )
+                    slide_def.get("right_title", ""),
+                    idx, total_slides
+                ))
 
             elif slide_type == "closing":
-                _create_closing_slide(
-                    prs,
-                    slide_def.get("title", "Thank You"),
+                slides_html_parts.append(_generate_closing_slide(
+                    slide_def.get("title", "Gracias"),
                     slide_def.get("subtitle", ""),
                     slide_def.get("contact", "")
-                )
+                ))
 
-        # Generate filename and save
-        safe_title = "".join(c for c in title if c.isalnum() or c in (' ', '-', '_')).strip()
-        safe_title = safe_title.replace(' ', '_')[:50]
+        # Combine all slides
+        slides_html = "\n".join(slides_html_parts)
+
+        # Generate complete HTML
+        html_content = REVEALJS_TEMPLATE.format(
+            title=_escape_html(title),
+            slides_html=slides_html,
+            primary=BRAND_COLORS["primary"],
+            primary_dark=BRAND_COLORS["primary_dark"],
+            primary_light=BRAND_COLORS["primary_light"],
+            surface=BRAND_COLORS["surface"],
+            surface_light=BRAND_COLORS["surface_light"],
+            text_primary=BRAND_COLORS["text_primary"],
+            text_secondary=BRAND_COLORS["text_secondary"],
+            accent=BRAND_COLORS["accent"],
+            white=BRAND_COLORS["white"]
+        )
+
+        # Save file
+        safe_title = re.sub(r'[^\w\s-]', '', title).strip()
+        safe_title = re.sub(r'\s+', '_', safe_title)[:50]
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-        filename = f"{safe_title}_{timestamp}.pptx"
+        filename = f"{safe_title}_{timestamp}.html"
 
         output_dir = _get_presentations_dir()
         filepath = output_dir / filename
-        prs.save(str(filepath))
 
-        # Build absolute download URL to prevent model from adding sandbox: prefix
-        download_path = f"/api/v1/files/presentations/{filename}"
+        with open(filepath, 'w', encoding='utf-8') as f:
+            f.write(html_content)
 
-        # Try to get base URL from request or app config
+        # Build URL
+        view_path = f"/api/v1/files/presentations/{filename}"
         base_url = ""
+
         if __request__:
             try:
-                # Get base URL from request
                 base_url = str(__request__.base_url).rstrip('/')
             except Exception:
                 pass
 
-            # Fallback to app config if available
             if not base_url or base_url == "http://testserver":
                 try:
                     webui_url = __request__.app.state.config.WEBUI_URL
@@ -1094,16 +716,15 @@ async def generate_presentation(
                 except Exception:
                     pass
 
-        # Build full URL - use absolute URL to prevent sandbox: prefix
-        full_download_url = f"{base_url}{download_path}" if base_url else download_path
+        full_url = f"{base_url}{view_path}" if base_url else view_path
 
         return json.dumps({
             "success": True,
-            "file_path": str(filepath),
+            "view_url": full_url,
             "filename": filename,
-            "slides_count": len(valid_slides),
-            "download_url": full_download_url,
-            "message": f"Presentation '{title}' created successfully with {len(valid_slides)} slides. Download link: {full_download_url}"
+            "slides_count": total_slides,
+            "format": "html",
+            "message": f"Presentacion '{title}' creada con {total_slides} slides. Ver en: {full_url}"
         }, ensure_ascii=False)
 
     except Exception as e:
@@ -1112,3 +733,24 @@ async def generate_presentation(
             "success": False,
             "error": str(e)
         }, ensure_ascii=False)
+
+
+# =============================================================================
+# TOOL METADATA (for Open WebUI)
+# =============================================================================
+
+class Tools:
+    """Cognitia Slides - Professional HTML Presentations"""
+
+    def __init__(self):
+        self.valves = None
+
+    async def generate_presentation(
+        self,
+        title: str,
+        slides: Optional[List[Dict]] = None,
+        author: str = "Cognitia AI",
+        __request__: Optional[Request] = None
+    ) -> str:
+        """Generate a professional HTML presentation using Reveal.js."""
+        return await generate_presentation(title, slides, author, __request__)

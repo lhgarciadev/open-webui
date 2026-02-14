@@ -861,7 +861,7 @@ async def download_presentation(
     user=Depends(get_verified_user),
 ):
     """
-    Download a generated PowerPoint presentation.
+    Serve a generated presentation (HTML or PPTX).
     Files are stored in DATA_DIR/presentations/
     """
     # Validate filename to prevent path traversal
@@ -891,8 +891,17 @@ async def download_presentation(
             detail="Invalid file path",
         )
 
+    # Determine media type based on extension
+    ext = filename.lower().split('.')[-1] if '.' in filename else ''
+    media_types = {
+        'html': 'text/html; charset=utf-8',
+        'pptx': 'application/vnd.openxmlformats-officedocument.presentationml.presentation',
+        'pdf': 'application/pdf',
+    }
+    media_type = media_types.get(ext, 'application/octet-stream')
+
     return FileResponse(
         path=file_path,
         filename=filename,
-        media_type="application/vnd.openxmlformats-officedocument.presentationml.presentation",
+        media_type=media_type,
     )

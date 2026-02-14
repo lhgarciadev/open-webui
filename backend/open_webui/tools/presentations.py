@@ -736,6 +736,154 @@ async def generate_presentation(
 
 
 # =============================================================================
+# ADDITIONAL TOOL FUNCTIONS (required by Open WebUI)
+# =============================================================================
+
+def get_available_templates() -> str:
+    """
+    Get available slide templates/types for presentations.
+
+    Returns:
+        JSON string with available templates and their descriptions.
+    """
+    templates = {
+        "title": {
+            "name": "Title Slide",
+            "description": "Opening slide with title and subtitle",
+            "fields": ["title", "subtitle"]
+        },
+        "content": {
+            "name": "Content Slide",
+            "description": "Standard slide with title and bullet points",
+            "fields": ["title", "bullets"]
+        },
+        "stats": {
+            "name": "Statistics Slide",
+            "description": "Display key metrics with visual cards",
+            "fields": ["title", "stats"]
+        },
+        "quote": {
+            "name": "Quote Slide",
+            "description": "Feature a quote with attribution",
+            "fields": ["quote", "author", "role"]
+        },
+        "section": {
+            "name": "Section Divider",
+            "description": "Visual break between sections",
+            "fields": ["title", "subtitle"]
+        },
+        "two_column": {
+            "name": "Two Column Layout",
+            "description": "Side-by-side comparison or content",
+            "fields": ["title", "left_items", "right_items", "left_title", "right_title"]
+        },
+        "closing": {
+            "name": "Closing Slide",
+            "description": "Thank you or conclusion slide",
+            "fields": ["title", "subtitle", "contact"]
+        }
+    }
+    return json.dumps(templates, ensure_ascii=False)
+
+
+def get_available_icons() -> str:
+    """
+    Get available icons for presentations.
+
+    Note: Reveal.js uses CSS for styling rather than PowerPoint icons.
+    This returns semantic icon categories that can be used for theming.
+
+    Returns:
+        JSON string with available icon/style options.
+    """
+    icons = {
+        "bullet_styles": [
+            {"id": "circle", "name": "Circle", "description": "Standard circular bullet"},
+            {"id": "square", "name": "Square", "description": "Square bullet marker"},
+            {"id": "dash", "name": "Dash", "description": "Horizontal line marker"}
+        ],
+        "themes": [
+            {"id": "dark", "name": "Dark Mode", "description": "Dark background with light text (default)"},
+            {"id": "light", "name": "Light Mode", "description": "Light background with dark text"}
+        ],
+        "animations": [
+            {"id": "fade-up", "name": "Fade Up", "description": "Content fades in from below (default)"},
+            {"id": "fade-in", "name": "Fade In", "description": "Simple fade animation"},
+            {"id": "slide-in", "name": "Slide In", "description": "Content slides from side"}
+        ]
+    }
+    return json.dumps(icons, ensure_ascii=False)
+
+
+def get_story_spec_template() -> str:
+    """
+    Get a template for creating a complete presentation story specification.
+
+    Returns:
+        JSON string with a template structure for planning presentations.
+    """
+    template = {
+        "description": "Template for planning a complete presentation",
+        "example": {
+            "title": "Your Presentation Title",
+            "author": "Presenter Name",
+            "slides": [
+                {
+                    "type": "title",
+                    "title": "Main Title",
+                    "subtitle": "Supporting tagline or date"
+                },
+                {
+                    "type": "content",
+                    "title": "Introduction",
+                    "bullets": [
+                        "Key point one",
+                        "Key point two",
+                        "Key point three"
+                    ]
+                },
+                {
+                    "type": "stats",
+                    "title": "Key Metrics",
+                    "stats": [
+                        {"value": "85%", "label": "Success Rate"},
+                        {"value": "2.5x", "label": "Growth"},
+                        {"value": "$1.2M", "label": "Revenue"}
+                    ]
+                },
+                {
+                    "type": "two_column",
+                    "title": "Comparison",
+                    "left_title": "Before",
+                    "left_items": ["Old approach", "Manual process"],
+                    "right_title": "After",
+                    "right_items": ["New solution", "Automated workflow"]
+                },
+                {
+                    "type": "quote",
+                    "quote": "A memorable quote that supports your message",
+                    "author": "Quote Author",
+                    "role": "Position or Company"
+                },
+                {
+                    "type": "closing",
+                    "title": "Thank You",
+                    "subtitle": "Questions?",
+                    "contact": "email@example.com"
+                }
+            ]
+        },
+        "tips": [
+            "Start with a compelling title slide",
+            "Limit bullet points to 4-5 per slide",
+            "Use stats slides to highlight key numbers",
+            "Include a clear call to action in closing"
+        ]
+    }
+    return json.dumps(template, ensure_ascii=False)
+
+
+# =============================================================================
 # TOOL METADATA (for Open WebUI)
 # =============================================================================
 

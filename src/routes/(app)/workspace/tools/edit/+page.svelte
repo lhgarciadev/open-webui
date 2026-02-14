@@ -38,7 +38,7 @@
 			name: data.name,
 			meta: data.meta,
 			content: data.content,
-			access_control: data.access_control
+			access_grants: data.access_grants
 		}).catch((error) => {
 			toast.error(`${error}`);
 			return null;
@@ -57,13 +57,22 @@
 		const id = $page.url.searchParams.get('id');
 
 		if (id) {
-			tool = await getToolById(localStorage.token, id).catch((error) => {
+			const res = await getToolById(localStorage.token, id).catch((error) => {
 				toast.error(`${error}`);
 				goto('/workspace/tools');
 				return null;
 			});
 
-			console.log(tool);
+			if (res && !res.write_access) {
+				toast.error($i18n.t('You do not have permission to edit this tool'));
+				goto('/workspace/tools');
+				return;
+			}
+
+			if (res) {
+				tool = res;
+				console.log(tool);
+			}
 		}
 	});
 </script>
@@ -75,7 +84,7 @@
 		name={tool.name}
 		meta={tool.meta}
 		content={tool.content}
-		accessControl={tool.access_control}
+		accessGrants={tool.access_grants ?? []}
 		onSave={(value) => {
 			saveHandler(value);
 		}}

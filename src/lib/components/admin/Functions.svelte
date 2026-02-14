@@ -5,7 +5,7 @@
 
 	import { WEBUI_NAME, config, functions as _functions, models, settings, user } from '$lib/stores';
 	import { APP_NAME } from '$lib/constants/identity';
-	import { onMount, getContext, tick } from 'svelte';
+	import { onMount, getContext, tick, onDestroy } from 'svelte';
 
 	import { goto } from '$app/navigation';
 	import {
@@ -54,6 +54,7 @@
 	let viewOption = '';
 
 	let query = '';
+	let searchDebounceTimer: ReturnType<typeof setTimeout>;
 	let selectedTag = '';
 	let selectedType = '';
 
@@ -71,12 +72,14 @@
 	let functions = null;
 	let filteredItems = [];
 
-	$: if (
-		functions &&
-		query !== undefined &&
-		selectedType !== undefined &&
-		viewOption !== undefined
-	) {
+	$: if (query !== undefined) {
+		clearTimeout(searchDebounceTimer);
+		searchDebounceTimer = setTimeout(() => {
+			setFilteredItems();
+		}, 300);
+	}
+
+	$: if (functions && selectedType !== undefined && viewOption !== undefined) {
 		setFilteredItems();
 	}
 
@@ -87,7 +90,10 @@
 					(selectedType !== '' ? f.type === selectedType : true) &&
 					(query === '' ||
 						f.name.toLowerCase().includes(query.toLowerCase()) ||
-						f.id.toLowerCase().includes(query.toLowerCase())) &&
+						f.id.toLowerCase().includes(query.toLowerCase()) ||
+						(f.user?.name || '').toLowerCase().includes(query.toLowerCase()) ||
+						(f.user?.email || '').toLowerCase().includes(query.toLowerCase()) ||
+						(f.user?.username || '').toLowerCase().includes(query.toLowerCase())) &&
 					(viewOption === '' ||
 						(viewOption === 'created' && f.user_id === $user?.id) ||
 						(viewOption === 'shared' && f.user_id !== $user?.id))
@@ -236,6 +242,10 @@
 			window.removeEventListener('keyup', onKeyUp);
 			window.removeEventListener('blur-sm', onBlur);
 		};
+	});
+
+	onDestroy(() => {
+		clearTimeout(searchDebounceTimer);
 	});
 </script>
 

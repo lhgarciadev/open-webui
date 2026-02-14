@@ -233,7 +233,9 @@
 									</div>
 								</div>
 
-								<div class=" shrink-0">
+								<!-- svelte-ignore a11y_click_events_have_key_events -->
+								<!-- svelte-ignore a11y_no_static_element_interactions -->
+								<div class=" shrink-0" on:click|stopPropagation>
 									<Switch
 										state={webSearchEnabled}
 										on:change={async (e) => {
@@ -264,7 +266,9 @@
 									</div>
 								</div>
 
-								<div class=" shrink-0">
+								<!-- svelte-ignore a11y_click_events_have_key_events -->
+								<!-- svelte-ignore a11y_no_static_element_interactions -->
+								<div class=" shrink-0" on:click|stopPropagation>
 									<Switch
 										state={imageGenerationEnabled}
 										on:change={async (e) => {
@@ -299,7 +303,9 @@
 									</div>
 								</div>
 
-								<div class=" shrink-0">
+								<!-- svelte-ignore a11y_click_events_have_key_events -->
+								<!-- svelte-ignore a11y_no_static_element_interactions -->
+								<div class=" shrink-0" on:click|stopPropagation>
 									<Switch
 										state={codeInterpreterEnabled}
 										on:change={async (e) => {
@@ -338,7 +344,9 @@
 									</div>
 								</div>
 
-								<div class=" shrink-0">
+								<!-- svelte-ignore a11y_click_events_have_key_events -->
+								<!-- svelte-ignore a11y_no_static_element_interactions -->
+								<div class=" shrink-0" on:click|stopPropagation>
 									<Switch
 										state={presentationsEnabled}
 										on:change={async (e) => {

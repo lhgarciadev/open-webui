@@ -21,7 +21,13 @@ export default defineConfig({
 		APP_BUILD_HASH: JSON.stringify(process.env.APP_BUILD_HASH || 'dev-build')
 	},
 	build: {
-		sourcemap: true
+		sourcemap: true,
+		rollupOptions: {
+			onwarn(warning, defaultHandler) {
+				if (warning.code === 'UNUSED_EXTERNAL_IMPORT') return;
+				defaultHandler(warning);
+			}
+		}
 	},
 	worker: {
 		format: 'es'

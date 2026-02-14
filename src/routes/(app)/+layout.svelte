@@ -384,15 +384,17 @@
 
 				{#if loaded}
 					<div
-						class="flex-1 h-[calc(100vh-20px)] my-2.5 mr-2.5 ml-0 rounded-[2rem] bg-white/5 dark:bg-[#0a0a0a]/40 backdrop-blur-2xl border border-white/5 dark:border-white/5 shadow-2xl overflow-hidden relative ring-1 ring-white/10"
+						class="flex-1 h-[calc(100vh-20px)] my-2.5 mr-2.5 rounded-[2rem] bg-white/5 dark:bg-[#0a0a0a]/40 backdrop-blur-2xl border border-white/5 dark:border-white/5 shadow-2xl overflow-hidden relative ring-1 ring-white/10 transition-[margin] duration-300 {$showSidebar
+							? 'ml-0 lg:ml-[var(--sidebar-width)]'
+							: 'ml-0'}"
 					>
 						<slot />
 					</div>
 				{:else}
 					<div
-						class="w-full flex-1 h-full flex items-center justify-center {$showSidebar
-							? '  md:max-w-[calc(100%-var(--sidebar-width))]'
-							: ' '}"
+						class="w-full flex-1 h-full flex items-center justify-center transition-[margin] duration-300 {$showSidebar
+							? 'ml-0 lg:ml-[var(--sidebar-width)]'
+							: 'ml-0'}"
 					>
 						<Spinner className="size-5" />
 					</div>

@@ -1,112 +1,67 @@
-# MCP PowerPoint - Guia de Uso
+# Presentations Tool - Guia Operativa
 
-> Integracion de Office-PowerPoint-MCP-Server para generacion de presentaciones
+> Estado real del proyecto: presentaciones se ejecuta como **builtin tool** de Open WebUI, no via endpoint MCP dedicado.
 
-## Capacidades
+## 1) Como se habilita realmente
 
-- Crear presentaciones nuevas
-- Agregar slides con diferentes layouts
-- Insertar texto, imagenes, tablas
-- Aplicar temas profesionales
-- Exportar a PPTX
+Para que la generacion de presentaciones funcione, deben cumplirse estas condiciones:
 
-## Configuracion
+1. `ENABLE_PRESENTATIONS=true` en backend.
+2. En el request de chat, `features.presentations=true`.
+3. El modo de function calling debe ser `native` (chat o default global).
 
-El servidor MCP esta configurado en:
-```
-backend/open_webui/config/mcp_servers.json
-```
+Si el modo esta en `default`, la tool de presentaciones no se inyecta como builtin y parece que "no ejecuta".
 
-### Variables de Entorno
+## 2) Tools disponibles
 
-| Variable | Valor | Descripcion |
-|----------|-------|-------------|
-| `OUTPUT_DIR` | `/app/backend/data/presentations` | Directorio de salida |
-| `DEFAULT_TEMPLATE` | `professional` | Plantilla por defecto |
+Desde `backend/open_webui/tools/presentations.py`:
 
-## Ejemplo de Uso via API
+- `get_available_templates`
+- `get_available_icons`
+- `get_story_spec_template` (nuevo)
+- `generate_presentation`
 
-```bash
-POST /api/v1/tools/powerpoint/create
-Content-Type: application/json
+## 3) Flujo recomendado (Gamma-like base)
 
-{
-  "title": "Mi Presentacion",
-  "slides": [
-    {
-      "type": "title",
-      "title": "Bienvenidos",
-      "subtitle": "Subtitulo de la presentacion"
-    },
-    {
-      "type": "content",
-      "title": "Agenda",
-      "bullets": ["Item 1", "Item 2", "Item 3"]
-    },
-    {
-      "type": "two_column",
-      "title": "Comparacion",
-      "left": ["Opcion A", "Caracteristica 1"],
-      "right": ["Opcion B", "Caracteristica 2"]
-    }
-  ]
-}
-```
+1. Llamar `get_story_spec_template` para obtener esquema narrativo.
+2. Construir `story_spec` con bloques (`cover`, `insight`, `metrics`, `comparison`, `timeline`, `cta`).
+3. Llamar `generate_presentation(title, story_spec=...)`.
+4. Descargar PPTX por `download_url`.
 
-## Ubicacion de Archivos
+## 4) Descarga de archivos
 
-Los archivos generados se guardan en:
-```
-/app/backend/data/presentations/
-```
+Las presentaciones se guardan en:
 
-En desarrollo local:
-```
-backend/data/presentations/
-```
+- Runtime: `DATA_DIR/presentations/`
+- Local tipico: `backend/data/presentations/`
 
-## Tipos de Slides Soportados
+Y se descargan por:
 
-| Tipo | Descripcion |
-|------|-------------|
-| `title` | Slide de titulo con subtitulo opcional |
-| `content` | Slide con titulo y viñetas |
-| `two_column` | Slide de dos columnas |
-| `image` | Slide con imagen principal |
-| `table` | Slide con tabla de datos |
+- `GET /api/v1/files/presentations/{filename}`
 
-## Dependencias
+## 5) Troubleshooting rapido
 
-Instaladas automaticamente:
-- `office-powerpoint-mcp-server>=1.0.0`
-- `python-pptx>=1.0.2` (ya incluida)
+- **No aparece o no ejecuta la tool**:
+  - Validar `features.presentations=true` en payload.
+  - Validar `function_calling=native`.
+  - Validar `ENABLE_PRESENTATIONS=true`.
+- **Genera error por contenido vacio**:
+  - Enviar `slides` o `story_spec` (al menos un bloque).
 
-## Alternativa SaaS
+## 6) Nota MCP
 
-Si se prefiere usar un servicio externo en lugar de self-hosted:
+El archivo `backend/open_webui/config/mcp_servers.json` puede usarse para MCP externo, pero no es requisito para la tool builtin de presentaciones actual.
 
-### SlideSpeak MCP
+## 7) Nota Operativa Para Entornos Existentes
 
-```json
-{
-  "mcpServers": {
-    "slidespeak": {
-      "url": "https://mcp.slidespeak.co/v1",
-      "headers": {
-        "Authorization": "Bearer ${SLIDESPEAK_API_KEY}"
-      }
-    }
-  }
-}
-```
+Si vienes de despliegues previos con `DEFAULT_FUNCTION_CALLING_MODE=default`, aplica esta guia:
 
-Requiere:
-- Cuenta en slidespeak.co
-- API key configurada en variables de entorno
-- Costos por uso
+1. Mantener `DEFAULT_FUNCTION_CALLING_MODE=default` si el modelo principal no soporta function calling nativo.
+2. Cambiar a `DEFAULT_FUNCTION_CALLING_MODE=native` cuando el modelo si soporte native tools y se quiera usar Presentations builtin por defecto.
+3. Verificar fallback automatico: si el modelo declara `capabilities.function_calling=false`, el backend cae a `default` sin crash.
 
-## Notas
+Smoke check recomendado:
 
-- Esta integracion es opcional (nice to have)
-- Repositorio original: https://github.com/GongRzhe/Office-PowerPoint-MCP-Server
-- Licencia: MIT
+- `DEFAULT_FUNCTION_CALLING_MODE=native` -> el backend debe iniciar.
+- `DEFAULT_FUNCTION_CALLING_MODE=default` -> el backend debe iniciar.
+- En ambos casos, el valor debe verse en runtime como `app.state.config.DEFAULT_FUNCTION_CALLING_MODE`.

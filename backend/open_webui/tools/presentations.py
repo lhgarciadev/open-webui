@@ -35,6 +35,66 @@ BRAND_COLORS = {
 }
 
 # =============================================================================
+# THEME CONFIGURATIONS
+# =============================================================================
+
+THEME_CONFIGS = {
+    "dark": {
+        "name": "Dark (Default)",
+        "background": "#0f172a",       # Slate 900
+        "surface": "#1e293b",           # Slate 800
+        "text_primary": "#f8fafc",      # Slate 50
+        "text_secondary": "#94a3b8",    # Slate 400
+        "heading": "#ffffff",
+        "accent": "#3b82f6",            # Blue 500
+        "accent_light": "#60a5fa",      # Blue 400
+        "accent_dark": "#1e40af",       # Blue 800
+        "success": "#22c55e",           # Green 500
+        "gradient_start": "#60a5fa",
+        "gradient_end": "#3b82f6",
+        "card_bg": "rgba(30, 41, 59, 0.8)",
+        "card_border": "rgba(59, 130, 246, 0.3)",
+    },
+    "light": {
+        "name": "Light",
+        "background": "#ffffff",        # White
+        "surface": "#f1f5f9",           # Slate 100
+        "text_primary": "#0f172a",      # Slate 900
+        "text_secondary": "#475569",    # Slate 600
+        "heading": "#1e293b",           # Slate 800
+        "accent": "#3b82f6",            # Blue 500
+        "accent_light": "#60a5fa",      # Blue 400
+        "accent_dark": "#1e40af",       # Blue 800
+        "success": "#16a34a",           # Green 600
+        "gradient_start": "#3b82f6",
+        "gradient_end": "#1e40af",
+        "card_bg": "rgba(241, 245, 249, 0.9)",
+        "card_border": "rgba(59, 130, 246, 0.4)",
+    },
+    "corporate": {
+        "name": "Corporate Blue",
+        "background": "#1e40af",        # Blue 800
+        "surface": "#1e3a8a",           # Blue 900
+        "text_primary": "#ffffff",      # White
+        "text_secondary": "#bfdbfe",    # Blue 200
+        "heading": "#ffffff",
+        "accent": "#fbbf24",            # Amber 400
+        "accent_light": "#fcd34d",      # Amber 300
+        "accent_dark": "#d97706",       # Amber 600
+        "success": "#4ade80",           # Green 400
+        "gradient_start": "#fbbf24",
+        "gradient_end": "#f59e0b",
+        "card_bg": "rgba(30, 58, 138, 0.8)",
+        "card_border": "rgba(251, 191, 36, 0.4)",
+    }
+}
+
+
+def _get_theme_config(theme: str) -> dict:
+    """Get theme configuration, defaulting to dark if invalid."""
+    return THEME_CONFIGS.get(theme, THEME_CONFIGS["dark"])
+
+# =============================================================================
 # REVEAL.JS HTML TEMPLATE
 # =============================================================================
 
@@ -55,18 +115,42 @@ REVEALJS_TEMPLATE = """<!DOCTYPE html>
 
     <style>
         :root {{
-            --r-background-color: {surface};
+            /* Theme Colors - Dynamically set */
+            --theme-background: {theme_background};
+            --theme-surface: {theme_surface};
+            --theme-text-primary: {theme_text_primary};
+            --theme-text-secondary: {theme_text_secondary};
+            --theme-heading: {theme_heading};
+            --theme-accent: {theme_accent};
+            --theme-accent-light: {theme_accent_light};
+            --theme-accent-dark: {theme_accent_dark};
+            --theme-success: {theme_success};
+            --theme-gradient-start: {theme_gradient_start};
+            --theme-gradient-end: {theme_gradient_end};
+            --theme-card-bg: {theme_card_bg};
+            --theme-card-border: {theme_card_border};
+
+            /* Reveal.js CSS Variables */
+            --r-background-color: var(--theme-background);
             --r-main-font: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
             --r-heading-font: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-            --r-main-color: {text_primary};
-            --r-heading-color: {white};
-            --r-link-color: {primary};
-            --r-link-color-hover: {primary_light};
-            --r-selection-background-color: {primary};
+            --r-main-color: var(--theme-text-primary);
+            --r-heading-color: var(--theme-heading);
+            --r-link-color: var(--theme-accent);
+            --r-link-color-hover: var(--theme-accent-light);
+            --r-selection-background-color: var(--theme-accent);
+        }}
+
+        body, .reveal {{
+            background-color: var(--theme-background);
         }}
 
         .reveal {{
             font-family: var(--r-main-font);
+        }}
+
+        .reveal .slides section {{
+            background-color: var(--theme-background);
         }}
 
         .reveal h1, .reveal h2, .reveal h3 {{
@@ -77,7 +161,7 @@ REVEALJS_TEMPLATE = """<!DOCTYPE html>
 
         .reveal h1 {{
             font-size: 2.8em;
-            background: linear-gradient(135deg, {primary_light}, {primary});
+            background: linear-gradient(135deg, var(--theme-gradient-start), var(--theme-gradient-end));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
@@ -85,19 +169,19 @@ REVEALJS_TEMPLATE = """<!DOCTYPE html>
 
         .reveal h2 {{
             font-size: 1.8em;
-            color: {white};
+            color: var(--theme-heading);
             margin-bottom: 0.8em;
         }}
 
         .reveal h3 {{
             font-size: 1.3em;
-            color: {primary_light};
+            color: var(--theme-accent-light);
         }}
 
         .reveal p, .reveal li {{
             font-size: 1.1em;
             line-height: 1.6;
-            color: {text_secondary};
+            color: var(--theme-text-secondary);
         }}
 
         .reveal ul {{
@@ -119,7 +203,7 @@ REVEALJS_TEMPLATE = """<!DOCTYPE html>
             top: 0.5em;
             width: 8px;
             height: 8px;
-            background: {primary};
+            background: var(--theme-accent);
             border-radius: 50%;
         }}
 
@@ -140,7 +224,7 @@ REVEALJS_TEMPLATE = """<!DOCTYPE html>
 
         .slide-title .subtitle {{
             font-size: 1.4em;
-            color: {text_secondary};
+            color: var(--theme-text-secondary);
             font-weight: 300;
         }}
 
@@ -148,7 +232,7 @@ REVEALJS_TEMPLATE = """<!DOCTYPE html>
             position: absolute;
             bottom: 40px;
             font-size: 0.9em;
-            color: {text_secondary};
+            color: var(--theme-text-secondary);
             opacity: 0.7;
         }}
 
@@ -159,7 +243,7 @@ REVEALJS_TEMPLATE = """<!DOCTYPE html>
         }}
 
         .slide-content h2 {{
-            border-bottom: 3px solid {primary};
+            border-bottom: 3px solid var(--theme-accent);
             padding-bottom: 0.3em;
             display: inline-block;
         }}
@@ -173,8 +257,8 @@ REVEALJS_TEMPLATE = """<!DOCTYPE html>
         }}
 
         .stat-card {{
-            background: linear-gradient(135deg, {surface_light}, {surface});
-            border: 1px solid rgba(59, 130, 246, 0.3);
+            background: var(--theme-card-bg);
+            border: 1px solid var(--theme-card-border);
             border-radius: 16px;
             padding: 2em;
             text-align: center;
@@ -183,7 +267,7 @@ REVEALJS_TEMPLATE = """<!DOCTYPE html>
         .stat-value {{
             font-size: 3em;
             font-weight: 700;
-            background: linear-gradient(135deg, {primary_light}, {accent});
+            background: linear-gradient(135deg, var(--theme-gradient-start), var(--theme-success));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
@@ -191,7 +275,7 @@ REVEALJS_TEMPLATE = """<!DOCTYPE html>
 
         .stat-label {{
             font-size: 1em;
-            color: {text_secondary};
+            color: var(--theme-text-secondary);
             margin-top: 0.5em;
         }}
 
@@ -208,8 +292,8 @@ REVEALJS_TEMPLATE = """<!DOCTYPE html>
         .slide-quote blockquote {{
             font-size: 1.6em;
             font-style: italic;
-            color: {text_primary};
-            border-left: 4px solid {primary};
+            color: var(--theme-text-primary);
+            border-left: 4px solid var(--theme-accent);
             padding-left: 1em;
             margin: 0;
         }}
@@ -217,7 +301,7 @@ REVEALJS_TEMPLATE = """<!DOCTYPE html>
         .slide-quote .author {{
             margin-top: 1.5em;
             font-size: 1.1em;
-            color: {primary_light};
+            color: var(--theme-accent-light);
         }}
 
         /* Section Slide */
@@ -227,12 +311,12 @@ REVEALJS_TEMPLATE = """<!DOCTYPE html>
             justify-content: center;
             align-items: center;
             height: 100%;
-            background: linear-gradient(135deg, {primary_dark}, {surface});
         }}
 
         .slide-section h2 {{
             font-size: 2.5em;
             margin-bottom: 0.3em;
+            color: var(--theme-heading);
         }}
 
         /* Closing Slide */
@@ -246,7 +330,7 @@ REVEALJS_TEMPLATE = """<!DOCTYPE html>
 
         .slide-closing h2 {{
             font-size: 2.8em;
-            background: linear-gradient(135deg, {primary_light}, {accent});
+            background: linear-gradient(135deg, var(--theme-gradient-start), var(--theme-success));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
@@ -274,7 +358,7 @@ REVEALJS_TEMPLATE = """<!DOCTYPE html>
             justify-content: space-between;
             padding: 0 40px;
             font-size: 0.7em;
-            color: {text_secondary};
+            color: var(--theme-text-secondary);
             opacity: 0.6;
         }}
 
@@ -285,12 +369,12 @@ REVEALJS_TEMPLATE = """<!DOCTYPE html>
         }}
 
         .reveal .progress span {{
-            background: linear-gradient(90deg, {primary}, {accent});
+            background: linear-gradient(90deg, var(--theme-accent), var(--theme-success));
         }}
 
         /* Controls */
         .reveal .controls {{
-            color: {primary};
+            color: var(--theme-accent);
         }}
 
         /* Animations */
@@ -417,11 +501,12 @@ def _generate_quote_slide(quote: str, author: str = "", role: str = "") -> str:
             </section>"""
 
 
-def _generate_section_slide(title: str, subtitle: str = "") -> str:
+def _generate_section_slide(title: str, subtitle: str = "", theme: dict = None) -> str:
     """Generate section divider slide."""
-    subtitle_html = f'<p class="subtitle">{_escape_html(subtitle)}</p>' if subtitle else ''
+    theme = theme or THEME_CONFIGS["dark"]
+    subtitle_html = f'<p class="subtitle" style="color: {theme["text_secondary"]};">{_escape_html(subtitle)}</p>' if subtitle else ''
     return f"""
-            <section data-background="linear-gradient(135deg, {BRAND_COLORS['primary_dark']}, {BRAND_COLORS['surface']})">
+            <section data-background="linear-gradient(135deg, {theme['accent_dark']}, {theme['background']})">
                 <div class="slide-section">
                     <h2>{_escape_html(title)}</h2>
                     {subtitle_html}
@@ -461,10 +546,11 @@ def _generate_two_column_slide(title: str, left_items: List[str], right_items: L
             </section>"""
 
 
-def _generate_closing_slide(title: str, subtitle: str = "", contact: str = "") -> str:
+def _generate_closing_slide(title: str, subtitle: str = "", contact: str = "", theme: dict = None) -> str:
     """Generate closing/thank you slide."""
-    subtitle_html = f'<p class="subtitle">{_escape_html(subtitle)}</p>' if subtitle else ''
-    contact_html = f'<p style="margin-top: 2em; color: {BRAND_COLORS["text_secondary"]};">{_escape_html(contact)}</p>' if contact else ''
+    theme = theme or THEME_CONFIGS["dark"]
+    subtitle_html = f'<p class="subtitle" style="color: {theme["text_secondary"]};">{_escape_html(subtitle)}</p>' if subtitle else ''
+    contact_html = f'<p style="margin-top: 2em; color: {theme["text_secondary"]};">{_escape_html(contact)}</p>' if contact else ''
 
     return f"""
             <section>
@@ -472,7 +558,7 @@ def _generate_closing_slide(title: str, subtitle: str = "", contact: str = "") -
                     <h2>{_escape_html(title)}</h2>
                     {subtitle_html}
                     {contact_html}
-                    <p class="brand" style="margin-top: 3em; opacity: 0.6;">Powered by Cognitia AI</p>
+                    <p class="brand" style="margin-top: 3em; opacity: 0.6; color: {theme["text_secondary"]};">Powered by Cognitia AI</p>
                 </div>
             </section>"""
 
@@ -562,6 +648,7 @@ async def generate_presentation(
     title: str,
     slides: Optional[List[Dict]] = None,
     author: str = "Cognitia AI",
+    theme: str = "dark",
     __request__: Optional[Request] = None
 ) -> str:
     """
@@ -571,10 +658,16 @@ async def generate_presentation(
         title: Presentation title (required)
         slides: List of slide definitions with type and content
         author: Author name for metadata
+        theme: Visual theme - "dark" (default), "light", or "corporate"
         __request__: FastAPI request for URL building
 
     Returns:
         JSON with view_url for the presentation
+
+    Themes:
+        - dark: Dark background (#0f172a) with light text - professional, modern look
+        - light: White background (#ffffff) with dark text - clean, minimal style
+        - corporate: Blue background (#1e40af) with amber accents - business presentation
 
     Slide types:
         - title: {"type": "title", "title": "...", "subtitle": "..."}
@@ -588,6 +681,7 @@ async def generate_presentation(
     Example:
         generate_presentation(
             title="AI en Colombia",
+            theme="corporate",
             slides=[
                 {"type": "title", "title": "AI en Colombia", "subtitle": "Estado 2024"},
                 {"type": "content", "title": "Adopcion", "bullets": ["45% empresas", "Sector financiero lidera"]},
@@ -597,6 +691,10 @@ async def generate_presentation(
         )
     """
     try:
+        # Get theme configuration (defaults to dark if invalid)
+        theme_config = _get_theme_config(theme)
+        log.info(f"Using theme: {theme_config['name']}")
+
         # Parse slides input
         parsed_slides = _parse_slides_input(slides)
 
@@ -648,7 +746,8 @@ async def generate_presentation(
             elif slide_type == "section":
                 slides_html_parts.append(_generate_section_slide(
                     slide_def.get("title", ""),
-                    slide_def.get("subtitle", "")
+                    slide_def.get("subtitle", ""),
+                    theme=theme_config
                 ))
 
             elif slide_type == "two_column":
@@ -665,25 +764,30 @@ async def generate_presentation(
                 slides_html_parts.append(_generate_closing_slide(
                     slide_def.get("title", "Gracias"),
                     slide_def.get("subtitle", ""),
-                    slide_def.get("contact", "")
+                    slide_def.get("contact", ""),
+                    theme=theme_config
                 ))
 
         # Combine all slides
         slides_html = "\n".join(slides_html_parts)
 
-        # Generate complete HTML
+        # Generate complete HTML with theme colors
         html_content = REVEALJS_TEMPLATE.format(
             title=_escape_html(title),
             slides_html=slides_html,
-            primary=BRAND_COLORS["primary"],
-            primary_dark=BRAND_COLORS["primary_dark"],
-            primary_light=BRAND_COLORS["primary_light"],
-            surface=BRAND_COLORS["surface"],
-            surface_light=BRAND_COLORS["surface_light"],
-            text_primary=BRAND_COLORS["text_primary"],
-            text_secondary=BRAND_COLORS["text_secondary"],
-            accent=BRAND_COLORS["accent"],
-            white=BRAND_COLORS["white"]
+            theme_background=theme_config["background"],
+            theme_surface=theme_config["surface"],
+            theme_text_primary=theme_config["text_primary"],
+            theme_text_secondary=theme_config["text_secondary"],
+            theme_heading=theme_config["heading"],
+            theme_accent=theme_config["accent"],
+            theme_accent_light=theme_config["accent_light"],
+            theme_accent_dark=theme_config["accent_dark"],
+            theme_success=theme_config["success"],
+            theme_gradient_start=theme_config["gradient_start"],
+            theme_gradient_end=theme_config["gradient_end"],
+            theme_card_bg=theme_config["card_bg"],
+            theme_card_border=theme_config["card_border"],
         )
 
         # Save file
@@ -724,7 +828,9 @@ async def generate_presentation(
             "filename": filename,
             "slides_count": total_slides,
             "format": "html",
-            "message": f"Presentacion '{title}' creada con {total_slides} slides. Ver en: {full_url}"
+            "theme": theme,
+            "theme_name": theme_config["name"],
+            "message": f"Presentacion '{title}' creada con {total_slides} slides usando tema '{theme_config['name']}'. Ver en: {full_url}"
         }, ensure_ascii=False)
 
     except Exception as e:
@@ -803,8 +909,27 @@ def get_available_icons() -> str:
             {"id": "dash", "name": "Dash", "description": "Horizontal line marker"}
         ],
         "themes": [
-            {"id": "dark", "name": "Dark Mode", "description": "Dark background with light text (default)"},
-            {"id": "light", "name": "Light Mode", "description": "Light background with dark text"}
+            {
+                "id": "dark",
+                "name": "Dark (Default)",
+                "description": "Dark background (#0f172a) with light text - professional, modern look",
+                "background": "#0f172a",
+                "text": "#f8fafc"
+            },
+            {
+                "id": "light",
+                "name": "Light",
+                "description": "White background (#ffffff) with dark text - clean, minimal style",
+                "background": "#ffffff",
+                "text": "#0f172a"
+            },
+            {
+                "id": "corporate",
+                "name": "Corporate Blue",
+                "description": "Blue background (#1e40af) with amber accents - business presentation",
+                "background": "#1e40af",
+                "text": "#ffffff"
+            }
         ],
         "animations": [
             {"id": "fade-up", "name": "Fade Up", "description": "Content fades in from below (default)"},
@@ -898,7 +1023,22 @@ class Tools:
         title: str,
         slides: Optional[List[Dict]] = None,
         author: str = "Cognitia AI",
+        theme: str = "dark",
         __request__: Optional[Request] = None
     ) -> str:
-        """Generate a professional HTML presentation using Reveal.js."""
-        return await generate_presentation(title, slides, author, __request__)
+        """
+        Generate a professional HTML presentation using Reveal.js.
+
+        Args:
+            title: Presentation title (required)
+            slides: List of slide definitions with type and content
+            author: Author name for metadata
+            theme: Visual theme - "dark" (default), "light", or "corporate"
+            __request__: FastAPI request for URL building
+
+        Available themes:
+            - dark: Dark background with light text (professional, modern)
+            - light: White background with dark text (clean, minimal)
+            - corporate: Blue background with amber accents (business)
+        """
+        return await generate_presentation(title, slides, author, theme, __request__)

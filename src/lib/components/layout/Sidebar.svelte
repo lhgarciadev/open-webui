@@ -65,7 +65,7 @@
 	import { slide } from 'svelte/transition';
 	import HotkeyHint from '../common/HotkeyHint.svelte';
 
-	const BREAKPOINT = 768;
+	const BREAKPOINT = 1024;
 
 	let scrollTop = 0;
 
@@ -363,6 +363,10 @@
 		if (e.key === 'Shift') {
 			shiftKey = true;
 		}
+		// Close sidebar on Escape key (mobile/tablet only)
+		if (e.key === 'Escape' && $showSidebar && $mobile) {
+			showSidebar.set(false);
+		}
 	};
 
 	const onKeyUp = (e) => {
@@ -610,8 +614,8 @@
 {#if $showSidebar}
 	<div
 		class=" {$isApp
-			? ' ml-[4.5rem] md:ml-0'
-			: ''} fixed md:hidden z-40 top-0 right-0 left-0 bottom-0 bg-black/60 w-full min-h-screen h-screen flex justify-center overflow-hidden overscroll-contain"
+			? ' ml-[4.5rem] lg:ml-0'
+			: ''} fixed lg:hidden z-40 top-0 right-0 left-0 bottom-0 bg-black/60 w-full min-h-screen h-screen flex justify-center overflow-hidden overscroll-contain"
 		on:mousedown={() => {
 			showSidebar.set(!$showSidebar);
 		}}
@@ -846,7 +850,7 @@
 		class="h-screen max-h-[100dvh] min-h-screen select-none {$showSidebar
 			? `${$mobile ? 'bg-gray-50 dark:bg-gray-950' : 'bg-gray-50/70 dark:bg-gray-950/70'} z-50`
 			: ' bg-transparent z-0 '} {$isApp
-			? `ml-[4.5rem] md:ml-0 `
+			? `ml-[4.5rem] lg:ml-0 `
 			: ' transition-all duration-300 '} shrink-0 text-gray-900 dark:text-gray-200 text-sm fixed top-0 left-0 overflow-x-hidden
         "
 		transition:slide={{ duration: 250, axis: 'x' }}

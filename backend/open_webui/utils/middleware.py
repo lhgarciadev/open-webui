@@ -106,6 +106,12 @@ from open_webui.utils.filter import (
 from open_webui.utils.code_interpreter import execute_code_jupyter
 from open_webui.utils.payload import apply_system_prompt_to_body
 from open_webui.utils.mcp.client import MCPClient
+from open_webui.utils.function_calling_mode import (
+    model_builtin_tools_enabled,
+    model_supports_native_function_calling,
+    resolve_function_calling_mode,
+    should_inject_builtin_tools,
+)
 
 
 from open_webui.config import (
@@ -1442,6 +1448,18 @@ async def process_chat_payload(request, form_data, user, metadata, model):
         "__chat_id__": metadata.get("chat_id"),
         "__message_id__": metadata.get("message_id"),
     }
+
+    metadata_params = metadata.get("params", {}) or {}
+    function_calling_mode = resolve_function_calling_mode(
+        metadata_params=metadata_params,
+        default_mode=(
+            getattr(request.app.state.config, "DEFAULT_FUNCTION_CALLING_MODE", "") or ""
+        ),
+        model_supports_native=model_supports_native_function_calling(model),
+    )
+
+    metadata.setdefault("params", {})
+    metadata["params"]["function_calling"] = function_calling_mode
     # Initialize events to store additional event to be sent to the client
     # Initialize contexts and citation
     if getattr(request.state, "direct", False) and hasattr(request.state, "model"):
@@ -1807,18 +1825,8 @@ async def process_chat_payload(request, form_data, user, metadata, model):
 
     # Inject builtin tools for native function calling based on enabled features and model capability
     # Check if builtin_tools capability is enabled for this model (defaults to True if not specified)
-    builtin_tools_enabled = (
-        model.get("info", {})
-        .get("meta", {})
-        .get("capabilities", {})
-        .get("builtin_tools", True)
-    )
-    # Check function calling mode: per-chat setting takes priority, then global default
-    function_calling_mode = metadata.get("params", {}).get("function_calling")
-    if not function_calling_mode:
-        function_calling_mode = getattr(request.app.state.config, "DEFAULT_FUNCTION_CALLING_MODE", "") or ""
-
-    if function_calling_mode == "native" and builtin_tools_enabled:
+    builtin_tools_enabled = model_builtin_tools_enabled(model)
+    if should_inject_builtin_tools(function_calling_mode, builtin_tools_enabled):
         # Add file context to user messages
         chat_id = metadata.get("chat_id")
         form_data["messages"] = add_file_context(

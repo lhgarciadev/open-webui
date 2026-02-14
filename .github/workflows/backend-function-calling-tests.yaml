@@ -1,0 +1,49 @@
+name: Backend Function Calling Tests
+
+on:
+  push:
+    branches:
+      - main
+      - dev
+    paths:
+      - "backend/**"
+      - "pyproject.toml"
+      - "uv.lock"
+      - ".github/workflows/**"
+  pull_request:
+    branches:
+      - main
+      - dev
+    paths:
+      - "backend/**"
+      - "pyproject.toml"
+      - "uv.lock"
+      - ".github/workflows/**"
+
+jobs:
+  function-calling-tests:
+    name: "Backend Function Calling Tests"
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v5
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r backend/requirements-min.txt
+          pip install pytest pytest-asyncio Markdown beautifulsoup4 transformers safetensors python-pptx
+
+      - name: Run function calling backend tests
+        run: |
+          cd backend
+          pytest -q \
+            open_webui/test/util/test_function_calling_mode.py \
+            open_webui/test/util/test_function_calling_startup_smoke.py \
+            open_webui/test/util/test_process_chat_payload_function_calling.py

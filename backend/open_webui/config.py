@@ -2010,7 +2010,7 @@ TOOLS_FUNCTION_CALLING_PROMPT_TEMPLATE = PersistentConfig(
 DEFAULT_FUNCTION_CALLING_MODE = PersistentConfig(
     "DEFAULT_FUNCTION_CALLING_MODE",
     "task.tools.default_function_calling_mode",
-    os.environ.get("DEFAULT_FUNCTION_CALLING_MODE", ""),
+    os.environ.get("DEFAULT_FUNCTION_CALLING_MODE", "native"),
 )
 
 

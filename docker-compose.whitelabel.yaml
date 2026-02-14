@@ -20,7 +20,7 @@ services:
     restart: unless-stopped
     environment:
       - WEBUI_NAME=${BRAND_NAME:-Cognitia}
-      - WEBUI_SECRET_KEY=${SECRET_KEY:-}
+      - WEBUI_SECRET_KEY=${SECRET_KEY:?Define SECRET_KEY via secret manager}
       - OLLAMA_BASE_URL=${OLLAMA_URL:-http://ollama:11434}
       - OPENAI_API_BASE_URL=${OPENAI_API_BASE_URL:-}
       - OPENAI_API_KEY=${OPENAI_API_KEY:-}

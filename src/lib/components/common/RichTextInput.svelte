@@ -112,7 +112,7 @@
 	const eventDispatch = createEventDispatcher();
 
 	import { Fragment, DOMParser } from 'prosemirror-model';
-	import { EditorState, Plugin, PluginKey, TextSelection, Selection } from 'prosemirror-state';
+	import { Plugin, PluginKey, TextSelection, Selection } from 'prosemirror-state';
 	import { Decoration, DecorationSet } from 'prosemirror-view';
 	import { Editor, Extension, mergeAttributes } from '@tiptap/core';
 
@@ -134,7 +134,6 @@
 
 	import FileHandler from '@tiptap/extension-file-handler';
 	import Typography from '@tiptap/extension-typography';
-	import Highlight from '@tiptap/extension-highlight';
 	import CodeBlockLowlight from '@tiptap/extension-code-block-lowlight';
 
 	import Mention from '@tiptap/extension-mention';

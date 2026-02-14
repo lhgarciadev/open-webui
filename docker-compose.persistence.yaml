@@ -1,0 +1,61 @@
+services:
+  cognitia-ai:
+    environment:
+      - DATABASE_URL=${DATABASE_URL}
+      - REDIS_URL=${REDIS_URL}
+      - ENABLE_DB_MIGRATIONS=${ENABLE_DB_MIGRATIONS:-true}
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
+  postgres:
+    image: postgres:16-alpine
+    container_name: cognitia-postgres
+    restart: unless-stopped
+    environment:
+      - POSTGRES_DB=${POSTGRES_DB:-cognitia}
+      - POSTGRES_USER=${POSTGRES_USER:-cognitia_app}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:?Define POSTGRES_PASSWORD via secret}
+    ports:
+      - "${POSTGRES_PORT:-5433}:5432"
+    volumes:
+      - cognitia-postgres-data:/var/lib/postgresql/data
+    networks:
+      - cognitia-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-cognitia_app} -d ${POSTGRES_DB:-cognitia}"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 20s
+
+  redis:
+    image: redis:7-alpine
+    container_name: cognitia-redis
+    restart: unless-stopped
+    command: ["redis-server", "--appendonly", "yes", "--save", "60", "1000"]
+    ports:
+      - "${REDIS_PORT:-6380}:6379"
+    volumes:
+      - cognitia-redis-data:/data
+    networks:
+      - cognitia-network
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+
+volumes:
+  cognitia-postgres-data:
+    name: cognitia-postgres-data
+  cognitia-redis-data:
+    name: cognitia-redis-data
+
+networks:
+  cognitia-network:
+    name: cognitia-network
+    driver: bridge

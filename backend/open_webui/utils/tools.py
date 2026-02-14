@@ -414,9 +414,17 @@ def get_builtin_tools(
             from open_webui.tools.presentations import (
                 get_available_templates,
                 get_available_icons,
+                get_story_spec_template,
                 generate_presentation,
             )
-            builtin_functions.extend([get_available_templates, get_available_icons, generate_presentation])
+            builtin_functions.extend(
+                [
+                    get_available_templates,
+                    get_available_icons,
+                    get_story_spec_template,
+                    generate_presentation,
+                ]
+            )
         except ImportError as e:
             log.warning(f"Presentation tools not available: {e}")
 

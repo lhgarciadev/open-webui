@@ -31,3 +31,9 @@ update:
 	$(DOCKER_COMPOSE) up --build -d
 	$(DOCKER_COMPOSE) start
 
+validate-db-persistence:
+	@if [ -n "$(TEST_USER_EMAIL)" ] && [ -n "$(TEST_USER_PASSWORD)" ]; then \
+		TEST_USER_EMAIL="$(TEST_USER_EMAIL)" TEST_USER_PASSWORD="$(TEST_USER_PASSWORD)" scripts/validate_db_persistence.sh; \
+	else \
+		scripts/validate_db_persistence.sh; \
+	fi

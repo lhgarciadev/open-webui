@@ -237,7 +237,7 @@
 									<Switch
 										state={webSearchEnabled}
 										on:change={async (e) => {
-											const state = e.detail;
+											webSearchEnabled = e.detail;
 											await tick();
 										}}
 									/>
@@ -268,7 +268,7 @@
 									<Switch
 										state={imageGenerationEnabled}
 										on:change={async (e) => {
-											const state = e.detail;
+											imageGenerationEnabled = e.detail;
 											await tick();
 										}}
 									/>
@@ -303,7 +303,7 @@
 									<Switch
 										state={codeInterpreterEnabled}
 										on:change={async (e) => {
-											const state = e.detail;
+											codeInterpreterEnabled = e.detail;
 											await tick();
 										}}
 									/>
@@ -342,7 +342,7 @@
 									<Switch
 										state={presentationsEnabled}
 										on:change={async (e) => {
-											const state = e.detail;
+											presentationsEnabled = e.detail;
 											await tick();
 										}}
 									/>

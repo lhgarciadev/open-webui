@@ -1073,16 +1073,37 @@ async def generate_presentation(
         filepath = output_dir / filename
         prs.save(str(filepath))
 
-        # Return result with clear download instructions
+        # Build absolute download URL to prevent model from adding sandbox: prefix
         download_path = f"/api/v1/files/presentations/{filename}"
+
+        # Try to get base URL from request or app config
+        base_url = ""
+        if __request__:
+            try:
+                # Get base URL from request
+                base_url = str(__request__.base_url).rstrip('/')
+            except Exception:
+                pass
+
+            # Fallback to app config if available
+            if not base_url or base_url == "http://testserver":
+                try:
+                    webui_url = __request__.app.state.config.WEBUI_URL
+                    if webui_url:
+                        base_url = webui_url.rstrip('/')
+                except Exception:
+                    pass
+
+        # Build full URL - use absolute URL to prevent sandbox: prefix
+        full_download_url = f"{base_url}{download_path}" if base_url else download_path
+
         return json.dumps({
             "success": True,
             "file_path": str(filepath),
             "filename": filename,
             "slides_count": len(valid_slides),
-            "download_url": download_path,
-            "message": f"Presentation '{title}' created successfully with {len(valid_slides)} slides.",
-            "user_instructions": f"Para descargar la presentación, usa este enlace: {download_path} (NO uses prefijo 'sandbox:'). Muestra el enlace como un link de markdown normal apuntando a esa ruta relativa."
+            "download_url": full_download_url,
+            "message": f"Presentation '{title}' created successfully with {len(valid_slides)} slides. Download link: {full_download_url}"
         }, ensure_ascii=False)
 
     except Exception as e:

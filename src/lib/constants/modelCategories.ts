@@ -104,7 +104,14 @@ export const MODEL_NAME_PATTERNS = {
 		'phind',
 		'wizardcoder',
 		'magicoder',
-		'codestral'
+		'codestral',
+		// Add general-purpose models that are commonly used for coding
+		'gpt-4',
+		'gpt-4o',
+		'claude-3-5-sonnet',
+		'claude-sonnet',
+		'gemini-pro',
+		'gemini-2'
 	],
 	creative: [
 		'opus',

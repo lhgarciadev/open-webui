@@ -157,19 +157,19 @@
 		updateFuse();
 	}
 
-	// Category filter function
-	const filterByCategory = (item: any) => {
-		if (selectedCategoryFilter === '') return true;
+	// Category filter function - made reactive by referencing selectedCategoryFilter directly
+	const filterByCategory = (item: any, categoryFilter: string, pinned: string[]) => {
+		if (categoryFilter === '') return true;
 
 		// Special case for favorites
-		if (selectedCategoryFilter === 'favorites') {
+		if (categoryFilter === 'favorites') {
 			const modelValue = item.value ?? item.id;
-			return pinnedModels.includes(modelValue);
+			return pinned.includes(modelValue);
 		}
 
 		// Check model categories
 		const cats = categorizeModel(item.model ?? item);
-		return cats.categories.includes(selectedCategoryFilter);
+		return cats.categories.includes(categoryFilter);
 	};
 
 	$: filteredItems = (
@@ -219,7 +219,7 @@
 							return item.model?.direct;
 						}
 					})
-					.filter(filterByCategory)
+					.filter((item) => filterByCategory(item, selectedCategoryFilter, pinnedModels))
 	).filter((item) => !(item.model?.info?.meta?.hidden ?? false));
 
 	$: if (selectedTag || selectedConnectionType || selectedCategoryFilter) {

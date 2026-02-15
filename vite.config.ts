@@ -20,11 +20,16 @@ export default defineConfig({
 		APP_VERSION: JSON.stringify(process.env.npm_package_version),
 		APP_BUILD_HASH: JSON.stringify(process.env.APP_BUILD_HASH || 'dev-build')
 	},
+	optimizeDeps: {
+		exclude: ['mammoth']
+	},
 	build: {
 		sourcemap: true,
 		rollupOptions: {
+			external: ['mammoth'],
 			onwarn(warning, defaultHandler) {
 				if (warning.code === 'UNUSED_EXTERNAL_IMPORT') return;
+				if (warning.message?.includes('mammoth')) return;
 				defaultHandler(warning);
 			}
 		}

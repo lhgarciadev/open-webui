@@ -464,7 +464,7 @@
 								>
 									<Tooltip
 										content={marked.parse(
-											!!model?.meta?.description
+											model?.meta?.description
 												? model?.meta?.description
 												: model?.ollama?.digest
 													? `${model?.ollama?.digest} **(${model?.ollama?.modified_at})**`
@@ -477,7 +477,7 @@
 									</Tooltip>
 									<div class=" text-xs overflow-hidden text-ellipsis line-clamp-1 text-gray-500">
 										<span class=" line-clamp-1">
-											{!!model?.meta?.description
+											{model?.meta?.description
 												? model?.meta?.description
 												: model?.ollama?.digest
 													? `${model.id} (${model?.ollama?.digest})`

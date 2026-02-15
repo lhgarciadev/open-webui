@@ -17,6 +17,9 @@
 	import Tag from '$lib/components/icons/Tag.svelte';
 	import Label from '$lib/components/icons/Label.svelte';
 
+	// Import capability badges utility
+	import { getModelBadges } from '$lib/utils/modelUtils';
+
 	const i18n = getContext('i18n');
 
 	export let selectedModelIdx: number = -1;
@@ -26,8 +29,12 @@
 
 	export let unloadModelHandler: (modelValue: string) => void = () => {};
 	export let pinModelHandler: (modelId: string) => void = () => {};
+	export let showBadges: boolean = false;
 
 	export let onClick: () => void = () => {};
+
+	// Get capability badges for this model
+	$: modelBadges = showBadges ? getModelBadges(item.model ?? item) : [];
 
 	const copyLinkHandler = async (model) => {
 		const baseUrl = window.location.origin;
@@ -92,6 +99,15 @@
 					</div>
 				</Tooltip>
 			</div>
+
+			<!-- Capability badges -->
+			{#if showBadges && modelBadges.length > 0}
+				<div class="flex items-center gap-0.5 shrink-0">
+					{#each modelBadges.slice(0, 4) as badge}
+						<span class="text-[10px] opacity-70" title={badge}>{badge}</span>
+					{/each}
+				</div>
+			{/if}
 
 			<div class=" shrink-0 flex items-center gap-2">
 				{#if item.model.owned_by === 'ollama'}

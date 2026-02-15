@@ -21,7 +21,8 @@
 		mobile,
 		temporaryChatEnabled,
 		settings,
-		config
+		config,
+		type Model
 	} from '$lib/stores';
 	import { toast } from 'svelte-sonner';
 	import { capitalizeFirstLetter, sanitizeResponseContent, splitStream } from '$lib/utils';
@@ -35,6 +36,10 @@
 	import ChatBubbleOval from '$lib/components/icons/ChatBubbleOval.svelte';
 
 	import ModelItem from './ModelItem.svelte';
+
+	// Model grouping imports
+	import { MODEL_CATEGORIES, getCategoryById } from '$lib/constants/modelCategories';
+	import { groupModelsByCategory, categorizeModel } from '$lib/utils/modelUtils';
 
 	const i18n = getContext('i18n');
 	const dispatch = createEventDispatcher();
@@ -70,9 +75,51 @@
 
 	let selectedTag = '';
 	let selectedConnectionType = '';
+	let selectedCategoryFilter = ''; // Category pill filter
+
+	// Category grouping state
+	let expandedCategories: Set<string> = new Set(['favorites', 'coding', 'fast']); // Default expanded
+	let groupedView = true; // Toggle between grouped and flat view
 
 	let ollamaVersion = null;
 	let selectedModelIdx = 0;
+
+	// Get pinned models from settings
+	$: pinnedModels = $settings?.pinnedModels ?? [];
+
+	// Group filtered items by category when not searching
+	$: groupedItems = !searchValue && groupedView
+		? groupModelsByCategory(filteredItems, pinnedModels)
+		: null;
+
+	// Toggle category expansion
+	function toggleCategory(categoryId: string) {
+		if (expandedCategories.has(categoryId)) {
+			expandedCategories.delete(categoryId);
+		} else {
+			expandedCategories.add(categoryId);
+		}
+		expandedCategories = expandedCategories; // Trigger reactivity
+
+		// Save to localStorage
+		try {
+			localStorage.setItem('model-selector-expanded', JSON.stringify([...expandedCategories]));
+		} catch (e) {
+			// Ignore localStorage errors
+		}
+	}
+
+	// Load expanded categories from localStorage
+	function loadExpandedCategories() {
+		try {
+			const saved = localStorage.getItem('model-selector-expanded');
+			if (saved) {
+				expandedCategories = new Set(JSON.parse(saved));
+			}
+		} catch (e) {
+			// Use defaults
+		}
+	}
 
 	const fuse = new Fuse(
 		items.map((item) => {
@@ -109,6 +156,21 @@
 	$: if (items) {
 		updateFuse();
 	}
+
+	// Category filter function
+	const filterByCategory = (item: any) => {
+		if (selectedCategoryFilter === '') return true;
+
+		// Special case for favorites
+		if (selectedCategoryFilter === 'favorites') {
+			const modelValue = item.value ?? item.id;
+			return pinnedModels.includes(modelValue);
+		}
+
+		// Check model categories
+		const cats = categorizeModel(item.model ?? item);
+		return cats.categories.includes(selectedCategoryFilter);
+	};
 
 	$: filteredItems = (
 		searchValue
@@ -157,9 +219,10 @@
 							return item.model?.direct;
 						}
 					})
+					.filter(filterByCategory)
 	).filter((item) => !(item.model?.info?.meta?.hidden ?? false));
 
-	$: if (selectedTag || selectedConnectionType) {
+	$: if (selectedTag || selectedConnectionType || selectedCategoryFilter) {
 		resetView();
 	} else {
 		resetView();
@@ -326,6 +389,9 @@
 	};
 
 	onMount(async () => {
+		// Load expanded categories from localStorage
+		loadExpandedCategories();
+
 		if (items) {
 			tags = items
 				.filter((item) => !(item.model?.info?.meta?.hidden ?? false))
@@ -470,6 +536,81 @@
 				</div>
 			{/if}
 
+			<!-- Category filter pills -->
+			<div class="px-2">
+				{#if items.filter((item) => !(item.model?.info?.meta?.hidden ?? false)).length > 0 && !searchValue}
+					<div
+						class="flex w-full bg-white dark:bg-gray-850 overflow-x-auto scrollbar-none font-[450] mb-1"
+						on:wheel={(e) => {
+							if (e.deltaY !== 0) {
+								e.preventDefault();
+								e.currentTarget.scrollLeft += e.deltaY;
+							}
+						}}
+					>
+						<div class="flex gap-1 w-fit text-center text-xs rounded-full bg-transparent px-1.5 whitespace-nowrap">
+							<!-- All button -->
+							<button
+								class="min-w-fit outline-none px-2 py-1 rounded-lg transition {selectedCategoryFilter === ''
+									? 'bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-white'
+									: 'text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800'}"
+								aria-pressed={selectedCategoryFilter === ''}
+								on:click={() => {
+									selectedCategoryFilter = '';
+									selectedConnectionType = '';
+									selectedTag = '';
+								}}
+							>
+								{$i18n.t('All')}
+							</button>
+
+							<!-- Favorites (if pinned models exist) -->
+							{#if pinnedModels.length > 0}
+								<button
+									class="min-w-fit outline-none px-2 py-1 rounded-lg transition {selectedCategoryFilter === 'favorites'
+										? 'bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-white'
+										: 'text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800'}"
+									aria-pressed={selectedCategoryFilter === 'favorites'}
+									on:click={() => {
+										selectedCategoryFilter = 'favorites';
+										selectedConnectionType = '';
+										selectedTag = '';
+									}}
+								>
+									⭐ {$i18n.t('Favorites')}
+								</button>
+							{/if}
+
+							<!-- Category pills -->
+							{#each MODEL_CATEGORIES.filter(c => c.id !== 'favorites' && c.id !== 'general') as category}
+								{@const categoryModels = items.filter(item => {
+									const cats = categorizeModel(item.model ?? item);
+									return cats.categories.includes(category.id);
+								})}
+								{#if categoryModels.length > 0}
+									<Tooltip content={category.description}>
+										<button
+											class="min-w-fit outline-none px-2 py-1 rounded-lg transition {selectedCategoryFilter === category.id
+												? 'bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-white'
+												: 'text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800'}"
+											aria-pressed={selectedCategoryFilter === category.id}
+											on:click={() => {
+												selectedCategoryFilter = category.id;
+												selectedConnectionType = '';
+												selectedTag = '';
+											}}
+										>
+											{category.emoji} {category.name.split(' ')[0]}
+										</button>
+									</Tooltip>
+								{/if}
+							{/each}
+						</div>
+					</div>
+				{/if}
+			</div>
+
+			<!-- Connection type and tag filters -->
 			<div class="px-2">
 				{#if tags && items.filter((item) => !(item.model?.info?.meta?.hidden ?? false)).length > 0}
 					<div
@@ -574,7 +715,62 @@
 							{$i18n.t('No results found')}
 						</div>
 					</div>
+				{:else if groupedItems && !searchValue && selectedCategoryFilter === ''}
+					<!-- Grouped view: Show categories with collapsible sections -->
+					<div
+						class="max-h-64 overflow-y-auto"
+						bind:this={listContainer}
+						on:scroll={() => {
+							listScrollTop = listContainer.scrollTop;
+						}}
+					>
+						{#each [...groupedItems.entries()] as [categoryId, categoryModels], catIdx}
+							{@const category = getCategoryById(categoryId)}
+							{#if category && categoryModels.length > 0}
+								<!-- Category Header -->
+								<button
+									class="flex w-full items-center gap-2 px-3 py-1.5 text-xs font-semibold text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors"
+									on:click|stopPropagation={() => toggleCategory(categoryId)}
+								>
+									<span class="flex items-center gap-1.5">
+										<span>{category.emoji}</span>
+										<span class="uppercase tracking-wide">{category.name}</span>
+									</span>
+									<span class="text-gray-400 dark:text-gray-500">({categoryModels.length})</span>
+									<span class="ml-auto transition-transform {expandedCategories.has(categoryId) ? 'rotate-180' : ''}">
+										<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" class="size-3">
+											<path fill-rule="evenodd" d="M4.22 6.22a.75.75 0 0 1 1.06 0L8 8.94l2.72-2.72a.75.75 0 1 1 1.06 1.06l-3.25 3.25a.75.75 0 0 1-1.06 0L4.22 7.28a.75.75 0 0 1 0-1.06Z" clip-rule="evenodd" />
+										</svg>
+									</span>
+								</button>
+
+								<!-- Category Models (collapsible) -->
+								{#if expandedCategories.has(categoryId)}
+									<div class="pl-1">
+										{#each categoryModels as item, i (item.value)}
+											{@const globalIndex = filteredItems.findIndex(fi => fi.value === item.value)}
+											<ModelItem
+												selectedModelIdx={selectedModelIdx}
+												{item}
+												index={globalIndex}
+												{value}
+												{pinModelHandler}
+												{unloadModelHandler}
+												showBadges={true}
+												onClick={() => {
+													value = item.value;
+													selectedModelIdx = globalIndex;
+													show = false;
+												}}
+											/>
+										{/each}
+									</div>
+								{/if}
+							{/if}
+						{/each}
+					</div>
 				{:else}
+					<!-- Flat view: Virtual scrolling list (during search or category filter) -->
 					<!-- svelte-ignore a11y-no-static-element-interactions -->
 					<div
 						class="max-h-64 overflow-y-auto"
@@ -593,6 +789,7 @@
 								{value}
 								{pinModelHandler}
 								{unloadModelHandler}
+								showBadges={true}
 								onClick={() => {
 									value = item.value;
 									selectedModelIdx = index;

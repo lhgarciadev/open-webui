@@ -351,6 +351,7 @@ select {
 	print-color-adjust: exact;
 	/* padding-right: 2.5rem; */
 	/* for Firefox */
+	appearance: none;
 	-moz-appearance: none;
 	/* for Chrome */
 	-webkit-appearance: none;
@@ -455,6 +456,7 @@ input::-webkit-inner-spin-button {
 }
 
 input[type='number'] {
+	appearance: textfield;
 	-moz-appearance: textfield;
 	/* Firefox */
 }
@@ -506,7 +508,7 @@ input[type='number'] {
 }
 
 .cm-gutters {
-	@apply !bg-white dark:!bg-black !border-none;
+	@apply !bg-white dark: !bg-black !border-none;
 }
 
 .cm-editor {

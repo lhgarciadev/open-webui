@@ -27,6 +27,7 @@
 	import { toast } from 'svelte-sonner';
 	import { capitalizeFirstLetter, sanitizeResponseContent, splitStream } from '$lib/utils';
 	import { getModels } from '$lib/apis';
+	import { getPricingModels, refreshPricingModels } from '$lib/apis/pricing';
 
 	import ChevronDown from '$lib/components/icons/ChevronDown.svelte';
 	import Check from '$lib/components/icons/Check.svelte';
@@ -39,6 +40,7 @@
 
 	// Model grouping imports
 	import { MODEL_CATEGORIES, getCategoryById } from '$lib/constants/modelCategories';
+	import { CURATED_MODELS_BY_CATEGORY } from '$lib/constants/modelCuration';
 	import { groupModelsByCategory, categorizeModel } from '$lib/utils/modelUtils';
 
 	const i18n = getContext('i18n');
@@ -63,23 +65,78 @@
 
 	export let pinModelHandler: (modelId: string) => void = () => {};
 
-	let tagsContainerElement;
-
 	let show = false;
-	let tags = [];
 
 	let selectedModel = '';
 	$: selectedModel = items.find((item) => item.value === value) ?? '';
 
 	let searchValue = '';
 
-	let selectedTag = '';
-	let selectedConnectionType = '';
 	let selectedCategoryFilter = ''; // Category pill filter
+
+	let showAllModels = false;
+	let pricingLoading = false;
+	let pricingMap: Record<string, { input_usd_per_million?: number; output_usd_per_million?: number }> = {};
+	let lastRefreshAt = 0;
+
+	const curatedModelIds = new Set<string>(Object.values(CURATED_MODELS_BY_CATEGORY).flat());
+
+	const getItemId = (item: any): string => item?.value ?? item?.id ?? item?.model?.id ?? '';
+
+	const isCognitiaLocalModelId = (modelId: string) => modelId.startsWith('cognitia_llm_');
+
+	const isSpecialItem = (item: any) => {
+		const model = item?.model ?? item;
+		return categorizeModel(model).categories.includes('specials');
+	};
+
+	const loadPricing = async () => {
+		if (pricingLoading) return;
+		pricingLoading = true;
+		try {
+			const res = await getPricingModels(localStorage.token);
+			const map: Record<string, { input_usd_per_million?: number; output_usd_per_million?: number }> =
+				{};
+			for (const row of res?.items ?? []) {
+				if (row?.model_id) {
+					map[row.model_id] = row;
+				}
+			}
+			pricingMap = map;
+		} catch (error) {
+			console.debug('Failed to load pricing', error);
+		} finally {
+			pricingLoading = false;
+		}
+	};
+
+	const refreshMissingPricing = async (modelIds: string[]) => {
+		if (!modelIds.length) return;
+		const now = Date.now();
+		if (now - lastRefreshAt < 2000) return;
+		lastRefreshAt = now;
+
+		try {
+			await refreshPricingModels(localStorage.token, modelIds);
+			await loadPricing();
+		} catch (error) {
+			console.debug('Failed to refresh pricing', error);
+		}
+	};
 
 	// Category grouping state
 	let expandedCategories: Set<string> = new Set(['favorites', 'coding', 'fast']); // Default expanded
 	let groupedView = true; // Toggle between grouped and flat view
+
+	$: categoryPills = MODEL_CATEGORIES.filter(
+		(c) => c.id !== 'favorites' && c.id !== 'general' && (showAllModels || c.id !== 'specials')
+	);
+
+	$: if (!showAllModels && selectedCategoryFilter === 'specials') {
+		selectedCategoryFilter = '';
+	}
+
+	$: applyCuration = !showAllModels && !searchValue;
 
 	let ollamaVersion = null;
 	let selectedModelIdx = 0;
@@ -176,55 +233,28 @@
 		searchValue
 			? fuse
 					.search(searchValue)
-					.map((e) => {
-						return e.item;
-					})
-					.filter((item) => {
-						if (selectedTag === '') {
-							return true;
-						}
+					.map((e) => e.item)
+			: items.filter((item) => filterByCategory(item, selectedCategoryFilter, pinnedModels))
+	)
+		.filter((item) => !(item.model?.info?.meta?.hidden ?? false))
+		.filter((item) => {
+			if (!applyCuration) return true;
+			const itemId = getItemId(item);
+			if (!curatedModelIds.has(itemId)) return false;
+			if (isSpecialItem(item)) return false;
+			return true;
+		});
 
-						return (item.model?.tags ?? [])
-							.map((tag) => tag.name.toLowerCase())
-							.includes(selectedTag.toLowerCase());
-					})
-					.filter((item) => {
-						if (selectedConnectionType === '') {
-							return true;
-						} else if (selectedConnectionType === 'local') {
-							return item.model?.connection_type === 'local';
-						} else if (selectedConnectionType === 'external') {
-							return item.model?.connection_type === 'external';
-						} else if (selectedConnectionType === 'direct') {
-							return item.model?.direct;
-						}
-					})
-			: items
-					.filter((item) => {
-						if (selectedTag === '') {
-							return true;
-						}
-						return (item.model?.tags ?? [])
-							.map((tag) => tag.name.toLowerCase())
-							.includes(selectedTag.toLowerCase());
-					})
-					.filter((item) => {
-						if (selectedConnectionType === '') {
-							return true;
-						} else if (selectedConnectionType === 'local') {
-							return item.model?.connection_type === 'local';
-						} else if (selectedConnectionType === 'external') {
-							return item.model?.connection_type === 'external';
-						} else if (selectedConnectionType === 'direct') {
-							return item.model?.direct;
-						}
-					})
-					.filter((item) => filterByCategory(item, selectedCategoryFilter, pinnedModels))
-	).filter((item) => !(item.model?.info?.meta?.hidden ?? false));
+	$: if (show && filteredItems.length > 0) {
+		const missing = filteredItems
+			.map((item) => getItemId(item))
+			.filter((id) => id && !pricingMap[id]);
+		if (missing.length) {
+			refreshMissingPricing(missing);
+		}
+	}
 
-	$: if (selectedTag || selectedConnectionType || selectedCategoryFilter) {
-		resetView();
-	} else {
+	$: if (selectedCategoryFilter) {
 		resetView();
 	}
 
@@ -391,15 +421,6 @@
 	onMount(async () => {
 		// Load expanded categories from localStorage
 		loadExpandedCategories();
-
-		if (items) {
-			tags = items
-				.filter((item) => !(item.model?.info?.meta?.hidden ?? false))
-				.flatMap((item) => item.model?.tags ?? [])
-				.map((tag) => tag.name.toLowerCase());
-			// Remove duplicates and sort
-			tags = Array.from(new Set(tags)).sort((a, b) => a.localeCompare(b));
-		}
 	});
 
 	$: if (show) {
@@ -459,6 +480,9 @@
 		window.setTimeout(() => document.getElementById('model-search-input')?.focus(), 0);
 
 		resetView();
+		if (show) {
+			await loadPricing();
+		}
 	}}
 	closeFocus={false}
 >
@@ -536,6 +560,10 @@
 				</div>
 			{/if}
 
+			<div class="px-4.5 text-[11px] text-gray-500 dark:text-gray-400">
+				{$i18n.t('Pricing note')}
+			</div>
+
 			<!-- Category filter pills -->
 			<div class="px-2">
 				{#if items.filter((item) => !(item.model?.info?.meta?.hidden ?? false)).length > 0 && !searchValue}
@@ -548,7 +576,15 @@
 							}
 						}}
 					>
-						<div class="flex gap-1 w-fit text-center text-xs rounded-full bg-transparent px-1.5 whitespace-nowrap">
+						<div class="flex flex-wrap gap-1 w-full text-center text-xs rounded-full bg-transparent px-1.5">
+							<button
+								class="min-w-fit outline-none px-2 py-1 rounded-lg transition text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800"
+								on:click={() => {
+									showAllModels = !showAllModels;
+								}}
+							>
+								{showAllModels ? $i18n.t('Show recommended') : $i18n.t('Show all')}
+							</button>
 							<!-- All button -->
 							<button
 								class="min-w-fit outline-none px-2 py-1 rounded-lg transition {selectedCategoryFilter === ''
@@ -557,8 +593,6 @@
 								aria-pressed={selectedCategoryFilter === ''}
 								on:click={() => {
 									selectedCategoryFilter = '';
-									selectedConnectionType = '';
-									selectedTag = '';
 								}}
 							>
 								{$i18n.t('All')}
@@ -573,8 +607,6 @@
 									aria-pressed={selectedCategoryFilter === 'favorites'}
 									on:click={() => {
 										selectedCategoryFilter = 'favorites';
-										selectedConnectionType = '';
-										selectedTag = '';
 									}}
 								>
 									⭐ {$i18n.t('Favorites')}
@@ -582,7 +614,7 @@
 							{/if}
 
 							<!-- Category pills -->
-							{#each MODEL_CATEGORIES.filter(c => c.id !== 'favorites' && c.id !== 'general') as category}
+							{#each categoryPills as category}
 								{@const categoryModels = items.filter(item => {
 									const cats = categorizeModel(item.model ?? item);
 									return cats.categories.includes(category.id);
@@ -596,8 +628,6 @@
 											aria-pressed={selectedCategoryFilter === category.id}
 											on:click={() => {
 												selectedCategoryFilter = category.id;
-												selectedConnectionType = '';
-												selectedTag = '';
 											}}
 										>
 											{category.emoji} {category.name.split(' ')[0]}
@@ -610,103 +640,6 @@
 				{/if}
 			</div>
 
-			<!-- Connection type and tag filters -->
-			<div class="px-2">
-				{#if tags && items.filter((item) => !(item.model?.info?.meta?.hidden ?? false)).length > 0}
-					<div
-						class=" flex w-full bg-white dark:bg-gray-850 overflow-x-auto scrollbar-none font-[450] mb-0.5"
-						on:wheel={(e) => {
-							if (e.deltaY !== 0) {
-								e.preventDefault();
-								e.currentTarget.scrollLeft += e.deltaY;
-							}
-						}}
-					>
-						<div
-							class="flex gap-1 w-fit text-center text-sm rounded-full bg-transparent px-1.5 whitespace-nowrap"
-							bind:this={tagsContainerElement}
-						>
-							{#if items.find((item) => item.model?.connection_type === 'local') || items.find((item) => item.model?.connection_type === 'external') || items.find((item) => item.model?.direct) || tags.length > 0}
-								<button
-									class="min-w-fit outline-none px-1.5 py-0.5 {selectedTag === '' &&
-									selectedConnectionType === ''
-										? ''
-										: 'text-gray-300 dark:text-gray-600 hover:text-gray-700 dark:hover:text-white'} transition capitalize"
-									aria-pressed={selectedTag === '' && selectedConnectionType === ''}
-									on:click={() => {
-										selectedConnectionType = '';
-										selectedTag = '';
-									}}
-								>
-									{$i18n.t('All')}
-								</button>
-							{/if}
-
-							{#if items.find((item) => item.model?.connection_type === 'local')}
-								<button
-									class="min-w-fit outline-none px-1.5 py-0.5 {selectedConnectionType === 'local'
-										? ''
-										: 'text-gray-300 dark:text-gray-600 hover:text-gray-700 dark:hover:text-white'} transition capitalize"
-									aria-pressed={selectedConnectionType === 'local'}
-									on:click={() => {
-										selectedTag = '';
-										selectedConnectionType = 'local';
-									}}
-								>
-									{$i18n.t('Local')}
-								</button>
-							{/if}
-
-							{#if items.find((item) => item.model?.connection_type === 'external')}
-								<button
-									class="min-w-fit outline-none px-1.5 py-0.5 {selectedConnectionType === 'external'
-										? ''
-										: 'text-gray-300 dark:text-gray-600 hover:text-gray-700 dark:hover:text-white'} transition capitalize"
-									aria-pressed={selectedConnectionType === 'external'}
-									on:click={() => {
-										selectedTag = '';
-										selectedConnectionType = 'external';
-									}}
-								>
-									{$i18n.t('External')}
-								</button>
-							{/if}
-
-							{#if items.find((item) => item.model?.direct)}
-								<button
-									class="min-w-fit outline-none px-1.5 py-0.5 {selectedConnectionType === 'direct'
-										? ''
-										: 'text-gray-300 dark:text-gray-600 hover:text-gray-700 dark:hover:text-white'} transition capitalize"
-									aria-pressed={selectedConnectionType === 'direct'}
-									on:click={() => {
-										selectedTag = '';
-										selectedConnectionType = 'direct';
-									}}
-								>
-									{$i18n.t('Direct')}
-								</button>
-							{/if}
-
-							{#each tags as tag}
-								<Tooltip content={tag}>
-									<button
-										class="min-w-fit outline-none px-1.5 py-0.5 {selectedTag === tag
-											? ''
-											: 'text-gray-300 dark:text-gray-600 hover:text-gray-700 dark:hover:text-white'} transition capitalize"
-										aria-pressed={selectedTag === tag}
-										on:click={() => {
-											selectedConnectionType = '';
-											selectedTag = tag;
-										}}
-									>
-										{tag.length > 16 ? `${tag.slice(0, 16)}...` : tag}
-									</button>
-								</Tooltip>
-							{/each}
-						</div>
-					</div>
-				{/if}
-			</div>
 
 			<div class="px-2.5 group relative">
 				{#if filteredItems.length === 0}
@@ -754,6 +687,7 @@
 												{item}
 												index={globalIndex}
 												{value}
+												pricing={pricingMap[item.value]}
 												{pinModelHandler}
 												{unloadModelHandler}
 												showBadges={true}
@@ -787,6 +721,7 @@
 								{item}
 								{index}
 								{value}
+								pricing={pricingMap[item.value]}
 								{pinModelHandler}
 								{unloadModelHandler}
 								showBadges={true}

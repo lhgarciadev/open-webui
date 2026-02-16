@@ -66,7 +66,7 @@
 		num_keep: null,
 		max_tokens: null,
 		num_gpu: null,
-		
+
 		// Extras
 		use_mmap: null,
 		use_mlock: null,
@@ -75,6 +75,7 @@
 		keep_alive: null,
 		format: null,
 		reasoning_tags: null
+	};
 
 	const saveHandler = async () => {
 		saveSettings({

@@ -161,3 +161,44 @@ MCPO is a satellite service that exposes MCP (Model Context Protocol) servers as
 - `railway.json` - Railway configuration for main app
 - `mcpo-service/` - MCPO service configuration
 - `RAILWAY_DEPLOY.md` - This guide
+
+---
+
+## Local LLM Service (Hugging Face Spaces)
+
+As of 2026-02-15, local LLM models run on Hugging Face Spaces with ZeroGPU instead of Railway.
+
+### Current Architecture
+
+| Service | Platform | URL |
+|---------|----------|-----|
+| Cognitia App | Railway | https://cognitia-production.up.railway.app |
+| Local LLMs | HF Spaces | https://Juansquiroga-cognitia-llm.hf.space |
+
+### Available Local Models
+
+| Model | Parameters | Use Case |
+|-------|------------|----------|
+| Phi-3 | 3.8B | Fast general tasks |
+| Qwen 2.5 | 7B | High quality, excellent in Spanish |
+| SmolLM2 | 1.7B | Ultra-fast, efficient |
+| Mistral | 7B | Reasoning and code |
+
+### Hardware
+
+- **GPU**: NVIDIA H200 via ZeroGPU (~70GB VRAM)
+- **Cost**: $0 (free tier) or $9/month (PRO for priority)
+- **Daily quota**: 25 minutes (PRO)
+
+### Integration
+
+Local models appear in Cognitia with the `cognitia/` prefix (e.g., `cognitia/SmolLM2`). They show no API costs in the model selector and are identified with a "Local" badge.
+
+### Maintenance
+
+To modify models, edit `app.py` in the HuggingFace Space:
+https://huggingface.co/spaces/Juansquiroga/cognitia-llm
+
+### Migration Notes
+
+The previous Railway Ollama service was decommissioned. The `OLLAMA_BASE_URL` and `RAILWAY_SERVICE_OLLAMA_URL` environment variables have been removed from Railway.

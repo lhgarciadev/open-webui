@@ -55,13 +55,13 @@
 
 	const isCognitiaLocal = (modelId: string) => modelId.startsWith('cognitia_llm_');
 
-	const usdPerMillionToCopPer1k = (value?: number) => {
+	const usdPerMillionToCopPer10k = (value?: number) => {
 		if (!value || Number.isNaN(value)) return null;
-		return Math.round((value / 1000) * USD_TO_COP);
+		return Math.round((value / 100) * USD_TO_COP);
 	};
 
-	$: pricingInputCop = usdPerMillionToCopPer1k(pricing?.input_usd_per_million);
-	$: pricingOutputCop = usdPerMillionToCopPer1k(pricing?.output_usd_per_million);
+	$: pricingInputCop = usdPerMillionToCopPer10k(pricing?.input_usd_per_million);
+	$: pricingOutputCop = usdPerMillionToCopPer10k(pricing?.output_usd_per_million);
 	$: hasPricing = (pricingInputCop ?? 0) > 0 || (pricingOutputCop ?? 0) > 0;
 	$: isLocalModel =
 		item?.model?.connection_type === 'local' || item?.model?.owned_by === 'ollama' || isCognitiaLocal(item?.value ?? item?.model?.id ?? '');
@@ -284,8 +284,8 @@
 		{:else if hasPricing}
 			<div class="text-[11px] text-gray-500 dark:text-gray-400">
 				{$i18n.t('Approx cost')}: COP
-				{copFormatter.format(pricingInputCop ?? 0)} / 1K (in) · COP
-				{copFormatter.format(pricingOutputCop ?? 0)} / 1K (out)
+				{copFormatter.format(pricingInputCop ?? 0)} / 10K (in) · COP
+				{copFormatter.format(pricingOutputCop ?? 0)} / 10K (out)
 			</div>
 		{:else}
 			<div class="text-[11px] text-gray-500 dark:text-gray-400">

@@ -9,7 +9,13 @@
 		"resolveJsonModule": true,
 		"skipLibCheck": true,
 		"sourceMap": true,
-		"strict": false
+		"strict": false,
+		"types": [
+			"node",
+			"svelte",
+			"vite/client",
+			"socket.io-client"
+		]
 	}
 	// Path aliases are handled by https://kit.svelte.dev/docs/configuration#alias
 	//

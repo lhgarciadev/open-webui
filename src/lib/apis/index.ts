@@ -4,7 +4,7 @@ import { getOpenAIModelsDirect } from './openai';
 
 export const getModels = async (
 	token: string = '',
-	connections: object | null = null,
+	connections: any = null,
 	base: boolean = false,
 	refresh: boolean = false
 ) => {
@@ -45,9 +45,9 @@ export const getModels = async (
 		let localModels = [];
 
 		if (connections) {
-			const OPENAI_API_BASE_URLS = connections.OPENAI_API_BASE_URLS;
-			const OPENAI_API_KEYS = connections.OPENAI_API_KEYS;
-			const OPENAI_API_CONFIGS = connections.OPENAI_API_CONFIGS;
+			const OPENAI_API_BASE_URLS = (connections as any).OPENAI_API_BASE_URLS;
+			const OPENAI_API_KEYS = (connections as any).OPENAI_API_KEYS;
+			const OPENAI_API_CONFIGS = (connections as any).OPENAI_API_CONFIGS;
 
 			const requests = [];
 			for (const idx in OPENAI_API_BASE_URLS) {
@@ -338,7 +338,7 @@ export const getToolServerData = async (token: string, url: string) => {
 	return res;
 };
 
-export const getToolServersData = async (servers: object[]) => {
+export const getToolServersData = async (servers: any[]) => {
 	return (
 		await Promise.all(
 			servers
@@ -1677,9 +1677,13 @@ export interface ModelMeta {
 	description?: string;
 	capabilities?: object;
 	profile_image_url?: string;
+	defaultFilterIds?: string[];
+	defaultFeatureIds?: string[];
+	hidden?: boolean;
+	[key: string]: any;
 }
 
-export interface ModelParams {}
+export interface ModelParams { }
 
 export type GlobalModelConfig = ModelConfig[];
 

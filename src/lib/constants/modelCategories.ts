@@ -81,6 +81,13 @@ export const MODEL_CATEGORIES: ModelCategory[] = [
 		priority: 7
 	},
 	{
+		id: 'specials',
+		name: 'Especiales',
+		emoji: '🧩',
+		description: 'Audio, realtime, imagen, moderación, search',
+		priority: 8
+	},
+	{
 		id: 'general',
 		name: 'General',
 		emoji: '🤖',

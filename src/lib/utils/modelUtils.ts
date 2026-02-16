@@ -16,6 +16,22 @@ export interface CategorizedModel {
 	primaryCategory: string;
 }
 
+function isCognitiaLocalModel(modelId: string): boolean {
+	return modelId.startsWith('cognitia_llm_');
+}
+
+function isSpecialModel(modelId: string): boolean {
+	return (
+		modelId.includes('audio') ||
+		modelId.includes('realtime') ||
+		modelId.includes('transcribe') ||
+		modelId.includes('image') ||
+		modelId.includes('moderation') ||
+		modelId.includes('search') ||
+		modelId.includes('sora')
+	);
+}
+
 /**
  * Categorize a model based on its properties and name heuristics
  */
@@ -26,11 +42,17 @@ export function categorizeModel(model: any): CategorizedModel {
 	const modelName = (model?.name ?? model?.label ?? '').toLowerCase();
 	const ownedBy = (model?.owned_by ?? '').toLowerCase();
 	const connectionType = model?.connection_type ?? '';
+	const cognitiaLocal = isCognitiaLocalModel(modelId);
 
 	// Check if model is local (Ollama)
-	if (ownedBy === 'ollama' || connectionType === 'local') {
+	if (ownedBy === 'ollama' || connectionType === 'local' || cognitiaLocal) {
 		categories.push('local');
 		capabilities.priceTier = 'free';
+	}
+
+	// Special models (audio/realtime/image/moderation/search)
+	if (isSpecialModel(modelId)) {
+		categories.push('specials');
 	}
 
 	// Check model name patterns for categories
@@ -184,7 +206,11 @@ function detectPriceTier(model: any): 'free' | 'cheap' | 'medium' | 'premium' {
 	const modelId = (model?.id ?? '').toLowerCase();
 
 	// Free tier (local, open source, etc.)
-	if (model?.owned_by === 'ollama' || model?.connection_type === 'local') {
+	if (
+		model?.owned_by === 'ollama' ||
+		model?.connection_type === 'local' ||
+		isCognitiaLocalModel(modelId)
+	) {
 		return 'free';
 	}
 
@@ -258,6 +284,7 @@ export function groupModelsByCategory(
 export function getModelBadges(model: any): string[] {
 	const badges: string[] = [];
 	const { capabilities } = categorizeModel(model);
+	const modelId = (model?.id ?? '').toLowerCase();
 
 	// Context window badge
 	if (capabilities.contextWindow) {
@@ -298,7 +325,7 @@ export function getModelBadges(model: any): string[] {
 	// Local badge
 	const connectionType = model?.connection_type ?? model?.model?.connection_type;
 	const ownedBy = model?.owned_by ?? model?.model?.owned_by;
-	if (connectionType === 'local' || ownedBy === 'ollama') {
+	if (connectionType === 'local' || ownedBy === 'ollama' || isCognitiaLocalModel(modelId)) {
 		badges.push('🔒');
 	}
 

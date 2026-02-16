@@ -30,6 +30,7 @@
 	export let unloadModelHandler: (modelValue: string) => void = () => {};
 	export let pinModelHandler: (modelId: string) => void = () => {};
 	export let showBadges: boolean = false;
+	export let pricing: { input_usd_per_million?: number; output_usd_per_million?: number } | null = null;
 
 	export let onClick: () => void = () => {};
 
@@ -48,6 +49,22 @@
 	};
 
 	let showMenu = false;
+
+	const USD_TO_COP = 4000;
+	const copFormatter = new Intl.NumberFormat('es-CO');
+
+	const isCognitiaLocal = (modelId: string) => modelId.startsWith('cognitia_llm_');
+
+	const usdPerMillionToCopPer1k = (value?: number) => {
+		if (!value || Number.isNaN(value)) return null;
+		return Math.round((value / 1000) * USD_TO_COP);
+	};
+
+	$: pricingInputCop = usdPerMillionToCopPer1k(pricing?.input_usd_per_million);
+	$: pricingOutputCop = usdPerMillionToCopPer1k(pricing?.output_usd_per_million);
+	$: hasPricing = (pricingInputCop ?? 0) > 0 || (pricingOutputCop ?? 0) > 0;
+	$: isLocalModel =
+		item?.model?.connection_type === 'local' || item?.model?.owned_by === 'ollama' || isCognitiaLocal(item?.value ?? item?.model?.id ?? '');
 </script>
 
 <button
@@ -99,6 +116,24 @@
 					</div>
 				</Tooltip>
 			</div>
+
+			{#if isCognitiaLocal(item?.value ?? item?.model?.id ?? '')}
+				<span class="text-[10px] px-1.5 py-0.5 rounded-full bg-blue-100 text-blue-700 dark:bg-blue-900/40 dark:text-blue-200">
+					{$i18n.t('Cognitia Local')}
+				</span>
+			{:else if item.model?.owned_by === 'ollama' || item.model?.connection_type === 'local'}
+				<span class="text-[10px] px-1.5 py-0.5 rounded-full bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-300">
+					{$i18n.t('Ollama Local')}
+				</span>
+			{:else if item.model?.owned_by === 'openai' || item.model?.connection_type === 'external'}
+				<span class="text-[10px] px-1.5 py-0.5 rounded-full bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-200">
+					OpenAI
+				</span>
+			{:else if item.model?.owned_by}
+				<span class="text-[10px] px-1.5 py-0.5 rounded-full bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-300">
+					{item.model?.owned_by}
+				</span>
+			{/if}
 
 			<!-- Capability badges -->
 			{#if showBadges && modelBadges.length > 0}
@@ -241,6 +276,22 @@
 				{/if}
 			</div>
 		</div>
+
+		{#if isLocalModel}
+			<div class="text-[11px] text-gray-500 dark:text-gray-400">
+				{$i18n.t('Local cost note')}
+			</div>
+		{:else if hasPricing}
+			<div class="text-[11px] text-gray-500 dark:text-gray-400">
+				{$i18n.t('Approx cost')}: COP
+				{copFormatter.format(pricingInputCop ?? 0)} / 1K (in) · COP
+				{copFormatter.format(pricingOutputCop ?? 0)} / 1K (out)
+			</div>
+		{:else}
+			<div class="text-[11px] text-gray-500 dark:text-gray-400">
+				{$i18n.t('No price yet')}
+			</div>
+		{/if}
 	</div>
 
 	<div class="ml-auto pl-2 pr-1 flex items-center gap-1.5 shrink-0">

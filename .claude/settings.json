@@ -1,0 +1,21 @@
+{
+  "$schema": "https://raw.githubusercontent.com/anthropics/claude-code/main/config-schema.json",
+  "permissions": {
+    "allow": [
+      "WebSearch",
+      "Bash(npm:*)",
+      "Bash(git:*)",
+      "Bash(curl:*)",
+      "Bash(docker:*)",
+      "Bash(railway:*)",
+      "Bash(python:*)",
+      "Bash(pip:*)",
+      "mcp__chrome-devtools__*",
+      "mcp__plugin_claude-mem_mcp-search__*"
+    ]
+  },
+  "enableAllProjectMcpServers": true,
+  "enabledMcpjsonServers": [
+    "supabase"
+  ]
+}

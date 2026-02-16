@@ -65,8 +65,16 @@
 		num_batch: null,
 		num_keep: null,
 		max_tokens: null,
-		num_gpu: null
-	};
+		num_gpu: null,
+		
+		// Extras
+		use_mmap: null,
+		use_mlock: null,
+		num_thread: null,
+		think: null,
+		keep_alive: null,
+		format: null,
+		reasoning_tags: null
 
 	const saveHandler = async () => {
 		saveSettings({
@@ -131,27 +139,29 @@
 			themeToApply = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
 		}
 
-		if (themeToApply === 'dark' && !_theme.includes('oled')) {
-			document.documentElement.style.setProperty('--color-gray-800', '#333');
-			document.documentElement.style.setProperty('--color-gray-850', '#262626');
-			document.documentElement.style.setProperty('--color-gray-900', '#171717');
-			document.documentElement.style.setProperty('--color-gray-950', '#0d0d0d');
+		// Set the data-theme attribute which drives the CSS variables
+		if (_theme === 'system') {
+			// For system, we want to know the effective theme for the data attribute
+			const effectiveTheme = window.matchMedia('(prefers-color-scheme: dark)').matches
+				? 'dark'
+				: 'light';
+			document.documentElement.setAttribute('data-theme', effectiveTheme);
+		} else {
+			document.documentElement.setAttribute('data-theme', _theme);
 		}
 
-		themes
-			.filter((e) => e !== themeToApply)
-			.forEach((e) => {
-				e.split(' ').forEach((e) => {
-					document.documentElement.classList.remove(e);
-				});
-			});
-
-		themeToApply.split(' ').forEach((e) => {
-			document.documentElement.classList.add(e);
-		});
+		// Toggle the .dark class for Tailwind's dark mode utilities
+		// oled-dark and dark both need the .dark class
+		if (themeToApply === 'dark') {
+			document.documentElement.classList.add('dark');
+		} else {
+			document.documentElement.classList.remove('dark');
+		}
 
 		const metaThemeColor = document.querySelector('meta[name="theme-color"]');
 		if (metaThemeColor) {
+			// Updated to use computed style or specific mapping if needed,
+			// but for now keeping manual mapping to ensure correct mobile browser chrome color
 			if (_theme.includes('system')) {
 				const systemTheme = window.matchMedia('(prefers-color-scheme: dark)').matches
 					? 'dark'
@@ -167,7 +177,7 @@
 						: _theme === 'oled-dark'
 							? '#000000'
 							: _theme === 'her'
-								? '#983724'
+								? '#fff1f2' // tailwind rose-50 approx
 								: '#ffffff'
 				);
 			}
@@ -175,14 +185,6 @@
 
 		if (typeof window !== 'undefined' && window.applyTheme) {
 			window.applyTheme();
-		}
-
-		if (_theme.includes('oled')) {
-			document.documentElement.style.setProperty('--color-gray-800', '#101010');
-			document.documentElement.style.setProperty('--color-gray-850', '#050505');
-			document.documentElement.style.setProperty('--color-gray-900', '#000000');
-			document.documentElement.style.setProperty('--color-gray-950', '#000000');
-			document.documentElement.classList.add('dark');
 		}
 
 		console.log(_theme);

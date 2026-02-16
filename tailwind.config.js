@@ -49,9 +49,9 @@ export default {
 					900: '#1e3a8a'
 				},
 				surface: {
-					base: '#0f172a',
-					elevated: '#1e293b',
-					overlay: '#334155'
+					base: 'var(--color-surface-base)',
+					elevated: 'var(--color-surface-elevated)',
+					overlay: 'var(--color-surface-overlay)'
 				}
 			},
 			typography: {

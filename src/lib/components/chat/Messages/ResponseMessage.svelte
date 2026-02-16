@@ -604,7 +604,7 @@
 
 {#key message.id}
 	<div
-		class=" flex w-full message-{message.id}"
+		class=" flex w-full message-{message.id} text-gray-900 dark:text-gray-100"
 		id="message-{message.id}"
 		dir={$settings.chatDirection}
 	>

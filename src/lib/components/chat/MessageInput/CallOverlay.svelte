@@ -386,7 +386,20 @@
 						clearInterval(getVoicesLoop);
 
 						const voiceId = getVoiceId();
-						const voice = voices?.filter((v) => v.voiceURI === voiceId)?.at(0) ?? undefined;
+						let voice = voices?.filter((v) => v.voiceURI === voiceId)?.at(0) ?? undefined;
+
+						// Auto-select a default voice if none configured
+						if (!voice) {
+							// Try to find a voice matching user's browser language
+							const userLang = navigator.language || 'en-US';
+							const langPrefix = userLang.split('-')[0];
+
+							// Priority: exact match > language match > first available
+							voice = voices.find((v) => v.lang === userLang) ||
+								voices.find((v) => v.lang.startsWith(langPrefix)) ||
+								voices.find((v) => v.default) ||
+								voices[0];
+						}
 
 						currentUtterance = new SpeechSynthesisUtterance(content);
 						currentUtterance.rate = $settings.audio?.tts?.playbackRate ?? 1;

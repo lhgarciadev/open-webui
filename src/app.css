@@ -827,3 +827,39 @@ body {
 	padding-bottom: 2rem;
 	/* space for the bottom toolbar */
 }
+
+/* ============================================
+   OVERLAY & PANEL OPACITY FIX
+   Ensures all overlays, dropdowns, modals, and panels
+   have fully opaque backgrounds (fixes Tailwind v4 transparency issues)
+   ============================================ */
+
+/* Force opaque backgrounds for overlays and panels in dark mode */
+.dark [data-bits-dropdown-menu-content],
+.dark [data-bits-popover-content],
+.dark [data-bits-dialog-content],
+.dark [data-bits-sheet-content],
+.dark [data-bits-select-content] {
+	--tw-bg-opacity: 1 !important;
+}
+
+/* Modal and drawer backgrounds */
+.dark .modal > div:not(.bg-black\/60),
+.dark [class*="dark:bg-gray-850"],
+.dark [class*="dark:bg-gray-900"],
+.dark [class*="dark:bg-gray-800"] {
+	--tw-bg-opacity: 1;
+}
+
+/* Utility class for components that need explicit opacity */
+.bg-opaque {
+	--tw-bg-opacity: 1 !important;
+	opacity: 1 !important;
+}
+
+/* Pane/Panel backgrounds - ensure full opacity */
+.dark [data-panel],
+.dark [data-pane],
+.dark #controls-container {
+	--tw-bg-opacity: 1;
+}

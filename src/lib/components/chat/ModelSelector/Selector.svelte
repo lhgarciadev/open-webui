@@ -517,9 +517,10 @@
 	</DropdownMenu.Trigger>
 
 	<DropdownMenu.Content
-		class=" z-40 {$mobile
+		class=" z-[9999] {$mobile
 			? `w-full`
-			: `${className}`} max-w-[calc(100vw-1rem)] justify-start rounded-3xl  bg-white dark:bg-gray-850 dark:text-white shadow-xl outline-hidden border border-gray-100 dark:border-gray-800"
+			: `${className}`} max-w-[calc(100vw-1rem)] justify-start rounded-3xl bg-white dark:bg-gray-850 dark:text-white shadow-xl outline-hidden border border-gray-100 dark:border-gray-800 opacity-100"
+		style="--tw-bg-opacity: 1;"
 		transition={flyAndScale}
 		side={$mobile ? 'bottom' : 'bottom-start'}
 		sideOffset={2}

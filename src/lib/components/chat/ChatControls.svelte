@@ -246,14 +246,16 @@
 			showControls.set(false);
 		}}
 		collapsible={true}
-		class=" z-10 bg-white dark:bg-gray-850"
+		class="z-50 bg-white dark:bg-gray-850"
+		style="--tw-bg-opacity: 1; opacity: 1;"
 	>
 		{#if $showControls}
 			<div class="flex max-h-full min-h-full">
 				<div
 					class="w-full {($showOverview || $showArtifacts || $showEmbeds) && !$showCallOverlay
-						? ' '
-						: 'px-4 py-3 bg-white dark:shadow-lg dark:bg-gray-850 '} z-40 pointer-events-auto overflow-y-auto scrollbar-hidden"
+						? 'bg-white dark:bg-gray-850'
+						: 'px-4 py-3 bg-white dark:bg-gray-850 dark:shadow-lg'} z-40 pointer-events-auto overflow-y-auto scrollbar-hidden"
+					style="--tw-bg-opacity: 1;"
 					id="controls-container"
 				>
 					{#if $showCallOverlay}

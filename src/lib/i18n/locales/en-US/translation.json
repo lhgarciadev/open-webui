@@ -1937,6 +1937,7 @@
 	"Voice": "",
 	"Voice Input": "",
 	"Voice mode": "",
+	"Voice mode will use browser speech synthesis. For better quality, configure TTS in Settings > Audio.": "",
 	"Voice Mode Custom Prompt": "",
 	"Voice Mode Prompt": "",
 	"Warning": "",

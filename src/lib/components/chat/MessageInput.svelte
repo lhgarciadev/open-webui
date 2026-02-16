@@ -1863,6 +1863,18 @@
 
 																stream = null;
 
+																// Check TTS configuration and show helpful warning if not configured
+																const hasTTSEngine = $config?.audio?.tts?.engine !== '' && $config?.audio?.tts?.engine !== undefined;
+																const hasUserTTSEngine = $settings.audio?.tts?.engine === 'browser-kokoro';
+
+																if (!hasTTSEngine && !hasUserTTSEngine) {
+																	// No TTS configured - will use browser speechSynthesis as fallback
+																	toast.info(
+																		$i18n.t('Voice mode will use browser speech synthesis. For better quality, configure TTS in Settings > Audio.'),
+																		{ duration: 5000 }
+																	);
+																}
+
 																if ($settings.audio?.tts?.engine === 'browser-kokoro') {
 																	// If the user has not initialized the TTS worker, initialize it
 																	if (!$TTSWorker) {

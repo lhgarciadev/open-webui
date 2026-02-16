@@ -46,7 +46,8 @@
 
 	<DropdownMenu.Content
 		strategy="fixed"
-		class="w-full max-w-[210px] text-sm rounded-2xl p-1 z-[9999999] bg-white dark:bg-gray-850 dark:text-white shadow-lg border border-gray-100  dark:border-gray-800"
+		class="w-full max-w-[210px] text-sm rounded-2xl p-1 z-[9999999] bg-white dark:bg-gray-850 dark:text-white shadow-lg border border-gray-100 dark:border-gray-800 opacity-100"
+		style="--tw-bg-opacity: 1;"
 		sideOffset={-2}
 		side="bottom"
 		align="end"

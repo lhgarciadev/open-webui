@@ -68,7 +68,8 @@
 
 			<div class="text-center relative">
 				<h1
-					class="text-6xl md:text-7xl font-secondary font-light tracking-tight text-transparent bg-clip-text bg-gradient-to-b from-gray-100 to-gray-500/80 pb-2"
+					class="text-6xl md:text-7xl font-secondary font-light tracking-tight pb-2"
+					style="background: linear-gradient(to bottom, rgb(236, 236, 236), rgba(155, 155, 155, 0.8)); -webkit-background-clip: text; background-clip: text; color: transparent;"
 				>
 					{APP_NAME}
 				</h1>

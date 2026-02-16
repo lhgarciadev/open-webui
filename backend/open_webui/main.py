@@ -92,6 +92,7 @@ from open_webui.routers import (
     evaluations,
     skills,
     tools,
+    pricing,
     users,
     utils,
     scim,
@@ -539,6 +540,7 @@ from open_webui.utils.oauth import (
 )
 from open_webui.utils.security_headers import SecurityHeadersMiddleware
 from open_webui.utils.redis import get_redis_connection
+from open_webui.utils.pricing import pricing_refresh_loop
 
 from open_webui.tasks import (
     redis_task_command_listener,
@@ -637,6 +639,7 @@ async def lifespan(app: FastAPI):
         limiter.total_tokens = THREAD_POOL_SIZE
 
     asyncio.create_task(periodic_usage_pool_cleanup())
+    app.state.pricing_task = asyncio.create_task(pricing_refresh_loop())
 
     if app.state.config.ENABLE_BASE_MODELS_CACHE:
         await get_all_models(
@@ -663,6 +666,8 @@ async def lifespan(app: FastAPI):
 
     if hasattr(app.state, "redis_task_command_listener"):
         app.state.redis_task_command_listener.cancel()
+    if hasattr(app.state, "pricing_task"):
+        app.state.pricing_task.cancel()
 
 
 app = FastAPI(
@@ -1477,6 +1482,7 @@ app.include_router(notes.router, prefix="/api/v1/notes", tags=["notes"])
 
 
 app.include_router(models.router, prefix="/api/v1/models", tags=["models"])
+app.include_router(pricing.router, prefix="/api/v1/pricing", tags=["pricing"])
 app.include_router(knowledge.router, prefix="/api/v1/knowledge", tags=["knowledge"])
 app.include_router(prompts.router, prefix="/api/v1/prompts", tags=["prompts"])
 app.include_router(tools.router, prefix="/api/v1/tools", tags=["tools"])

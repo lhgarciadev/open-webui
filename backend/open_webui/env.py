@@ -768,6 +768,17 @@ else:
     except Exception:
         AIOHTTP_CLIENT_TIMEOUT_MODEL_LIST = 10
 
+# Pricing (pricepertoken)
+PRICEPERTOKEN_MCP_URL = os.environ.get(
+    "PRICEPERTOKEN_MCP_URL", "https://api.pricepertoken.com/mcp/mcp"
+)
+PRICING_REFRESH_INTERVAL_SECONDS = int(
+    os.environ.get("PRICING_REFRESH_INTERVAL_SECONDS", "43200")
+)
+PRICING_CACHE_TTL_SECONDS = int(
+    os.environ.get("PRICING_CACHE_TTL_SECONDS", "86400")
+)
+
 
 AIOHTTP_CLIENT_TIMEOUT_TOOL_SERVER_DATA = os.environ.get(
     "AIOHTTP_CLIENT_TIMEOUT_TOOL_SERVER_DATA", "10"

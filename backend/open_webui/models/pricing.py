@@ -2,9 +2,9 @@ import time
 from typing import Optional
 
 from pydantic import BaseModel, ConfigDict
-from sqlalchemy import BigInteger, Column, Float, Text
+from sqlalchemy import BigInteger, Column, Float, JSON, Text
 
-from open_webui.internal.db import Base, JSONField, get_db_context
+from open_webui.internal.db import Base, get_db_context
 
 
 class ModelPricing(Base):
@@ -17,7 +17,7 @@ class ModelPricing(Base):
     context_window = Column(BigInteger, nullable=True)
     updated_at = Column(BigInteger)
     source = Column(Text)
-    raw = Column(JSONField, nullable=True)
+    raw = Column(JSON, nullable=True)
 
 
 class ModelPricingModel(BaseModel):

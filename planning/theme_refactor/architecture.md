@@ -1,59 +1,104 @@
 # Theme System Architecture
 
+> **UPDATED**: 2026-02-16 - Architecture revised after discovering Tailwind v4 compilation issue.
+
 ## Overview
+
 This document outlines the architectural changes required to implement a robust theme system with consistent background handling.
 
-## Component Changes
+**Critical Discovery**: The original architecture was correct conceptually, but `[data-theme]` selectors in `app.css` are **not compiled** by Tailwind CSS v4. The solution is to move them to `tailwind.css` inside `@layer base`.
 
-### 1. `src/app.css`
-- **Introduction of `[data-theme]` selectors**:
-    - `[data-theme="light"]` (Default variables)
-    - `[data-theme="dark"]` (Dark mode overrides)
-    - `[data-theme="oled-dark"]` (Deep black background overrides)
-    - `[data-theme="her"]` (Specific branding colors)
-- **Variable Definitions**:
-    - Explicitly define `--color-surface-base`, `--color-surface-elevated`, `--color-surface-overlay` effectively for each theme.
-    - Ensure Tailwind classes like `bg-gray-900` map correctly to these variables or their palette equivalents.
+## Revised Component Changes
 
-### 2. `tailwind.config.js` (Verification)
-- Ensure `colors.surface` maps to CSS variables:
-    ```javascript
-    surface: {
-        base: 'var(--color-surface-base)',
-        elevated: 'var(--color-surface-elevated)',
-        overlay: 'var(--color-surface-overlay)',
-    }
-    ```
-- Ensure `colors.gray` maps to variables that change with the theme (already seems to be done, check specifics).
+### 1. `src/tailwind.css` (PRIMARY CHANGE)
 
-### 3. `src/lib/components/chat/Settings/General.svelte`
-- **Refactor `applyTheme`**:
-    - Remove manual `document.documentElement.style.setProperty` calls.
-    - Instead, set `document.documentElement.setAttribute('data-theme', themeName)`.
-    - Ensure `.dark` class is toggled correctly based on whether the theme is "dark-like".
+**Why here?**: Tailwind v4 only compiles CSS that is:
+- Inside `@layer` directives
+- Using `@apply` utilities
+- Standard CSS in the same file as `@import 'tailwindcss'`
 
-## Data Flow
-1. User selects theme in `General.svelte`.
-2. `themeChangeHandler` updates store and `localStorage`.
-3. `applyTheme` is called.
-4. `applyTheme` updates `DOM attributes` (`class="dark"`, `data-theme="..."`).
-5. Browser re-paints using new CSS variables defined in `app.css`.
-
-## CSS Variable Structure
+**Add inside `@layer base`:**
 ```css
-:root, [data-theme="light"] {
-    --color-surface-base: var(--color-gray-50); /* or white */
-    --color-text-primary: var(--color-gray-900);
-}
+@layer base {
+  :root, [data-theme="light"] {
+    --color-surface-base: 249 250 251;
+    --color-surface-elevated: 255 255 255;
+    /* ... */
+  }
 
-[data-theme="dark"], .dark {
-    --color-surface-base: var(--color-gray-900);
-    --color-text-primary: var(--color-gray-50);
-}
+  .dark, [data-theme="dark"] {
+    --color-surface-base: 23 23 23;
+    /* ... */
+  }
 
-[data-theme="oled-dark"] {
-    --color-surface-base: #000000;
-    --color-surface-elevated: #101010;
-    /* ... other overrides ... */
+  [data-theme="oled-dark"] {
+    --color-surface-base: 0 0 0;
+    /* ... */
+  }
+
+  [data-theme="her"] {
+    --color-surface-base: 255 250 250;
+    /* ... */
+  }
 }
 ```
+
+### 2. `src/app.css` (CLEANUP)
+
+- **REMOVE**: All `[data-theme]` selector blocks (now in tailwind.css)
+- **REMOVE**: Hardcoded `body { background: #fff }` and `.dark body { background: #171717 }`
+- **ADD**: Variable-based body style:
+  ```css
+  body {
+    background-color: rgb(var(--color-surface-base));
+    color: rgb(var(--color-text-primary));
+  }
+  ```
+
+### 3. `tailwind.config.js` (NO CHANGES NEEDED)
+
+Already correctly configured:
+```javascript
+surface: {
+    base: 'var(--color-surface-base)',
+    elevated: 'var(--color-surface-elevated)',
+    overlay: 'var(--color-surface-overlay)',
+}
+```
+
+### 4. `General.svelte` (NO CHANGES NEEDED)
+
+The `applyTheme` function is already correct:
+- Sets `data-theme` attribute
+- Toggles `.dark` class appropriately
+- The issue was CSS not being compiled, not JS logic
+
+## Updated Data Flow
+
+```
+1. User selects theme in General.svelte
+         │
+         ▼
+2. themeChangeHandler() called
+         │
+         ├── localStorage.setItem('theme', _theme)
+         │
+         └── applyTheme(_theme)
+                  │
+                  ├── Sets data-theme attribute on <html>
+                  │
+                  └── Toggles .dark class for Tailwind utilities
+                           │
+                           ▼
+3. CSS Variables in @layer base (tailwind.css) ACTIVATE
+         │
+         ▼
+4. body { background: rgb(var(--color-surface-base)) } RESPONDS
+         │
+         ▼
+5. All components using surface-* utilities update
+```
+
+## Implementation Reference
+
+See `IMPLEMENTATION_PLAN.md` for step-by-step implementation instructions.

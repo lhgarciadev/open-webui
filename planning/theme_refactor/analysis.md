@@ -1,30 +1,22 @@
 # Theme System Analysis: AS-IS vs TO-BE
 
-## AS-IS (Current State)
+> **SUPERSEDED**: This document has been replaced by `ASIS_TOBE_ANALYSIS.md` which contains the complete root cause analysis and solution.
 
-### Implementation
-- **Location**: `src/lib/components/chat/Settings/General.svelte` in `applyTheme` function.
-- **Mechanism**:
-    - Manually toggles `.dark` class on `html`.
-    - Hardcodes CSS variable overrides via JS for specific themes (`oled-dark`, `her`, `dark`).
-    - CSS variables (e.g., `--color-gray-800`) are manipulated directly in the DOM style.
-    - `src/app.css` contains some `:root` variables but relies on `.dark` class for dark mode overrides.
+## Summary of Findings (2026-02-16)
 
-### Issues
-- **Inconsistency**: Background colors ("fondo") are not consistently applied across different "types" of themes because they rely on ad-hoc JS overrides rather than a structured CSS system.
-- **Maintenance**: Adding a new theme requires modifying JS logic in the settings component and manual variable overrides.
-- **Scalability**: "Fondo por tipo" (Background by type) is difficult to implement with the current manual override approach.
-- **Performance**: JS-based style injection triggers unnecessary repaints/style calcs compared to pure CSS class switching.
+### Root Cause Identified
 
-## TO-BE (Desired State)
+The previous analysis was correct about the architecture but **missed the critical bug**: CSS variables defined in `[data-theme]` selectors in `app.css` are **NOT being compiled** by Tailwind CSS v4.
+
+**Evidence:**
+- `dataThemeRulesCount: 8` in browser (all from Sonner/Tippy libraries)
+- Zero rules from `app.css` `[data-theme]` selectors in final CSS
+- `--color-surface-base` always returns `15 23 42` regardless of theme
 
 ### Solution
-- **CSS-First Architecture**: Move theme definitions out of JS and into `src/app.css` (or separate CSS files).
-- **Data-Theme Attribute**: Use `data-theme="oled-dark"`, `data-theme="her"`, etc., on the `html` element instead of just `.dark`.
-- **Scoped Variables**: Define all color variables (surface, text, brand) within these `[data-theme="..."]` scopes in CSS.
-- **Simplified JS**: The `applyTheme` function should only handle switching the `data-theme` attribute and the `.dark` class (for Tailwind dark mode compatibility).
 
-### Benefits
-- **Consistent Backgrounds**: Each theme type will have its specific background variables defined in CSS.
-- **Easy Extension**: Adding a theme is just adding a new CSS block.
-- **Cleaner Code**: Removes specific style manipulation from `General.svelte`.
+Move all `[data-theme]` CSS variable definitions to `src/tailwind.css` inside `@layer base` block. This ensures Tailwind v4 includes them in the compiled output.
+
+**See:**
+- `ASIS_TOBE_ANALYSIS.md` - Detailed analysis with diagrams
+- `IMPLEMENTATION_PLAN.md` - Step-by-step fix instructions

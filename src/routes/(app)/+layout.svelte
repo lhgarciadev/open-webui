@@ -323,8 +323,7 @@
 {#if $user}
 	<div class="app relative">
 		<div
-			class=" text-gray-100 bg-[#050505] h-screen max-h-[100dvh] overflow-auto flex flex-row justify-end"
-			style="background: radial-gradient(ellipse at 50% 0%, #1a1a2e 0%, #0a0a0f 50%, #050505 100%);"
+			class="text-gray-700 dark:text-gray-100 bg-[rgb(var(--color-surface-base))] h-screen max-h-[100dvh] overflow-auto flex flex-row justify-end"
 		>
 			{#if !['user', 'admin'].includes($user?.role)}
 				<AccountPending />

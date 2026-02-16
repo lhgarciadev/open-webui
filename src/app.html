@@ -156,15 +156,13 @@
 	}
 
 	#splash-screen {
-		background: #fff;
+		/* Usa variable CSS con fallback para carga inicial */
+		background: rgb(var(--color-surface-base, 255 255 255));
 	}
 
+	/* Fallback explicito para dark antes de que JS cargue */
 	html.dark #splash-screen {
-		background: #000;
-	}
-
-	html.her #splash-screen {
-		background: #983724;
+		background: rgb(var(--color-surface-base, 23 23 23));
 	}
 
 	#logo-her {

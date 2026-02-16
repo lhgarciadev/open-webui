@@ -72,3 +72,129 @@
 }
 
 @custom-variant hover (&:hover);
+
+/* ============================================
+   THEME SYSTEM - CSS Custom Properties
+   IMPORTANTE: Estas variables deben estar FUERA de @layer
+   para que se incluyan en el CSS compilado sin tree-shaking.
+   ============================================ */
+
+/* Light Theme (Default) */
+:root,
+[data-theme="light"] {
+	/* Surface Colors */
+	--color-surface-base: 249 250 251;
+	--color-surface-elevated: 255 255 255;
+	--color-surface-overlay: 229 231 235;
+
+	/* Text Colors */
+	--color-text-primary: 15 23 42;
+	--color-text-secondary: 71 85 105;
+	--color-text-muted: 100 116 139;
+
+	/* Gray Scale */
+	--color-gray-50: 249 249 249;
+	--color-gray-100: 236 236 236;
+	--color-gray-200: 227 227 227;
+	--color-gray-300: 205 205 205;
+	--color-gray-400: 180 180 180;
+	--color-gray-500: 155 155 155;
+	--color-gray-600: 103 103 103;
+	--color-gray-700: 78 78 78;
+	--color-gray-800: 51 51 51;
+	--color-gray-850: 38 38 38;
+	--color-gray-900: 23 23 23;
+	--color-gray-950: 13 13 13;
+
+	/* Brand Colors - Cognitia Blue */
+	--color-brand-50: 239 246 255;
+	--color-brand-100: 219 234 254;
+	--color-brand-200: 191 219 254;
+	--color-brand-300: 147 197 253;
+	--color-brand-400: 96 165 250;
+	--color-brand-500: 59 130 246;
+	--color-brand-600: 37 99 235;
+	--color-brand-700: 29 78 216;
+	--color-brand-800: 30 64 175;
+	--color-brand-900: 30 58 138;
+}
+
+/* Dark Theme */
+.dark,
+[data-theme="dark"] {
+	/* Surface Colors */
+	--color-surface-base: 23 23 23;
+	--color-surface-elevated: 38 38 38;
+	--color-surface-overlay: 51 51 51;
+
+	/* Text Colors */
+	--color-text-primary: 248 250 252;
+	--color-text-secondary: 148 163 184;
+	--color-text-muted: 100 116 139;
+
+	/* Gray Scale - Same values, context changes */
+	--color-gray-50: 249 249 249;
+	--color-gray-100: 236 236 236;
+	--color-gray-200: 227 227 227;
+	--color-gray-300: 205 205 205;
+	--color-gray-400: 180 180 180;
+	--color-gray-500: 155 155 155;
+	--color-gray-600: 103 103 103;
+	--color-gray-700: 78 78 78;
+	--color-gray-800: 51 51 51;
+	--color-gray-850: 38 38 38;
+	--color-gray-900: 23 23 23;
+	--color-gray-950: 13 13 13;
+}
+
+/* OLED Dark Theme - True Black */
+[data-theme="oled-dark"] {
+	/* Surface Colors - Pure black for OLED screens */
+	--color-surface-base: 0 0 0;
+	--color-surface-elevated: 5 5 5;
+	--color-surface-overlay: 16 16 16;
+
+	/* Text Colors */
+	--color-text-primary: 248 250 252;
+	--color-text-secondary: 148 163 184;
+	--color-text-muted: 100 116 139;
+
+	/* Gray Scale - Deep blacks */
+	--color-gray-800: 16 16 16;
+	--color-gray-850: 5 5 5;
+	--color-gray-900: 0 0 0;
+	--color-gray-950: 0 0 0;
+}
+
+/* Her Theme - Rose/Pink */
+[data-theme="her"] {
+	/* Surface Colors - Warm rose tints */
+	--color-surface-base: 255 250 250;
+	--color-surface-elevated: 255 255 255;
+	--color-surface-overlay: 255 228 230;
+
+	/* Text Colors */
+	--color-text-primary: 23 23 23;
+	--color-text-secondary: 71 85 105;
+	--color-text-muted: 100 116 139;
+
+	/* Brand Colors - Rose palette */
+	--color-brand-50: 255 241 242;
+	--color-brand-100: 255 228 230;
+	--color-brand-200: 254 205 211;
+	--color-brand-300: 253 164 175;
+	--color-brand-400: 251 113 133;
+	--color-brand-500: 244 63 94;
+	--color-brand-600: 225 29 72;
+	--color-brand-700: 190 18 60;
+	--color-brand-800: 159 18 57;
+	--color-brand-900: 136 19 55;
+}
+
+/* Semantic Colors - Shared across all themes */
+:root {
+	--color-success: 34 197 94;
+	--color-warning: 245 158 11;
+	--color-error: 239 68 68;
+	--color-info: 59 130 246;
+}

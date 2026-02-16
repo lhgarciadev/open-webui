@@ -587,7 +587,7 @@
 							</button>
 							<!-- All button -->
 							<button
-								class="min-w-fit outline-none px-2 py-1 rounded-lg transition {selectedCategoryFilter === ''
+								class="min-w-fit outline-none px-2 py-1 rounded-lg transition flex items-center gap-1 {selectedCategoryFilter === ''
 									? 'bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-white'
 									: 'text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800'}"
 								aria-pressed={selectedCategoryFilter === ''}
@@ -596,12 +596,13 @@
 								}}
 							>
 								{$i18n.t('All')}
+								<span class="text-[10px] opacity-70">{items.filter((item) => !(item.model?.info?.meta?.hidden ?? false)).length}</span>
 							</button>
 
 							<!-- Favorites (if pinned models exist) -->
 							{#if pinnedModels.length > 0}
 								<button
-									class="min-w-fit outline-none px-2 py-1 rounded-lg transition {selectedCategoryFilter === 'favorites'
+									class="min-w-fit outline-none px-2 py-1 rounded-lg transition flex items-center gap-1 {selectedCategoryFilter === 'favorites'
 										? 'bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-white'
 										: 'text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800'}"
 									aria-pressed={selectedCategoryFilter === 'favorites'}
@@ -610,6 +611,7 @@
 									}}
 								>
 									⭐ {$i18n.t('Favorites')}
+									<span class="text-[10px] opacity-70">{pinnedModels.length}</span>
 								</button>
 							{/if}
 
@@ -622,7 +624,7 @@
 								{#if categoryModels.length > 0}
 									<Tooltip content={category.description}>
 										<button
-											class="min-w-fit outline-none px-2 py-1 rounded-lg transition {selectedCategoryFilter === category.id
+											class="min-w-fit outline-none px-2 py-1 rounded-lg transition flex items-center gap-1 {selectedCategoryFilter === category.id
 												? 'bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-white'
 												: 'text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800'}"
 											aria-pressed={selectedCategoryFilter === category.id}
@@ -631,6 +633,7 @@
 											}}
 										>
 											{category.emoji} {category.name.split(' ')[0]}
+											<span class="text-[10px] opacity-70">{categoryModels.length}</span>
 										</button>
 									</Tooltip>
 								{/if}

@@ -55,6 +55,7 @@ FALLBACK_PRICING_DATA = [
     {"model_id": "o1", "provider": "openai", "input_cost_per_million": 15.00, "output_cost_per_million": 60.00, "context_window": 200000},
     {"model_id": "o1-mini", "provider": "openai", "input_cost_per_million": 3.00, "output_cost_per_million": 12.00, "context_window": 128000},
     {"model_id": "o1-pro", "provider": "openai", "input_cost_per_million": 150.00, "output_cost_per_million": 600.00, "context_window": 200000},
+    {"model_id": "o3", "provider": "openai", "input_cost_per_million": 10.00, "output_cost_per_million": 40.00, "context_window": 200000},
     {"model_id": "o3-mini", "provider": "openai", "input_cost_per_million": 1.10, "output_cost_per_million": 4.40, "context_window": 200000},
     {"model_id": "o3-mini-2025-01-31", "provider": "openai", "input_cost_per_million": 1.10, "output_cost_per_million": 4.40, "context_window": 200000},
     {"model_id": "o4-mini", "provider": "openai", "input_cost_per_million": 1.10, "output_cost_per_million": 4.40, "context_window": 200000},
@@ -95,11 +96,20 @@ FALLBACK_PRICING_DATA = [
     # DeepSeek models
     {"model_id": "deepseek-chat", "provider": "deepseek", "input_cost_per_million": 0.27, "output_cost_per_million": 1.10, "context_window": 64000},
     {"model_id": "deepseek-reasoner", "provider": "deepseek", "input_cost_per_million": 0.55, "output_cost_per_million": 2.19, "context_window": 64000},
+    # OpenAI Special Models (audio, realtime, image, moderation, search)
+    {"model_id": "gpt-audio-mini", "provider": "openai", "input_cost_per_million": 2.50, "output_cost_per_million": 10.00, "context_window": 128000},
+    {"model_id": "gpt-realtime-mini", "provider": "openai", "input_cost_per_million": 5.00, "output_cost_per_million": 20.00, "context_window": 128000},
+    {"model_id": "gpt-image-1", "provider": "openai", "input_cost_per_million": 5.00, "output_cost_per_million": 20.00, "context_window": 128000},
+    {"model_id": "omni-moderation-latest", "provider": "openai", "input_cost_per_million": 0.0, "output_cost_per_million": 0.0, "context_window": 32000},
+    {"model_id": "gpt-4o-search-preview", "provider": "openai", "input_cost_per_million": 2.50, "output_cost_per_million": 10.00, "context_window": 128000},
     # Local/Free models (cognitia)
     {"model_id": "cognitia_llm_zerogpu.phi3", "provider": "cognitia", "input_cost_per_million": 0.0, "output_cost_per_million": 0.0, "context_window": 4096},
     {"model_id": "cognitia_llm_zerogpu.qwen2.5-7b", "provider": "cognitia", "input_cost_per_million": 0.0, "output_cost_per_million": 0.0, "context_window": 32768},
     {"model_id": "cognitia_llm_zerogpu.smollm2", "provider": "cognitia", "input_cost_per_million": 0.0, "output_cost_per_million": 0.0, "context_window": 8192},
+    {"model_id": "cognitia_llm_zerogpu.smollm2-1.7b", "provider": "cognitia", "input_cost_per_million": 0.0, "output_cost_per_million": 0.0, "context_window": 8192},
     {"model_id": "cognitia_llm_zerogpu.mistral-7b", "provider": "cognitia", "input_cost_per_million": 0.0, "output_cost_per_million": 0.0, "context_window": 32768},
+    # Ollama local models (with :latest suffix)
+    {"model_id": "phi3:latest", "provider": "ollama", "input_cost_per_million": 0.0, "output_cost_per_million": 0.0, "context_window": 4096},
 ]
 
 

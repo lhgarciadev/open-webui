@@ -182,7 +182,7 @@
 
 <!-- Header with title and period selector -->
 <div
-	class="pt-0.5 pb-1 gap-1 flex flex-row justify-between items-center sticky top-0 z-10 bg-white dark:bg-gray-900"
+	class="pt-0.5 pb-1 gap-1 flex flex-row justify-between items-center sticky top-0 z-10 bg-gray-50 dark:bg-gray-950"
 >
 	<div class="text-lg font-medium px-0.5">
 		{$i18n.t('Analytics')}

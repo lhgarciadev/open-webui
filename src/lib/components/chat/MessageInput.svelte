@@ -1148,7 +1148,7 @@
 						<!-- Queued messages display -->
 						{#if messageQueue.length > 0}
 							<div
-								class="mb-1 mx-2 py-0.5 px-1.5 rounded-2xl bg-gray-900/60 border border-gray-800/50 overflow-hidden"
+								class="mb-1 mx-2 py-0.5 px-1.5 rounded-2xl bg-gray-100 dark:bg-gray-900 border border-gray-200 dark:border-gray-800 overflow-hidden"
 							>
 								{#each messageQueue as queuedMessage (queuedMessage.id)}
 									<QueuedMessageItem
@@ -1164,9 +1164,14 @@
 
 						<div
 							id="message-input-container"
-							class="flex-1 flex flex-col relative w-full rounded-[2.5rem] border transition px-2 py-1 text-gray-100 backdrop-blur-3xl bg-[#0a0a0a]/80 shadow-[0_10px_40px_-5px_rgba(0,0,0,0.5)] ring-1 ring-white/10 {$temporaryChatEnabled
-								? 'border-dashed border-gray-500/30 hover:border-gray-400/50 focus-within:border-blue-500/50'
-								: 'border-white/5 hover:border-white/10 focus-within:border-blue-500/40 focus-within:shadow-[0_0_30px_rgba(59,130,246,0.3)]'}"
+							class="flex-1 flex flex-col relative w-full rounded-[2.5rem] border transition px-2 py-1 backdrop-blur-3xl
+								text-gray-900 dark:text-gray-100
+								bg-white/95 dark:bg-[rgb(var(--color-chatbox-bg))]
+								shadow-lg dark:shadow-[var(--color-chatbox-shadow)]
+								ring-1 ring-gray-200/50 dark:ring-[rgb(var(--color-chatbox-ring))]
+								{$temporaryChatEnabled
+									? 'border-dashed border-gray-300 dark:border-gray-500/30 hover:border-gray-400 dark:hover:border-gray-400/50 focus-within:border-blue-500/50'
+									: 'border-gray-200 dark:border-white/5 hover:border-gray-300 dark:hover:border-white/10 focus-within:border-blue-500/40 focus-within:shadow-[0_0_30px_rgba(59,130,246,0.2)]'}"
 							dir={$settings?.chatDirection ?? 'auto'}
 						>
 							{#if atSelectedModel !== undefined}
@@ -1306,7 +1311,7 @@
 											<div class="mt-2.5 mr-3">
 												<button
 													type="button"
-													class="p-1 rounded-lg hover:bg-gray-100/50 dark:hover:bg-gray-800/50"
+													class="p-1 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800"
 													aria-label="Expand input"
 													on:click={async () => {
 														showInputModal = true;

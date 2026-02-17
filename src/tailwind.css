@@ -198,3 +198,61 @@
 	--color-error: 239 68 68;
 	--color-info: 59 130 246;
 }
+
+/* ============================================
+   CHATBOX & TITLE COLORS - Theme-aware styling
+   ============================================ */
+
+/* Chatbox & Title - Light Theme */
+:root,
+[data-theme="light"] {
+	/* Chatbox */
+	--color-chatbox-bg: 255 255 255;
+	--color-chatbox-text: 23 23 23;
+	--color-chatbox-border: 229 231 235;
+	--color-chatbox-ring: 59 130 246 / 0.2;
+	--color-chatbox-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.1);
+	/* Title Gradient */
+	--color-title-gradient-start: 55 65 81;
+	--color-title-gradient-end: 107 114 128;
+}
+
+/* Chatbox & Title - Dark Theme */
+.dark,
+[data-theme="dark"] {
+	/* Chatbox */
+	--color-chatbox-bg: 10 10 10 / 0.8;
+	--color-chatbox-text: 243 244 246;
+	--color-chatbox-border: 255 255 255 / 0.05;
+	--color-chatbox-ring: 255 255 255 / 0.1;
+	--color-chatbox-shadow: 0 10px 40px -5px rgba(0, 0, 0, 0.5);
+	/* Title Gradient */
+	--color-title-gradient-start: 236 236 236;
+	--color-title-gradient-end: 155 155 155;
+}
+
+/* Chatbox & Title - OLED Dark Theme */
+[data-theme="oled-dark"] {
+	/* Chatbox */
+	--color-chatbox-bg: 0 0 0 / 0.9;
+	--color-chatbox-text: 248 250 252;
+	--color-chatbox-border: 255 255 255 / 0.05;
+	--color-chatbox-ring: 255 255 255 / 0.1;
+	--color-chatbox-shadow: 0 10px 40px -5px rgba(0, 0, 0, 0.8);
+	/* Title Gradient */
+	--color-title-gradient-start: 236 236 236;
+	--color-title-gradient-end: 155 155 155;
+}
+
+/* Chatbox & Title - Her Theme */
+[data-theme="her"] {
+	/* Chatbox */
+	--color-chatbox-bg: 255 250 250;
+	--color-chatbox-text: 23 23 23;
+	--color-chatbox-border: 254 205 211;
+	--color-chatbox-ring: 244 63 94 / 0.2;
+	--color-chatbox-shadow: 0 4px 20px -2px rgba(244, 63, 94, 0.1);
+	/* Title Gradient */
+	--color-title-gradient-start: 136 19 55;
+	--color-title-gradient-end: 190 18 60;
+}

@@ -122,7 +122,7 @@
 			<div class="text-center relative">
 				<h1
 					class="text-6xl md:text-7xl font-secondary font-light tracking-tight pb-2"
-					style="background: linear-gradient(to bottom, rgb(236, 236, 236), rgba(155, 155, 155, 0.8)); -webkit-background-clip: text; background-clip: text; color: transparent;"
+					style="background: linear-gradient(to bottom, rgb(var(--color-title-gradient-start)), rgb(var(--color-title-gradient-end) / 0.8)); -webkit-background-clip: text; background-clip: text; color: transparent;"
 				>
 					{APP_NAME}
 				</h1>

@@ -494,7 +494,7 @@
 		id="model-selector-{id}-button"
 	>
 		<div
-			class="flex w-full text-left px-3 py-1.5 rounded-full bg-gray-100/50 dark:bg-gray-900/30 hover:bg-gray-200/50 dark:hover:bg-gray-800/50 transition truncate {triggerClassName} justify-between {($settings?.highContrastMode ??
+			class="flex w-full text-left px-3 py-1.5 rounded-full bg-gray-100 dark:bg-gray-900 hover:bg-gray-200 dark:hover:bg-gray-800 transition truncate {triggerClassName} justify-between {($settings?.highContrastMode ??
 			false)
 				? 'dark:placeholder-gray-100 placeholder-gray-800'
 				: 'placeholder-gray-400'}"
@@ -666,7 +666,7 @@
 							{#if category && categoryModels.length > 0}
 								<!-- Category Header -->
 								<button
-									class="flex w-full items-center gap-2 px-3 py-1.5 text-xs font-semibold text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors"
+									class="flex w-full items-center gap-2 px-3 py-1.5 text-xs font-semibold text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
 									on:click|stopPropagation={() => toggleCategory(categoryId)}
 								>
 									<span class="flex items-center gap-1.5">

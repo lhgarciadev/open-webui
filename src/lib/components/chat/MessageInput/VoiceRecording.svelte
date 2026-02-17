@@ -393,7 +393,7 @@
 <div
 	bind:clientWidth={containerWidth}
 	class="{loading
-		? ' bg-gray-100/50 dark:bg-gray-850/50'
+		? ' bg-gray-100 dark:bg-gray-850'
 		: 'bg-indigo-300/10 dark:bg-indigo-500/10 '} rounded-full flex justify-between {className}"
 >
 	<div class="flex items-center mr-1">
@@ -402,7 +402,7 @@
 			class="p-1.5
 
             {loading
-				? ' bg-gray-200 dark:bg-gray-700/50'
+				? ' bg-gray-200 dark:bg-gray-700'
 				: 'bg-indigo-400/20 text-indigo-600 dark:text-indigo-300 '} 
 
 

@@ -45,7 +45,8 @@
 
 						<div class="my-2">
 							{$i18n.t(
-								'Your entire contribution will go directly to the plugin developer; {{APP_NAME}} does not take any percentage. However, the chosen funding platform might have its own fees.', { APP_NAME }
+								'Your entire contribution will go directly to the plugin developer; {{APP_NAME}} does not take any percentage. However, the chosen funding platform might have its own fees.',
+								{ APP_NAME }
 							)}
 						</div>
 

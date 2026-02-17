@@ -289,7 +289,7 @@
 				}, '')} • {APP_NAME}</title
 		>
 	{:else}
-	<title>#{channel?.name ?? 'Channel'} • {APP_NAME}</title>
+		<title>#{channel?.name ?? 'Channel'} • {APP_NAME}</title>
 	{/if}
 </svelte:head>
 

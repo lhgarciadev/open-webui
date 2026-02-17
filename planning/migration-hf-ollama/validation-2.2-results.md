@@ -9,22 +9,26 @@
 ## Checklist de Validacion
 
 ### HARDWARE
+
 - [x] UI muestra ZeroGPU (NVIDIA H200 - 70GB VRAM)
 - [x] Status: Running
 - [x] Sin errores de GPU en logs
 
 ### API
+
 - [x] Endpoint `/chat` responde correctamente
 - [x] Endpoint `/info` disponible con schema
 - [x] 4 modelos disponibles: phi3, qwen2.5-7b, smollm2-1.7b, mistral-7b
 - [x] Parametros configurables: max_tokens (64-2048), temperature (0.1-1.5)
 
 ### LATENCIA
+
 - [x] Cold start: ~6s (incluye adquisicion de GPU)
 - [x] Warm inference: ~1s (dentro del rango esperado 0.5-1.5s)
 - [x] SmolLM2 (1.7B): ~2.8s cold, mas rapido en warm
 
 ### CUOTA
+
 - [x] ZeroGPU activo (25 min/dia para PRO users)
 - [x] Hardware H200 confirmado
 
@@ -32,31 +36,34 @@
 
 ## Metricas de Performance
 
-| Metrica | Esperado | Obtenido | Status |
-|---------|----------|----------|--------|
-| Latencia cold | <10s | ~6s | PASS |
-| Latencia warm | <2s | ~1s | PASS |
-| HTTP Status | 200 | 200 | PASS |
-| Modelos disponibles | 4 | 4 | PASS |
-| Hardware | ZeroGPU | H200 70GB | PASS |
+| Metrica             | Esperado | Obtenido  | Status |
+| ------------------- | -------- | --------- | ------ |
+| Latencia cold       | <10s     | ~6s       | PASS   |
+| Latencia warm       | <2s      | ~1s       | PASS   |
+| HTTP Status         | 200      | 200       | PASS   |
+| Modelos disponibles | 4        | 4         | PASS   |
+| Hardware            | ZeroGPU  | H200 70GB | PASS   |
 
 ---
 
 ## Tests Ejecutados
 
 ### Test 1: API Status
+
 ```bash
 curl -s -o /dev/null -w "%{http_code}" https://juansquiroga-cognitia-llm.hf.space/
 # Resultado: 200
 ```
 
 ### Test 2: API Info
+
 ```bash
 curl -s https://juansquiroga-cognitia-llm.hf.space/info
 # Resultado: JSON con endpoint /chat y parametros
 ```
 
 ### Test 3: Inferencia Phi-3
+
 ```python
 from gradio_client import Client
 client = Client('Juansquiroga/cognitia-llm')
@@ -73,6 +80,7 @@ result = client.predict(
 ```
 
 ### Test 4: Inferencia SmolLM2
+
 ```python
 result = client.predict(
     message='Cual es 2+2?',
@@ -89,13 +97,13 @@ result = client.predict(
 
 ## Criterios de Exito
 
-| Criterio | Esperado | Resultado | Critico |
-|----------|----------|-----------|---------|
-| Hardware | ZeroGPU | H200 70GB | PASS |
-| Status | Running | Running | PASS |
-| Latencia | <2s | ~1s warm | PASS |
-| API responde | Si | Si | PASS |
-| Cuota | >0% | Activa | PASS |
+| Criterio     | Esperado | Resultado | Critico |
+| ------------ | -------- | --------- | ------- |
+| Hardware     | ZeroGPU  | H200 70GB | PASS    |
+| Status       | Running  | Running   | PASS    |
+| Latencia     | <2s      | ~1s warm  | PASS    |
+| API responde | Si       | Si        | PASS    |
+| Cuota        | >0%      | Activa    | PASS    |
 
 ---
 

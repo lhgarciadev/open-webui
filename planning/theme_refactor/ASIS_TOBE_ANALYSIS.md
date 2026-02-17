@@ -31,16 +31,25 @@ La aplicacion presenta **multiples problemas visuales criticos** que afectan la 
 | Admin components (5 archivos) | Various | `bg-white dark:bg-gray-900` inconsistente |
 
 **Codigo Actual (Sidebar.svelte:903):**
+
 ```svelte
-<div class="sidebar px-[0.5625rem] pt-2 pb-1.5 flex justify-between space-x-1 text-gray-600 dark:text-gray-400 sticky top-0 z-10 -mb-3">
-  <!-- SIN FONDO EXPLICITO - texto se superpone al hacer scroll -->
+<div
+	class="sidebar px-[0.5625rem] pt-2 pb-1.5 flex justify-between space-x-1 text-gray-600 dark:text-gray-400 sticky top-0 z-10 -mb-3"
+>
+	<!-- SIN FONDO EXPLICITO - texto se superpone al hacer scroll -->
 </div>
 ```
 
 **Workaround Actual (Linea 946-950):**
+
 ```svelte
-<div class="{scrollTop > 0 ? 'visible' : 'invisible'} sidebar-bg-gradient-to-b bg-linear-to-b from-gray-50 dark:from-gray-950 to-transparent from-50% pointer-events-none absolute inset-0 -z-10 -mb-6"></div>
+<div
+	class="{scrollTop > 0
+		? 'visible'
+		: 'invisible'} sidebar-bg-gradient-to-b bg-linear-to-b from-gray-50 dark:from-gray-950 to-transparent from-50% pointer-events-none absolute inset-0 -z-10 -mb-6"
+></div>
 ```
+
 El gradient tiene `-z-10` (detras del contenido) lo cual no previene superposicion.
 
 ---
@@ -50,6 +59,7 @@ El gradient tiene `-z-10` (detras del contenido) lo cual no previene superposici
 **Archivo:** `src/lib/components/chat/MessageInput.svelte`
 
 **Codigo Actual (Linea 1167-1169):**
+
 ```svelte
 <div id="message-input-container"
   class="flex-1 flex flex-col relative w-full rounded-[2.5rem] border transition px-2 py-1
@@ -75,15 +85,19 @@ El gradient tiene `-z-10` (detras del contenido) lo cual no previene superposici
 ### 3. PROBLEMA: Gradiente de Titulo Ilegible
 
 **Archivos Afectados:**
+
 - `src/lib/components/chat/Placeholder.svelte` (linea 125)
 - `src/lib/components/chat/ChatPlaceholder.svelte` (linea 72)
 
 **Codigo Actual:**
+
 ```svelte
-<h1 class="text-6xl md:text-7xl font-secondary font-light tracking-tight pb-2"
-    style="background: linear-gradient(to bottom, rgb(236, 236, 236), rgba(155, 155, 155, 0.8));
-           -webkit-background-clip: text; background-clip: text; color: transparent;">
-  {APP_NAME}
+<h1
+	class="text-6xl md:text-7xl font-secondary font-light tracking-tight pb-2"
+	style="background: linear-gradient(to bottom, rgb(236, 236, 236), rgba(155, 155, 155, 0.8));
+           -webkit-background-clip: text; background-clip: text; color: transparent;"
+>
+	{APP_NAME}
 </h1>
 ```
 
@@ -94,6 +108,7 @@ El gradient tiene `-z-10` (detras del contenido) lo cual no previene superposici
 ### 4. PROBLEMA: Transparencias que Causan Bleed-Through
 
 **Patron Problematico Encontrado en 15+ Archivos:**
+
 ```css
 /* Opacidades que causan texto superpuesto */
 bg-gray-100/50 dark:bg-gray-850/50   /* 50% opacity */
@@ -127,18 +142,21 @@ dark:hover:bg-gray-800/50            /* Hover con transparencia */
 ### 6. PROBLEMA: Colores Inconsistentes en Admin Panel
 
 **Componentes Admin usan paleta diferente:**
+
 ```svelte
 <!-- Patron en admin components -->
 class="... sticky top-0 z-10 bg-white dark:bg-gray-900"
 ```
 
 **Deberia ser consistente con sidebar:**
+
 ```svelte
 <!-- Patron correcto -->
 class="... sticky top-0 z-10 bg-gray-50 dark:bg-gray-950"
 ```
 
 **Archivos Afectados:**
+
 - Leaderboard.svelte (linea 108)
 - UserList.svelte (linea 166)
 - UserUsage.svelte (linea 50)
@@ -182,6 +200,7 @@ class="... sticky top-0 z-10 bg-gray-50 dark:bg-gray-950"
 ### Objetivo 1: Headers Sticky con Fondo Solido
 
 **Sidebar.svelte - Header:**
+
 ```svelte
 <!-- TO-BE -->
 <div class="sidebar px-[0.5625rem] pt-2 pb-1.5 flex justify-between space-x-1
@@ -196,32 +215,36 @@ class="... sticky top-0 z-10 bg-gray-50 dark:bg-gray-950"
 ### Objetivo 2: ChatBox Theme-Aware
 
 **Variables CSS Nuevas (tailwind.css):**
+
 ```css
 @layer base {
-  :root, [data-theme="light"] {
-    --color-chatbox-bg: 255 255 255;           /* blanco */
-    --color-chatbox-text: 23 23 23;            /* gris oscuro */
-    --color-chatbox-border: 229 231 235;       /* gris claro */
-    --color-chatbox-ring: 59 130 246 / 0.2;    /* azul con alpha */
-  }
+	:root,
+	[data-theme='light'] {
+		--color-chatbox-bg: 255 255 255; /* blanco */
+		--color-chatbox-text: 23 23 23; /* gris oscuro */
+		--color-chatbox-border: 229 231 235; /* gris claro */
+		--color-chatbox-ring: 59 130 246 / 0.2; /* azul con alpha */
+	}
 
-  .dark, [data-theme="dark"] {
-    --color-chatbox-bg: 10 10 10 / 0.8;        /* negro semi-transparente */
-    --color-chatbox-text: 243 244 246;         /* gris claro */
-    --color-chatbox-border: 255 255 255 / 0.05;
-    --color-chatbox-ring: 255 255 255 / 0.1;
-  }
+	.dark,
+	[data-theme='dark'] {
+		--color-chatbox-bg: 10 10 10 / 0.8; /* negro semi-transparente */
+		--color-chatbox-text: 243 244 246; /* gris claro */
+		--color-chatbox-border: 255 255 255 / 0.05;
+		--color-chatbox-ring: 255 255 255 / 0.1;
+	}
 
-  [data-theme="oled-dark"] {
-    --color-chatbox-bg: 0 0 0 / 0.9;           /* negro puro */
-    --color-chatbox-text: 248 250 252;
-    --color-chatbox-border: 255 255 255 / 0.05;
-    --color-chatbox-ring: 255 255 255 / 0.1;
-  }
+	[data-theme='oled-dark'] {
+		--color-chatbox-bg: 0 0 0 / 0.9; /* negro puro */
+		--color-chatbox-text: 248 250 252;
+		--color-chatbox-border: 255 255 255 / 0.05;
+		--color-chatbox-ring: 255 255 255 / 0.1;
+	}
 }
 ```
 
 **MessageInput.svelte - ChatBox:**
+
 ```svelte
 <!-- TO-BE -->
 <div id="message-input-container"
@@ -240,28 +263,35 @@ class="... sticky top-0 z-10 bg-gray-50 dark:bg-gray-950"
 ### Objetivo 3: Gradiente de Titulo Theme-Aware
 
 **Variables CSS:**
+
 ```css
 @layer base {
-  :root, [data-theme="light"] {
-    --color-title-gradient-start: 55 65 81;     /* gray-700 */
-    --color-title-gradient-end: 107 114 128 / 0.8; /* gray-500 */
-  }
+	:root,
+	[data-theme='light'] {
+		--color-title-gradient-start: 55 65 81; /* gray-700 */
+		--color-title-gradient-end: 107 114 128 / 0.8; /* gray-500 */
+	}
 
-  .dark, [data-theme="dark"], [data-theme="oled-dark"] {
-    --color-title-gradient-start: 236 236 236;
-    --color-title-gradient-end: 155 155 155 / 0.8;
-  }
+	.dark,
+	[data-theme='dark'],
+	[data-theme='oled-dark'] {
+		--color-title-gradient-start: 236 236 236;
+		--color-title-gradient-end: 155 155 155 / 0.8;
+	}
 }
 ```
 
 **Placeholder.svelte:**
+
 ```svelte
-<h1 class="text-6xl md:text-7xl font-secondary font-light tracking-tight pb-2"
-    style="background: linear-gradient(to bottom,
+<h1
+	class="text-6xl md:text-7xl font-secondary font-light tracking-tight pb-2"
+	style="background: linear-gradient(to bottom,
              rgb(var(--color-title-gradient-start)),
              rgb(var(--color-title-gradient-end)));
-           -webkit-background-clip: text; background-clip: text; color: transparent;">
-  {APP_NAME}
+           -webkit-background-clip: text; background-clip: text; color: transparent;"
+>
+	{APP_NAME}
 </h1>
 ```
 
@@ -278,6 +308,7 @@ class="... sticky top-0 z-10 bg-gray-50 dark:bg-gray-950"
 | `bg-gray-900/60` | `bg-gray-900` (o variable) |
 
 **Excepciones permitidas:**
+
 - Modal overlays: `bg-black/60` (backdrop)
 - Glass effects intencionales documentados
 
@@ -286,12 +317,14 @@ class="... sticky top-0 z-10 bg-gray-50 dark:bg-gray-950"
 ### Objetivo 5: Responsiveness Consistente
 
 **Patron de Contenedores:**
+
 ```svelte
 <!-- Contenedor de mensajes -->
 <div class="max-w-full sm:max-w-xl md:max-w-2xl lg:max-w-4xl xl:max-w-5xl">
 ```
 
 **Reglas:**
+
 1. No usar `max-w-[valor]` inline - usar escala de Tailwind
 2. Siempre incluir variantes `sm:`, `md:`, `lg:` para anchos principales
 3. Menus y dropdowns: `w-full sm:w-auto` como base
@@ -301,6 +334,7 @@ class="... sticky top-0 z-10 bg-gray-50 dark:bg-gray-950"
 ### Objetivo 6: Paleta Consistente en Admin
 
 **Todos los headers sticky en admin:**
+
 ```svelte
 class="... sticky top-0 z-10 bg-gray-50 dark:bg-gray-950"
 ```
@@ -310,72 +344,81 @@ class="... sticky top-0 z-10 bg-gray-50 dark:bg-gray-950"
 ## GAP Analysis
 
 ### GAP 1: Variables CSS para ChatBox
-| Aspecto | AS-IS | TO-BE | Esfuerzo |
-|---------|-------|-------|----------|
-| Variables | No existen | 4 variables por tema | Bajo |
-| Compilacion | N/A | En @layer base | Bajo |
+
+| Aspecto     | AS-IS      | TO-BE                | Esfuerzo |
+| ----------- | ---------- | -------------------- | -------- |
+| Variables   | No existen | 4 variables por tema | Bajo     |
+| Compilacion | N/A        | En @layer base       | Bajo     |
 
 ### GAP 2: Fondos en Sticky Headers
-| Aspecto | AS-IS | TO-BE | Esfuerzo |
-|---------|-------|-------|----------|
-| Sidebar header | Sin fondo, gradient hack | `bg-gray-50 dark:bg-gray-950` | Bajo |
-| Sidebar footer | Sin fondo, gradient hack | Fondo solido | Bajo |
-| Admin headers | `bg-white dark:bg-gray-900` | `bg-gray-50 dark:bg-gray-950` | Bajo |
+
+| Aspecto        | AS-IS                       | TO-BE                         | Esfuerzo |
+| -------------- | --------------------------- | ----------------------------- | -------- |
+| Sidebar header | Sin fondo, gradient hack    | `bg-gray-50 dark:bg-gray-950` | Bajo     |
+| Sidebar footer | Sin fondo, gradient hack    | Fondo solido                  | Bajo     |
+| Admin headers  | `bg-white dark:bg-gray-900` | `bg-gray-50 dark:bg-gray-950` | Bajo     |
 
 ### GAP 3: ChatBox Styling
-| Aspecto | AS-IS | TO-BE | Esfuerzo |
-|---------|-------|-------|----------|
-| Fondo | `bg-[#0a0a0a]/80` hardcoded | Variable CSS | Medio |
-| Texto | `text-gray-100` hardcoded | Variable CSS | Bajo |
-| Borde/Ring | `ring-white/10` hardcoded | Variable CSS | Bajo |
+
+| Aspecto    | AS-IS                       | TO-BE        | Esfuerzo |
+| ---------- | --------------------------- | ------------ | -------- |
+| Fondo      | `bg-[#0a0a0a]/80` hardcoded | Variable CSS | Medio    |
+| Texto      | `text-gray-100` hardcoded   | Variable CSS | Bajo     |
+| Borde/Ring | `ring-white/10` hardcoded   | Variable CSS | Bajo     |
 
 ### GAP 4: Gradiente de Titulo
-| Aspecto | AS-IS | TO-BE | Esfuerzo |
-|---------|-------|-------|----------|
-| Colores | RGB hardcoded (solo dark) | Variables CSS por tema | Bajo |
-| Archivos | 2 (Placeholder, ChatPlaceholder) | Mismos archivos | Bajo |
+
+| Aspecto  | AS-IS                            | TO-BE                  | Esfuerzo |
+| -------- | -------------------------------- | ---------------------- | -------- |
+| Colores  | RGB hardcoded (solo dark)        | Variables CSS por tema | Bajo     |
+| Archivos | 2 (Placeholder, ChatPlaceholder) | Mismos archivos        | Bajo     |
 
 ### GAP 5: Transparencias
-| Aspecto | AS-IS | TO-BE | Esfuerzo |
-|---------|-------|-------|----------|
-| Cantidad | 15+ instancias | Eliminar innecesarias | Medio |
-| Patron | `/50`, `/60`, `/80` | Fondos solidos | Medio |
+
+| Aspecto  | AS-IS               | TO-BE                 | Esfuerzo |
+| -------- | ------------------- | --------------------- | -------- |
+| Cantidad | 15+ instancias      | Eliminar innecesarias | Medio    |
+| Patron   | `/50`, `/60`, `/80` | Fondos solidos        | Medio    |
 
 ### GAP 6: Responsiveness
-| Aspecto | AS-IS | TO-BE | Esfuerzo |
-|---------|-------|-------|----------|
-| Contenedores | Anchos fijos | Breakpoints responsivos | Medio |
-| Patrones | Inconsistentes | Estandarizados | Medio |
+
+| Aspecto      | AS-IS          | TO-BE                   | Esfuerzo |
+| ------------ | -------------- | ----------------------- | -------- |
+| Contenedores | Anchos fijos   | Breakpoints responsivos | Medio    |
+| Patrones     | Inconsistentes | Estandarizados          | Medio    |
 
 ---
 
 ## Matriz de Riesgo
 
-| Cambio | Probabilidad Rotura | Impacto | Mitigacion |
-|--------|---------------------|---------|------------|
-| Variables chatbox | Baja | Alto | Test en 4 temas |
-| Fondos sticky | Muy Baja | Bajo | Visual QA |
-| Eliminar transparencias | Media | Medio | Test hover states |
-| Responsiveness | Baja | Medio | Test mobile |
-| Admin palette | Muy Baja | Bajo | Visual QA |
+| Cambio                  | Probabilidad Rotura | Impacto | Mitigacion        |
+| ----------------------- | ------------------- | ------- | ----------------- |
+| Variables chatbox       | Baja                | Alto    | Test en 4 temas   |
+| Fondos sticky           | Muy Baja            | Bajo    | Visual QA         |
+| Eliminar transparencias | Media               | Medio   | Test hover states |
+| Responsiveness          | Baja                | Medio   | Test mobile       |
+| Admin palette           | Muy Baja            | Bajo    | Visual QA         |
 
 ---
 
 ## Criterios de Exito
 
 ### Visual
+
 - [ ] Light theme: Chatbox legible con fondo claro
 - [ ] Dark theme: Chatbox con estilo actual pero usando variables
 - [ ] OLED theme: Chatbox negro puro
 - [ ] Her theme: Chatbox con tintes rose
 
 ### Funcional
+
 - [ ] Titulo "Cognitia" visible en todos los temas
 - [ ] Sidebar sin texto superpuesto al hacer scroll
 - [ ] Menus dropdown sin transparencia problematica
 - [ ] Admin panel con paleta consistente
 
 ### Responsiveness
+
 - [ ] Chat legible en mobile (320px)
 - [ ] Sidebar colapsable funcional
 - [ ] Menus adaptables a viewport

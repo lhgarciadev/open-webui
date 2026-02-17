@@ -19,16 +19,16 @@
 
 ## Índice de Fases
 
-| Fase | Descripción | Ejecutar | Validar | Estado |
-|------|-------------|----------|---------|--------|
-| 0 | Prerrequisitos (cuenta HF, CLI) | [0.1](./0.1-prereq-ejecutar.md) | [0.2](./0.2-prereq-validar.md) | Pendiente |
-| 1 | Crear HF Space con Dockerfile | [1.1](./1.1-space-ejecutar.md) | [1.2](./1.2-space-validar.md) | Pendiente |
-| 2 | Configurar ZeroGPU | [2.1](./2.1-zerogpu-ejecutar.md) | [2.2](./2.2-zerogpu-validar.md) | Pendiente |
-| 3 | Descargar modelos opensource | [3.1](./3.1-models-ejecutar.md) | [3.2](./3.2-models-validar.md) | Pendiente |
-| 4 | Conectar Cognitia (Railway) | [4.1](./4.1-connect-ejecutar.md) | [4.2](./4.2-connect-validar.md) | Pendiente |
-| 5 | Optimización y modelos extra | [5.1](./5.1-optimize-ejecutar.md) | [5.2](./5.2-optimize-validar.md) | Pendiente |
-| 5.3 | UX costos y curación en Cognitia | [5.3](./5.3-cognitia-costos-ejecutar.md) | [5.4](./5.4-cognitia-costos-validar.md) | Pendiente |
-| 6 | Cleanup y documentación | [6.1](./6.1-cleanup-ejecutar.md) | [6.2](./6.2-cleanup-validar.md) | Pendiente |
+| Fase | Descripción                      | Ejecutar                                 | Validar                                 | Estado    |
+| ---- | -------------------------------- | ---------------------------------------- | --------------------------------------- | --------- |
+| 0    | Prerrequisitos (cuenta HF, CLI)  | [0.1](./0.1-prereq-ejecutar.md)          | [0.2](./0.2-prereq-validar.md)          | Pendiente |
+| 1    | Crear HF Space con Dockerfile    | [1.1](./1.1-space-ejecutar.md)           | [1.2](./1.2-space-validar.md)           | Pendiente |
+| 2    | Configurar ZeroGPU               | [2.1](./2.1-zerogpu-ejecutar.md)         | [2.2](./2.2-zerogpu-validar.md)         | Pendiente |
+| 3    | Descargar modelos opensource     | [3.1](./3.1-models-ejecutar.md)          | [3.2](./3.2-models-validar.md)          | Pendiente |
+| 4    | Conectar Cognitia (Railway)      | [4.1](./4.1-connect-ejecutar.md)         | [4.2](./4.2-connect-validar.md)         | Pendiente |
+| 5    | Optimización y modelos extra     | [5.1](./5.1-optimize-ejecutar.md)        | [5.2](./5.2-optimize-validar.md)        | Pendiente |
+| 5.3  | UX costos y curación en Cognitia | [5.3](./5.3-cognitia-costos-ejecutar.md) | [5.4](./5.4-cognitia-costos-validar.md) | Pendiente |
+| 6    | Cleanup y documentación          | [6.1](./6.1-cleanup-ejecutar.md)         | [6.2](./6.2-cleanup-validar.md)         | Pendiente |
 
 ## Orden de Ejecución
 
@@ -69,14 +69,14 @@ Fase 6 (Cleanup) ────► Railway Ollama desactivado, docs listas
 
 ## Modelos Objetivo
 
-| Modelo | Tamaño | Propósito | Fase |
-|--------|--------|-----------|------|
-| **qwen2.5:7b** | 4.7GB | Chat + Coding | 3 |
-| **phi3** | 2.3GB | Respuestas rápidas | 3 |
-| **codellama:7b** | 3.8GB | Programación | 3 |
-| gemma2:9b | 5.4GB | Razonamiento | 5 (opcional) |
-| llama3.2:3b | 2GB | Chat ligero | 5 (opcional) |
-| mistral:7b | 4.1GB | Versatilidad | 5 (opcional) |
+| Modelo           | Tamaño | Propósito          | Fase         |
+| ---------------- | ------ | ------------------ | ------------ |
+| **qwen2.5:7b**   | 4.7GB  | Chat + Coding      | 3            |
+| **phi3**         | 2.3GB  | Respuestas rápidas | 3            |
+| **codellama:7b** | 3.8GB  | Programación       | 3            |
+| gemma2:9b        | 5.4GB  | Razonamiento       | 5 (opcional) |
+| llama3.2:3b      | 2GB    | Chat ligero        | 5 (opcional) |
+| mistral:7b       | 4.1GB  | Versatilidad       | 5 (opcional) |
 
 ## Archivos de Referencia
 
@@ -101,17 +101,20 @@ HF_TOKEN=hf_xxxxxxxxxxxxxxxxxxxx
 ## Criterios de Éxito Global
 
 ### Infraestructura
+
 - [ ] HF Space corriendo con ZeroGPU
 - [ ] 3 modelos mínimo disponibles (qwen2.5, phi3, codellama)
 - [ ] Cognitia conectado y funcionando
 - [ ] Latencia < 1s (vs 3-5s anterior)
 
 ### Performance
+
 - [ ] GPU H200 activa en requests
 - [ ] Tokens/segundo > 50 (vs 5-10 anterior)
 - [ ] Modelos hasta 7B funcionando (vs 3.8B max anterior)
 
 ### Costos
+
 - [ ] $0/mes (free tier) o $9/mes (PRO)
 - [ ] Railway Ollama desactivado
 - [ ] Sin costos ocultos
@@ -119,6 +122,7 @@ HF_TOKEN=hf_xxxxxxxxxxxxxxxxxxxx
 ## Rollback
 
 Si algo falla, revertir en Railway:
+
 ```bash
 OLLAMA_BASE_URL=http://ollama.railway.internal:11434
 ```

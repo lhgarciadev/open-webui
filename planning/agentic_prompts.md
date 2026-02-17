@@ -5,6 +5,7 @@ These prompts are designed to be used by an autonomous agent to execute the [Imp
 ## Phase 1: The Clean Slate (Compliance & Formatting)
 
 ### Prompt 1.1: Creation (Remove Branding)
+
 ```text
 **Task**: Execute Phase 1 of the implementation plan: "The Clean Slate".
 **Objective**: Remove "Open WebUI" branding to comply with strict license requirements.
@@ -24,6 +25,7 @@ These prompts are designed to be used by an autonomous agent to execute the [Imp
 ```
 
 ### Prompt 1.2: Validation (Verify Compliance)
+
 ```text
 **Task**: Validate Phase 1 changes.
 **Objective**: Ensure no branding remains and the app still builds.
@@ -42,6 +44,7 @@ These prompts are designed to be used by an autonomous agent to execute the [Imp
 ## Phase 2: Identity Injection (The Soul)
 
 ### Prompt 2.1: Creation (Refine Aesthetics)
+
 ```text
 **Task**: Execute Phase 2: "Identity Injection".
 **Objective**: Apply a "Premium Agentic" design system.
@@ -59,6 +62,7 @@ These prompts are designed to be used by an autonomous agent to execute the [Imp
 ```
 
 ### Prompt 2.2: Validation (Visual Check)
+
 ```text
 **Task**: Validate Phase 2 Aesthetics.
 **Objective**: Confirm the new identity is active.
@@ -74,6 +78,7 @@ These prompts are designed to be used by an autonomous agent to execute the [Imp
 ## Phase 3: Core Integration
 
 ### Prompt 3.1: Creation (Backend Config)
+
 ```text
 **Task**: Execute Phase 3: "Core Integration".
 **Objective**: Ensure backend doesn't serve old branding.
@@ -85,6 +90,7 @@ These prompts are designed to be used by an autonomous agent to execute the [Imp
 ```
 
 ### Prompt 3.2: Validation (System Health)
+
 ```text
 **Task**: Validate System Integrity.
 **Objective**: Final check before release.

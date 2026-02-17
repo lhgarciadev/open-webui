@@ -30,7 +30,8 @@
 	export let unloadModelHandler: (modelValue: string) => void = () => {};
 	export let pinModelHandler: (modelId: string) => void = () => {};
 	export let showBadges: boolean = false;
-	export let pricing: { input_usd_per_million?: number; output_usd_per_million?: number } | null = null;
+	export let pricing: { input_usd_per_million?: number; output_usd_per_million?: number } | null =
+		null;
 
 	export let onClick: () => void = () => {};
 
@@ -64,7 +65,9 @@
 	$: pricingOutputCop = usdPerMillionToCopPer10k(pricing?.output_usd_per_million);
 	$: hasPricing = (pricingInputCop ?? 0) > 0 || (pricingOutputCop ?? 0) > 0;
 	$: isLocalModel =
-		item?.model?.connection_type === 'local' || item?.model?.owned_by === 'ollama' || isCognitiaLocal(item?.value ?? item?.model?.id ?? '');
+		item?.model?.connection_type === 'local' ||
+		item?.model?.owned_by === 'ollama' ||
+		isCognitiaLocal(item?.value ?? item?.model?.id ?? '');
 </script>
 
 <button
@@ -118,19 +121,27 @@
 			</div>
 
 			{#if isCognitiaLocal(item?.value ?? item?.model?.id ?? '')}
-				<span class="text-[10px] px-1.5 py-0.5 rounded-full bg-blue-100 text-blue-700 dark:bg-blue-900/40 dark:text-blue-200">
+				<span
+					class="text-[10px] px-1.5 py-0.5 rounded-full bg-blue-100 text-blue-700 dark:bg-blue-900/40 dark:text-blue-200"
+				>
 					{$i18n.t('Cognitia Local')}
 				</span>
 			{:else if item.model?.owned_by === 'ollama' || item.model?.connection_type === 'local'}
-				<span class="text-[10px] px-1.5 py-0.5 rounded-full bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-300">
+				<span
+					class="text-[10px] px-1.5 py-0.5 rounded-full bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-300"
+				>
 					{$i18n.t('Ollama Local')}
 				</span>
 			{:else if item.model?.owned_by === 'openai' || item.model?.connection_type === 'external'}
-				<span class="text-[10px] px-1.5 py-0.5 rounded-full bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-200">
+				<span
+					class="text-[10px] px-1.5 py-0.5 rounded-full bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-200"
+				>
 					OpenAI
 				</span>
 			{:else if item.model?.owned_by}
-				<span class="text-[10px] px-1.5 py-0.5 rounded-full bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-300">
+				<span
+					class="text-[10px] px-1.5 py-0.5 rounded-full bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-300"
+				>
 					{item.model?.owned_by}
 				</span>
 			{/if}

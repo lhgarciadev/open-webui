@@ -1,6 +1,7 @@
 # Etapa 6: Sincronizacion con Upstream Open WebUI
 
 ## Objetivo
+
 Integrar cambios del repositorio oficial `open-webui/open-webui` en nuestro fork de Cognitia, preservando todas las customizaciones de branding y features propias.
 
 **Referencia:** `planning/upstream_sync_playbook.md`
@@ -10,6 +11,7 @@ Integrar cambios del repositorio oficial `open-webui/open-webui` en nuestro fork
 ## Pre-requisitos
 
 ### Verificar Estado Limpio
+
 ```bash
 # Verificar que no hay cambios sin commitear
 git status
@@ -20,6 +22,7 @@ git add . && git commit -m "WIP: guardar cambios antes de sync"
 ```
 
 ### Verificar Remote Upstream
+
 ```bash
 # Ver remotes configurados
 git remote -v
@@ -33,6 +36,7 @@ git remote add upstream https://github.com/open-webui/open-webui.git
 ## Proceso de Sync (Paso a Paso)
 
 ### Paso 1: Crear Branch de Sync
+
 ```bash
 # Obtener ultima version de upstream
 git fetch upstream
@@ -44,6 +48,7 @@ git checkout -b sync/upstream-20260214
 ```
 
 ### Paso 2: Merge de Upstream
+
 ```bash
 # Mergear upstream/main
 git merge upstream/main
@@ -53,18 +58,18 @@ git merge upstream/main
 
 **Prioridad de Resolucion:**
 
-| Archivo | Accion | Notas |
-|---------|--------|-------|
-| `src/lib/constants/identity.ts` | **KEEP OURS** | Branding Cognitia |
-| `static/favicon*` | **KEEP OURS** | Assets Cognitia |
-| `static/logo*` | **KEEP OURS** | Assets Cognitia |
-| `backend/open_webui/static/*` | **KEEP OURS** | Assets backend |
-| `src/app.css` | **MERGE CAREFUL** | Preservar brand colors |
-| `tailwind.config.js` | **MERGE CAREFUL** | Preservar brand tokens |
-| `package.json` | **USE UPSTREAM** | Dependencias actualizadas |
-| `backend/requirements.txt` | **USE UPSTREAM** | Dependencias Python |
-| `backend/open_webui/*.py` | **MERGE CAREFUL** | Revisar caso por caso |
-| `.env.example` | **MERGE** | Agregar nuevas vars |
+| Archivo                         | Accion            | Notas                     |
+| ------------------------------- | ----------------- | ------------------------- |
+| `src/lib/constants/identity.ts` | **KEEP OURS**     | Branding Cognitia         |
+| `static/favicon*`               | **KEEP OURS**     | Assets Cognitia           |
+| `static/logo*`                  | **KEEP OURS**     | Assets Cognitia           |
+| `backend/open_webui/static/*`   | **KEEP OURS**     | Assets backend            |
+| `src/app.css`                   | **MERGE CAREFUL** | Preservar brand colors    |
+| `tailwind.config.js`            | **MERGE CAREFUL** | Preservar brand tokens    |
+| `package.json`                  | **USE UPSTREAM**  | Dependencias actualizadas |
+| `backend/requirements.txt`      | **USE UPSTREAM**  | Dependencias Python       |
+| `backend/open_webui/*.py`       | **MERGE CAREFUL** | Revisar caso por caso     |
+| `.env.example`                  | **MERGE**         | Agregar nuevas vars       |
 
 **Archivos Criticos a Preservar (NO usar upstream):**
 
@@ -83,6 +88,7 @@ CLAUDE.md
 ```
 
 ### Paso 4: Verificar Compilacion
+
 ```bash
 # Frontend
 npm install
@@ -96,6 +102,7 @@ python -c "from open_webui.main import app; print('OK')"
 ```
 
 ### Paso 5: Verificar Compliance
+
 ```bash
 # Buscar referencias a "Open WebUI" que no deberian existir
 ./scripts/verify_compliance.sh
@@ -105,6 +112,7 @@ grep -r "Open WebUI" src/ --include="*.svelte" --include="*.ts"
 ```
 
 ### Paso 6: Test Local
+
 ```bash
 # Iniciar backend
 cd backend && ./dev.sh &
@@ -120,6 +128,7 @@ npm run dev
 ```
 
 ### Paso 7: Merge a Main
+
 ```bash
 # Si todo funciona, merge via PR o local
 git checkout main
@@ -135,6 +144,7 @@ git push origin main --tags
 ## Resolucion de Conflictos Comunes
 
 ### Conflicto en `package.json`
+
 ```bash
 # Usar version de upstream pero mantener nombre
 git checkout --theirs package.json
@@ -145,6 +155,7 @@ git checkout --theirs package.json
 ```
 
 ### Conflicto en `app.css`
+
 ```bash
 # Ver diferencias
 git diff HEAD MERGE_HEAD -- src/app.css
@@ -156,6 +167,7 @@ git diff HEAD MERGE_HEAD -- src/app.css
 ```
 
 ### Conflicto en Componentes Svelte
+
 ```bash
 # Para cada archivo:
 git diff HEAD MERGE_HEAD -- src/lib/components/XYZ.svelte
@@ -225,11 +237,11 @@ git push --force  # SOLO si nadie mas trabaja en el repo
 
 ## Prompts Relacionados
 
-| Prompt | Usar cuando |
-|--------|-------------|
-| Este documento | Sync programado |
-| `planning/compliance_checklist.md` | Verificar branding post-sync |
-| `planning/upstream_sync_playbook.md` | Referencia rapida |
+| Prompt                               | Usar cuando                  |
+| ------------------------------------ | ---------------------------- |
+| Este documento                       | Sync programado              |
+| `planning/compliance_checklist.md`   | Verificar branding post-sync |
+| `planning/upstream_sync_playbook.md` | Referencia rapida            |
 
 ---
 
@@ -245,9 +257,9 @@ git push --force  # SOLO si nadie mas trabaja en el repo
 
 ## Historial de Syncs
 
-| Fecha | Commit Upstream | Conflictos | Notas |
-|-------|-----------------|------------|-------|
-| 2026-02-14 | (pendiente) | - | Primer sync documentado |
+| Fecha      | Commit Upstream | Conflictos | Notas                   |
+| ---------- | --------------- | ---------- | ----------------------- |
+| 2026-02-14 | (pendiente)     | -          | Primer sync documentado |
 
 ---
 

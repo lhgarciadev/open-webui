@@ -1,14 +1,17 @@
 # Compliance Checklist (Branding + Quality Gate)
 
 ## Scope
+
 This checklist is mandatory before merging any branch to `main`.
 
 ## Preconditions
+
 - Working branch is clean and up to date.
 - You are on the integration branch (e.g., `sync/upstream-YYYYMMDD`) or a feature branch.
 - Legal decision path (A or B) is recorded per planning/legal_compliance.md.
 
 ## Step 1: Branding Compliance (Blocking)
+
 1. Run branding verification script:
    ```bash
    chmod +x scripts/verify_compliance.sh
@@ -21,6 +24,7 @@ This checklist is mandatory before merging any branch to `main`.
    - Re-run until clean.
 
 ## Step 2: Frontend Build (Blocking)
+
 1. Install dependencies (if not already installed):
    ```bash
    npm install
@@ -35,6 +39,7 @@ This checklist is mandatory before merging any branch to `main`.
    - Re-run build until clean.
 
 ## Step 3: Backend Sanity (Blocking)
+
 1. Ensure the backend starts:
    ```bash
    bash start.sh
@@ -45,14 +50,17 @@ This checklist is mandatory before merging any branch to `main`.
    - Fix configuration or dependency issues.
 
 ## Step 4: UI Smoke Tests (Blocking)
+
 1. Login (or create admin if env vars are set).
 2. Create a new chat and send a simple prompt.
 3. Confirm the response streams and persists.
 4. Check the page title and visible UI text for any branding leakage.
 
 ## Step 5: Record Results (Blocking)
+
 - Record test results in the PR or change log.
 - If any step fails, do not merge.
 
 ## Notes
+
 - Do not skip this checklist for hotfixes. If time constrained, run a minimal subset and document the risk.

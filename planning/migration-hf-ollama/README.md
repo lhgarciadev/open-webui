@@ -6,13 +6,13 @@ Este directorio contiene la documentación completa para migrar el servicio Olla
 
 ## Documentos
 
-| Documento | Descripción |
-|-----------|-------------|
-| [AS-IS.md](./AS-IS.md) | Estado actual de la infraestructura (Railway CPU) |
-| [TO-BE.md](./TO-BE.md) | Estado objetivo (Hugging Face ZeroGPU) |
-| [GAP-ANALYSIS.md](./GAP-ANALYSIS.md) | Análisis de brechas y modelos recomendados |
-| [AGENTIC-PLAN.md](./AGENTIC-PLAN.md) | **Plan agéntico por fases** (ejecutar) |
-| [prompts/](./prompts/00-README.md) | Prompts por fase (incluye UX de costos/curación) |
+| Documento                            | Descripción                                       |
+| ------------------------------------ | ------------------------------------------------- |
+| [AS-IS.md](./AS-IS.md)               | Estado actual de la infraestructura (Railway CPU) |
+| [TO-BE.md](./TO-BE.md)               | Estado objetivo (Hugging Face ZeroGPU)            |
+| [GAP-ANALYSIS.md](./GAP-ANALYSIS.md) | Análisis de brechas y modelos recomendados        |
+| [AGENTIC-PLAN.md](./AGENTIC-PLAN.md) | **Plan agéntico por fases** (ejecutar)            |
+| [prompts/](./prompts/00-README.md)   | Prompts por fase (incluye UX de costos/curación)  |
 
 ## Evaluación Final
 
@@ -20,22 +20,22 @@ Este directorio contiene la documentación completa para migrar el servicio Olla
 
 ### Comparación
 
-| Factor | Railway (Actual) | HF ZeroGPU (Objetivo) |
-|--------|------------------|------------------------|
-| GPU | No disponible | **H200 (70GB VRAM)** |
-| Costo | $5-10/mes | **$0** (o $9 PRO) |
-| Latencia | 2-5s | **0.3-0.8s** |
-| Modelos | <4B params | **Hasta 70B** |
-| Complejidad | Baja | Media |
+| Factor      | Railway (Actual) | HF ZeroGPU (Objetivo) |
+| ----------- | ---------------- | --------------------- |
+| GPU         | No disponible    | **H200 (70GB VRAM)**  |
+| Costo       | $5-10/mes        | **$0** (o $9 PRO)     |
+| Latencia    | 2-5s             | **0.3-0.8s**          |
+| Modelos     | <4B params       | **Hasta 70B**         |
+| Complejidad | Baja             | Media                 |
 
 ### Modelos Recomendados (Free Tier)
 
-| Modelo | Params | Calidad | Uso Principal |
-|--------|--------|---------|---------------|
-| **Qwen2.5-7B** | 7B | ⭐⭐⭐⭐⭐ | Chat + Coding |
-| **phi3** | 3.8B | ⭐⭐⭐⭐ | Respuestas rápidas |
-| **CodeLlama-7B** | 7B | ⭐⭐⭐⭐ | Programación |
-| **Gemma2-9B** | 9B | ⭐⭐⭐⭐⭐ | Razonamiento |
+| Modelo           | Params | Calidad    | Uso Principal      |
+| ---------------- | ------ | ---------- | ------------------ |
+| **Qwen2.5-7B**   | 7B     | ⭐⭐⭐⭐⭐ | Chat + Coding      |
+| **phi3**         | 3.8B   | ⭐⭐⭐⭐   | Respuestas rápidas |
+| **CodeLlama-7B** | 7B     | ⭐⭐⭐⭐   | Programación       |
+| **Gemma2-9B**    | 9B     | ⭐⭐⭐⭐⭐ | Razonamiento       |
 
 ### Beneficios Clave
 

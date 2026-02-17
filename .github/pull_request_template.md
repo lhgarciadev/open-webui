@@ -7,6 +7,7 @@
 # Pull Request Checklist
 
 ## Fork Compliance (Required)
+
 - [ ] I ran the compliance gate in [planning/compliance_checklist.md](planning/compliance_checklist.md).
 - [ ] If this is an upstream sync, I followed [planning/upstream_sync_playbook.md](planning/upstream_sync_playbook.md) and documented the sync date.
 

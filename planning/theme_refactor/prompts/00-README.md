@@ -40,13 +40,13 @@
 
 ## Indice de Etapas
 
-| # | Descripcion | Ejecutar | Validar | Impacto |
-|---|-------------|----------|---------|---------|
-| 1 | Variables CSS (chatbox + titulo) | [1.1](./1.1-css-variables-ejecutar.md) | [1.2](./1.2-css-variables-validar.md) | Alto |
-| 2 | ChatBox theme-aware | [2.1](./2.1-chatbox-theme-ejecutar.md) | [2.2](./2.2-chatbox-theme-validar.md) | Alto |
-| 3 | Titulo gradient theme-aware | [3.1](./3.1-title-gradient-ejecutar.md) | [3.2](./3.2-title-gradient-validar.md) | Alto |
-| 4 | Sticky headers con fondos | [4.1](./4.1-sticky-headers-ejecutar.md) | [4.2](./4.2-sticky-headers-validar.md) | Medio |
-| 5 | Transparencias & responsiveness | [5.1](./5.1-transparency-responsive-ejecutar.md) | [5.2](./5.2-transparency-responsive-validar.md) | Medio |
+| #   | Descripcion                      | Ejecutar                                         | Validar                                         | Impacto |
+| --- | -------------------------------- | ------------------------------------------------ | ----------------------------------------------- | ------- |
+| 1   | Variables CSS (chatbox + titulo) | [1.1](./1.1-css-variables-ejecutar.md)           | [1.2](./1.2-css-variables-validar.md)           | Alto    |
+| 2   | ChatBox theme-aware              | [2.1](./2.1-chatbox-theme-ejecutar.md)           | [2.2](./2.2-chatbox-theme-validar.md)           | Alto    |
+| 3   | Titulo gradient theme-aware      | [3.1](./3.1-title-gradient-ejecutar.md)          | [3.2](./3.2-title-gradient-validar.md)          | Alto    |
+| 4   | Sticky headers con fondos        | [4.1](./4.1-sticky-headers-ejecutar.md)          | [4.2](./4.2-sticky-headers-validar.md)          | Medio   |
+| 5   | Transparencias & responsiveness  | [5.1](./5.1-transparency-responsive-ejecutar.md) | [5.2](./5.2-transparency-responsive-validar.md) | Medio   |
 
 ---
 
@@ -71,32 +71,34 @@
 
 ## Archivos Involucrados (Resumen)
 
-| Etapa | Archivos | Accion |
-|-------|----------|--------|
-| 1 | `src/tailwind.css` | AGREGAR ~50 lineas |
-| 2 | `src/lib/components/chat/MessageInput.svelte` | MODIFICAR |
-| 3 | `Placeholder.svelte`, `ChatPlaceholder.svelte` | MODIFICAR |
-| 4 | `Sidebar.svelte`, 5 admin components | MODIFICAR |
-| 5 | 6 components con transparencias | MODIFICAR |
+| Etapa | Archivos                                       | Accion             |
+| ----- | ---------------------------------------------- | ------------------ |
+| 1     | `src/tailwind.css`                             | AGREGAR ~50 lineas |
+| 2     | `src/lib/components/chat/MessageInput.svelte`  | MODIFICAR          |
+| 3     | `Placeholder.svelte`, `ChatPlaceholder.svelte` | MODIFICAR          |
+| 4     | `Sidebar.svelte`, 5 admin components           | MODIFICAR          |
+| 5     | 6 components con transparencias                | MODIFICAR          |
 
 ---
 
 ## Criterios de Exito Final
 
 ### Visual
-| Tema | Chatbox | Titulo | Sidebar | Admin |
-|------|---------|--------|---------|-------|
+
+| Tema  | Chatbox        | Titulo      | Sidebar     | Admin       |
+| ----- | -------------- | ----------- | ----------- | ----------- |
 | Light | Blanco legible | Gris oscuro | Sin overlap | Consistente |
-| Dark | Oscuro legible | Gris claro | Sin overlap | Consistente |
-| OLED | Negro puro | Gris claro | Sin overlap | Consistente |
-| Her | Rose tint | Rose | Sin overlap | Consistente |
+| Dark  | Oscuro legible | Gris claro  | Sin overlap | Consistente |
+| OLED  | Negro puro     | Gris claro  | Sin overlap | Consistente |
+| Her   | Rose tint      | Rose        | Sin overlap | Consistente |
 
 ### Responsiveness
-| Viewport | Expectativa |
-|----------|-------------|
-| 320px | Chat y menus legibles |
-| 768px | Sidebar funcional |
-| 1024px+ | Layout completo |
+
+| Viewport | Expectativa           |
+| -------- | --------------------- |
+| 320px    | Chat y menus legibles |
+| 768px    | Sidebar funcional     |
+| 1024px+  | Layout completo       |
 
 ---
 

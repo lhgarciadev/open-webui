@@ -15,7 +15,8 @@ Script: `scripts/validate_db_persistence.sh`
 Veredicto final: `PERSISTENCIA OK`
 
 ### Check 1 - Conectividad y healthchecks
-```
+
+````
 NAMES               STATUS
 cognitia-ai         Up 6 minutes (healthy)
 cognitia-ollama     Up 17 minutes (unhealthy)
@@ -40,37 +41,44 @@ x-process-time: 0
 {"status":true}```
 
 ### Check 2 - Flujo minimo de persistencia
-```
+````
+
 CHAT_CREATE_HTTP=200
 CHAT_ID=13c3f80b-0fd2-4b34-9776-3d5d6fc53c85
 CHAT_GET_BEFORE_HTTP=200
 CHAT_GET_BEFORE_TITLE=Persistencia 20260213_141708
 13c3f80b-0fd2-4b34-9776-3d5d6fc53c85|2b2b4836-a595-4645-b273-0ba9cc97873b|Persistencia 20260213_141708
+
 ```
 
 ### Check 3 - Persistencia post-reinicio
 ```
+
 cognitia-ai
 HEALTH_AFTER_HTTP=200
 SIGNIN_AFTER_HTTP=200
 CHAT_GET_AFTER_HTTP=200
 CHAT_GET_AFTER_TITLE=Persistencia 20260213_141708
 CHAT_GET_AFTER_USER_ID=2b2b4836-a595-4645-b273-0ba9cc97873b
+
 ```
 
 ### Check 4 - Migraciones
 ```
+
 ALEMBIC_VERSION_TABLE=c440947495f3
-INFO  [alembic.runtime.migration] Context impl PostgresqlImpl.
-INFO  [alembic.runtime.migration] Will assume transactional DDL.
+INFO [alembic.runtime.migration] Context impl PostgresqlImpl.
+INFO [alembic.runtime.migration] Will assume transactional DDL.
 c440947495f3 (head)
 c440947495f3 (head)
+
 ```
 
 ### Check 5 - Backup basico
 ```
--rw-r--r--@ 1 juan.quiroga  wheel    38K Feb 13 14:17 /tmp/cognitia_backup_20260213_141708.sql
-cea2fffbc392b45c4ca2158fd6221274015319f4462d5fae9bbf481ac6804cd8  /tmp/cognitia_backup_20260213_141708.sql
+
+-rw-r--r--@ 1 juan.quiroga wheel 38K Feb 13 14:17 /tmp/cognitia_backup_20260213_141708.sql
+cea2fffbc392b45c4ca2158fd6221274015319f4462d5fae9bbf481ac6804cd8 /tmp/cognitia_backup_20260213_141708.sql
 --
 -- PostgreSQL database dump
 --
@@ -100,3 +108,4 @@ SET row_security = off;
 - TEST_CHAT_ID: `13c3f80b-0fd2-4b34-9776-3d5d6fc53c85`
 - BACKUP_FILE: `/tmp/cognitia_backup_20260213_141708.sql`
 
+```

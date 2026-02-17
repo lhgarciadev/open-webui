@@ -59,17 +59,18 @@ USE_SLIM_DOCKER=true       # Build ligero
 ```
 
 **Configuración Railway** (`railway.json`):
+
 ```json
 {
-  "build": {
-    "builder": "DOCKERFILE",
-    "dockerfilePath": "Dockerfile.railway"
-  },
-  "deploy": {
-    "startCommand": "bash start.sh",
-    "healthcheckPath": "/health",
-    "healthcheckTimeout": 300
-  }
+	"build": {
+		"builder": "DOCKERFILE",
+		"dockerfilePath": "Dockerfile.railway"
+	},
+	"deploy": {
+		"startCommand": "bash start.sh",
+		"healthcheckPath": "/health",
+		"healthcheckTimeout": 300
+	}
 }
 ```
 
@@ -89,6 +90,7 @@ USE_SLIM_DOCKER=true       # Build ligero
 **Ubicación**: `ollama-service/`
 
 **Dockerfile** (`ollama-service/Dockerfile`):
+
 ```dockerfile
 FROM ollama/ollama:latest
 
@@ -108,6 +110,7 @@ CMD ["/start.sh"]
 ```
 
 **Script de Inicio** (`ollama-service/start.sh`):
+
 ```bash
 #!/bin/bash
 set -e
@@ -129,16 +132,17 @@ wait
 ```
 
 **Configuración Railway** (`ollama-service/railway.json`):
+
 ```json
 {
-  "build": {
-    "builder": "DOCKERFILE",
-    "dockerfilePath": "Dockerfile"
-  },
-  "deploy": {
-    "healthcheckPath": "/api/tags",
-    "healthcheckTimeout": 120
-  }
+	"build": {
+		"builder": "DOCKERFILE",
+		"dockerfilePath": "Dockerfile"
+	},
+	"deploy": {
+		"healthcheckPath": "/api/tags",
+		"healthcheckTimeout": 120
+	}
 }
 ```
 
@@ -146,12 +150,13 @@ wait
 
 ### 3. Modelos Disponibles
 
-| Modelo | Parámetros | Tamaño | Estado |
-|--------|------------|--------|--------|
-| phi3 | 3.8B | ~2.3GB | Desplegado |
-| *(OpenAI fallback)* | - | - | Disponible vía API |
+| Modelo              | Parámetros | Tamaño | Estado             |
+| ------------------- | ---------- | ------ | ------------------ |
+| phi3                | 3.8B       | ~2.3GB | Desplegado         |
+| _(OpenAI fallback)_ | -          | -      | Disponible vía API |
 
 **Limitaciones CPU**:
+
 - Latencia: 2-5 segundos por respuesta
 - Throughput: ~5-10 tokens/segundo
 - Modelos grandes (>7B): No viables
@@ -162,29 +167,29 @@ wait
 
 ### Costos
 
-| Recurso | Costo Estimado |
-|---------|----------------|
-| Railway Hobby | $5/mes base |
-| Cognitia App | ~$0.50-1.00/mes |
+| Recurso        | Costo Estimado  |
+| -------------- | --------------- |
+| Railway Hobby  | $5/mes base     |
+| Cognitia App   | ~$0.50-1.00/mes |
 | Ollama Service | ~$2-4/mes (CPU) |
-| PostgreSQL | ~$1-2/mes |
-| **Total** | **~$5-10/mes** |
+| PostgreSQL     | ~$1-2/mes       |
+| **Total**      | **~$5-10/mes**  |
 
 ### Performance
 
-| Métrica | Valor |
-|---------|-------|
-| Tiempo respuesta (phi3) | 2-5s |
-| Tokens/segundo | 5-10 |
-| Uptime | 99%+ |
-| Cold start | 30-60s |
+| Métrica                 | Valor  |
+| ----------------------- | ------ |
+| Tiempo respuesta (phi3) | 2-5s   |
+| Tokens/segundo          | 5-10   |
+| Uptime                  | 99%+   |
+| Cold start              | 30-60s |
 
 ### Recursos
 
-| Servicio | RAM | CPU |
-|----------|-----|-----|
+| Servicio | RAM       | CPU      |
+| -------- | --------- | -------- |
 | Cognitia | 512MB-1GB | 0.5 vCPU |
-| Ollama | 2-4GB | 1-2 vCPU |
+| Ollama   | 2-4GB     | 1-2 vCPU |
 
 ---
 
@@ -207,21 +212,25 @@ Cognitia App ──► ollama.railway.internal:11434 ──► Ollama Service
 ## Limitaciones Identificadas
 
 ### 1. Sin GPU
+
 - Inferencia lenta (CPU-only)
 - Modelos limitados a <4B parámetros
 - No viable para modelos de código o multimodales
 
 ### 2. Escalabilidad
+
 - Sin auto-scaling para Ollama
 - Recursos fijos por servicio
 - No hay burst capacity
 
 ### 3. Modelos Grandes
+
 - 7B+ parámetros: timeout o OOM
 - No soporta Llama 3 70B, GPT-4 class
 - Cuantización extrema requerida
 
 ### 4. Costos a Escala
+
 - CPU pricing no escala bien
 - Sin opción GPU en Railway
 - Cada modelo adicional = más RAM
@@ -231,18 +240,21 @@ Cognitia App ──► ollama.railway.internal:11434 ──► Ollama Service
 ## Dependencias Técnicas
 
 ### Backend Python
+
 ```python
 # backend/open_webui/routers/ollama.py
 OLLAMA_BASE_URL = os.getenv("OLLAMA_BASE_URL", "http://localhost:11434")
 ```
 
 ### Configuración
+
 ```python
 # backend/open_webui/config.py
 OLLAMA_BASE_URLS = [url.strip("/") for url in OLLAMA_BASE_URLS.split(";")]
 ```
 
 ### Health Check
+
 ```python
 # Verifica conectividad con Ollama
 GET /api/tags → lista modelos disponibles
@@ -253,6 +265,7 @@ GET /api/tags → lista modelos disponibles
 ## UX de Modelos (Estado Actual)
 
 ### Selector de Modelos
+
 - No muestra costos estimados por token.
 - No hay curación por categoría; lista completa visible.
 - Modelos especiales (audio/realtime/imagen/search) se mezclan si existen.
@@ -291,14 +304,14 @@ Usuario
 
 ## Archivos Clave del Estado Actual
 
-| Archivo | Propósito |
-|---------|-----------|
-| `Dockerfile.railway` | Build slim para Railway |
-| `ollama-service/Dockerfile` | Contenedor Ollama |
-| `ollama-service/start.sh` | Auto-descarga modelos |
-| `ollama-service/railway.json` | Deploy config |
-| `railway.json` | Config principal |
-| `RAILWAY_DEPLOY.md` | Documentación deploy |
+| Archivo                       | Propósito               |
+| ----------------------------- | ----------------------- |
+| `Dockerfile.railway`          | Build slim para Railway |
+| `ollama-service/Dockerfile`   | Contenedor Ollama       |
+| `ollama-service/start.sh`     | Auto-descarga modelos   |
+| `ollama-service/railway.json` | Deploy config           |
+| `railway.json`                | Config principal        |
+| `RAILWAY_DEPLOY.md`           | Documentación deploy    |
 
 ---
 

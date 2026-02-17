@@ -1,13 +1,13 @@
 {
-  "$schema": "https://railway.app/railway.schema.json",
-  "build": {
-    "builder": "DOCKERFILE",
-    "dockerfilePath": "Dockerfile.mcpo"
-  },
-  "deploy": {
-    "healthcheckPath": "/",
-    "healthcheckTimeout": 120,
-    "restartPolicyType": "ON_FAILURE",
-    "restartPolicyMaxRetries": 3
-  }
+	"$schema": "https://railway.app/railway.schema.json",
+	"build": {
+		"builder": "DOCKERFILE",
+		"dockerfilePath": "Dockerfile.mcpo"
+	},
+	"deploy": {
+		"healthcheckPath": "/",
+		"healthcheckTimeout": 120,
+		"restartPolicyType": "ON_FAILURE",
+		"restartPolicyMaxRetries": 3
+	}
 }

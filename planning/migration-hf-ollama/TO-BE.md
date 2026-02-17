@@ -10,13 +10,13 @@ Migrar el servicio Ollama a Hugging Face Spaces con **ZeroGPU** (GPU H200 gratui
 
 Hugging Face ofrece **ZeroGPU**, una infraestructura compartida que proporciona acceso gratuito a GPUs NVIDIA H200 (~70GB VRAM) bajo demanda.
 
-| Característica | Free Tier | PRO ($9/mes) |
-|----------------|-----------|--------------|
-| GPU | H200 (compartida) | H200 (prioridad) |
-| VRAM | ~70GB | ~70GB |
-| Cuota diaria | Base | **8x más** |
-| Prioridad cola | Normal | **Alta** |
-| Costo | **$0** | **$9/mes** |
+| Característica | Free Tier         | PRO ($9/mes)     |
+| -------------- | ----------------- | ---------------- |
+| GPU            | H200 (compartida) | H200 (prioridad) |
+| VRAM           | ~70GB             | ~70GB            |
+| Cuota diaria   | Base              | **8x más**       |
+| Prioridad cola | Normal            | **Alta**         |
+| Costo          | **$0**            | **$9/mes**       |
 
 **Modelos Recomendados para Free Tier**:
 | Modelo | Parámetros | Calidad | Uso |
@@ -78,12 +78,14 @@ Hugging Face ofrece **ZeroGPU**, una infraestructura compartida que proporciona 
 ### Opción A: Hugging Face Space con Docker (Recomendada)
 
 **Ventajas**:
+
 - Control total sobre el contenedor
 - Compatible con Ollama existente
 - GPU dedicada o compartida
 - Costo predecible
 
 **Implementación**:
+
 ```dockerfile
 # Dockerfile para HF Space
 FROM ollama/ollama:latest
@@ -116,12 +118,14 @@ CMD ["ollama", "serve"]
 ### Opción B: Inference Endpoints (Serverless)
 
 **Ventajas**:
+
 - Sin gestión de infraestructura
 - Auto-scaling automático
 - Pay-per-request
 - Modelos pre-optimizados
 
 **Implementación**:
+
 ```python
 # Usar API de HF Inference
 from huggingface_hub import InferenceClient
@@ -151,6 +155,7 @@ response = client.text_generation(
 ### 1. Hugging Face Space - Ollama
 
 **Configuración Space** (`README.md` en HF):
+
 ```yaml
 ---
 title: Cognitia Ollama
@@ -164,6 +169,7 @@ suggested_hardware: t4-small
 ```
 
 **Dockerfile**:
+
 ```dockerfile
 FROM ollama/ollama:latest
 
@@ -192,6 +198,7 @@ CMD ["/start.sh"]
 ```
 
 **Script de Inicio**:
+
 ```bash
 #!/bin/bash
 set -e
@@ -222,6 +229,7 @@ wait
 ### 2. Conexión Cognitia → HF Space
 
 **Variables de Entorno** (Railway):
+
 ```bash
 # Cambiar de Railway interno a HF público
 OLLAMA_BASE_URL=https://[usuario]-cognitia-ollama.hf.space
@@ -235,12 +243,14 @@ HF_TOKEN=hf_xxxxxxxxxxxxxxxxxxxx
 **Objetivo**: Mejorar la selección de modelos con costos educativos en COP y curación por categoría.
 
 **Capacidades**:
+
 - Costos estimados en COP (1 USD = 4000 COP) visibles en el selector.
 - Curación por categoría (1–9 modelos) por defecto.
 - “Ver todos” expone modelos especiales (audio/realtime/imagen/search).
 - Modelos `cognitia_llm_*` tratados como locales (sin costo API).
 
 **Variables de Entorno**:
+
 ```bash
 PRICEPERTOKEN_MCP_URL=https://api.pricepertoken.com/mcp/mcp
 PRICING_REFRESH_INTERVAL_SECONDS=43200   # 12h
@@ -248,11 +258,13 @@ PRICING_CACHE_TTL_SECONDS=86400          # 24h
 ```
 
 **Endpoints**:
+
 - `GET /api/v1/pricing/models`
 - `POST /api/v1/pricing/refresh`
 - `GET /api/v1/pricing/debug/sample` (solo admin, temporal)
 
 **Modificación Backend** (`backend/open_webui/routers/ollama.py`):
+
 ```python
 # Agregar soporte para autenticación HF
 import os
@@ -270,26 +282,28 @@ async def get_ollama_headers():
 
 ### 3. Modelos Disponibles
 
-| Modelo | Parámetros | VRAM Requerida | Tier HF |
-|--------|------------|----------------|---------|
-| phi3 | 3.8B | ~4GB | CPU o T4 |
-| llama3.2:3b | 3B | ~3GB | CPU o T4 |
-| llama3.1:8b | 8B | ~8GB | T4 |
-| mistral:7b | 7B | ~6GB | T4 |
-| codellama:13b | 13B | ~12GB | T4 |
-| llama3.1:70b | 70B | ~45GB | A100 |
+| Modelo        | Parámetros | VRAM Requerida | Tier HF  |
+| ------------- | ---------- | -------------- | -------- |
+| phi3          | 3.8B       | ~4GB           | CPU o T4 |
+| llama3.2:3b   | 3B         | ~3GB           | CPU o T4 |
+| llama3.1:8b   | 8B         | ~8GB           | T4       |
+| mistral:7b    | 7B         | ~6GB           | T4       |
+| codellama:13b | 13B        | ~12GB          | T4       |
+| llama3.1:70b  | 70B        | ~45GB          | A100     |
 
 ---
 
 ## Configuración de Seguridad
 
 ### Opción 1: Space Privado
+
 ```yaml
 # En HF Space settings
 private: true
 ```
 
 **Acceso**:
+
 ```bash
 # Requiere HF_TOKEN en Cognitia
 curl -H "Authorization: Bearer hf_xxx" \
@@ -297,6 +311,7 @@ curl -H "Authorization: Bearer hf_xxx" \
 ```
 
 ### Opción 2: Space con Token Personalizado
+
 ```python
 # En el Space, validar token personalizado
 import os
@@ -314,11 +329,13 @@ async def verify_token(authorization: str = Header(None)):
 ## Monitoreo y Observabilidad
 
 ### Métricas HF Spaces
+
 - **Dashboard**: Uso de GPU, RAM, requests
 - **Logs**: Streaming en tiempo real
 - **Alertas**: Configurables por email
 
 ### Integración con Cognitia
+
 ```python
 # Agregar logging de latencia
 import time
@@ -351,52 +368,56 @@ cognitia-ollama/
 
 ### Escenario: Uso Moderado (8 hrs/día)
 
-| Componente | Tier | Costo Mensual |
-|------------|------|---------------|
-| HF Space T4 | T4 Small | $0.60 × 8h × 30d = **$144** |
-| Railway Cognitia | Hobby | **$5** |
-| Railway PostgreSQL | Addon | **$2** |
-| **Total** | | **~$151/mes** |
+| Componente         | Tier     | Costo Mensual               |
+| ------------------ | -------- | --------------------------- |
+| HF Space T4        | T4 Small | $0.60 × 8h × 30d = **$144** |
+| Railway Cognitia   | Hobby    | **$5**                      |
+| Railway PostgreSQL | Addon    | **$2**                      |
+| **Total**          |          | **~$151/mes**               |
 
 ### Escenario: Uso Bajo (2 hrs/día)
 
-| Componente | Tier | Costo Mensual |
-|------------|------|---------------|
-| HF Space T4 | T4 Small | $0.60 × 2h × 30d = **$36** |
-| Railway Cognitia | Hobby | **$5** |
-| Railway PostgreSQL | Addon | **$2** |
-| **Total** | | **~$43/mes** |
+| Componente         | Tier     | Costo Mensual              |
+| ------------------ | -------- | -------------------------- |
+| HF Space T4        | T4 Small | $0.60 × 2h × 30d = **$36** |
+| Railway Cognitia   | Hobby    | **$5**                     |
+| Railway PostgreSQL | Addon    | **$2**                     |
+| **Total**          |          | **~$43/mes**               |
 
 ### Escenario: Sleep Mode (on-demand)
 
-| Componente | Tier | Costo Mensual |
-|------------|------|---------------|
-| HF Space T4 | Sleep cuando idle | ~$10-20 |
-| Railway Cognitia | Hobby | **$5** |
-| **Total** | | **~$15-25/mes** |
+| Componente       | Tier              | Costo Mensual   |
+| ---------------- | ----------------- | --------------- |
+| HF Space T4      | Sleep cuando idle | ~$10-20         |
+| Railway Cognitia | Hobby             | **$5**          |
+| **Total**        |                   | **~$15-25/mes** |
 
 ---
 
 ## Beneficios del Estado Objetivo
 
 ### 1. Performance
-| Métrica | Railway (CPU) | HF (GPU T4) | Mejora |
-|---------|---------------|-------------|--------|
-| Latencia | 2-5s | 0.3-0.8s | **5-10x** |
-| Tokens/s | 5-10 | 50-100 | **10x** |
-| Modelos soportados | <4B | <15B | **3-4x** |
+
+| Métrica            | Railway (CPU) | HF (GPU T4) | Mejora    |
+| ------------------ | ------------- | ----------- | --------- |
+| Latencia           | 2-5s          | 0.3-0.8s    | **5-10x** |
+| Tokens/s           | 5-10          | 50-100      | **10x**   |
+| Modelos soportados | <4B           | <15B        | **3-4x**  |
 
 ### 2. Escalabilidad
+
 - Upgrade a A10G/A100 sin cambios de código
 - Múltiples réplicas (HF Spaces Pro)
 - Auto-scaling con Inference Endpoints
 
 ### 3. Flexibilidad
+
 - Sleep mode para ahorro de costos
 - GPU on-demand vs dedicada
 - Cambio de modelos en caliente
 
 ### 4. Ecosistema
+
 - Acceso directo a HF Hub
 - Modelos optimizados (GGUF, AWQ, GPTQ)
 - Comunidad y soporte

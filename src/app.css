@@ -358,11 +358,11 @@ input[type='number'] {
 	background-color: transparent !important;
 }
 
-.svelte-flow__edge>path {
+.svelte-flow__edge > path {
 	stroke-width: 0.5;
 }
 
-.svelte-flow__edge.animated>path {
+.svelte-flow__edge.animated > path {
 	stroke-width: 2;
 	@apply stroke-gray-600 dark:stroke-gray-500;
 }
@@ -399,7 +399,7 @@ input[type='number'] {
 		align-items: start;
 		display: flex;
 
-		>label {
+		> label {
 			flex: 0 0 auto;
 			margin-right: 0.5rem;
 			margin-top: 0.2rem;
@@ -407,7 +407,7 @@ input[type='number'] {
 			display: flex;
 		}
 
-		>div {
+		> div {
 			flex: 1 1 auto;
 
 			align-items: center;
@@ -417,7 +417,7 @@ input[type='number'] {
 	/* checked data-checked="true" */
 
 	li[data-checked='true'] {
-		>div {
+		> div {
 			opacity: 0.5;
 			text-decoration: line-through;
 		}
@@ -492,7 +492,7 @@ input[type='number'] {
 		align-items: start;
 		display: flex;
 
-		>label {
+		> label {
 			flex: 0 0 auto;
 			margin-right: 0.5rem;
 			margin-top: 0.4rem;
@@ -500,7 +500,7 @@ input[type='number'] {
 			display: flex;
 		}
 
-		>div {
+		> div {
 			flex: 1 1 auto;
 
 			align-items: center;
@@ -510,7 +510,7 @@ input[type='number'] {
 	/* checked data-checked="true" */
 
 	li[data-checked='true'] {
-		>div {
+		> div {
 			opacity: 0.5;
 			text-decoration: line-through;
 		}
@@ -562,7 +562,7 @@ input[type='number'] {
 	pointer-events: none;
 }
 
-.tiptap pre>code {
+.tiptap pre > code {
 	border-radius: 0.4rem;
 	font-size: 0.85rem;
 	padding: 0.25em 0.3em;
@@ -671,7 +671,7 @@ input[type='number'] {
 }
 
 /* this is a rough fix for the first cursor position when the first paragraph is empty */
-.ProseMirror>.ProseMirror-yjs-cursor:first-child {
+.ProseMirror > .ProseMirror-yjs-cursor:first-child {
 	margin-top: 16px;
 }
 
@@ -688,7 +688,7 @@ input[type='number'] {
 }
 
 /* This renders the username above the caret */
-.ProseMirror-yjs-cursor>div {
+.ProseMirror-yjs-cursor > div {
 	position: absolute;
 	top: -1.05em;
 	left: -1px;
@@ -704,7 +704,9 @@ input[type='number'] {
 body {
 	background-color: rgb(var(--color-surface-base));
 	color: rgb(var(--color-text-primary));
-	transition: background-color 0.15s ease, color 0.15s ease;
+	transition:
+		background-color 0.15s ease,
+		color 0.15s ease;
 }
 
 /* Position the handle relative to each LI */
@@ -749,7 +751,7 @@ body {
 	cursor: grabbing;
 }
 
-.pm-li--with-handle:hover>.pm-list-drag-handle {
+.pm-li--with-handle:hover > .pm-list-drag-handle {
 	opacity: 1;
 }
 
@@ -845,9 +847,9 @@ body {
 
 /* Modal and drawer backgrounds */
 .dark .modal > div:not(.bg-black\/60),
-.dark [class*="dark:bg-gray-850"],
-.dark [class*="dark:bg-gray-900"],
-.dark [class*="dark:bg-gray-800"] {
+.dark [class*='dark:bg-gray-850'],
+.dark [class*='dark:bg-gray-900'],
+.dark [class*='dark:bg-gray-800'] {
 	--tw-bg-opacity: 1;
 }
 

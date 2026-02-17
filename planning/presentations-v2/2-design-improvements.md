@@ -1,6 +1,7 @@
 # Etapa 2: Mejoras de Diseño PPTX
 
 ## Objetivo
+
 Implementar mejoras visuales en las presentaciones: gradientes, formas decorativas, mejor tipografía y layouts modernos.
 
 **Documento previo:** [1-unsplash-integration.md](./1-unsplash-integration.md)
@@ -48,6 +49,7 @@ def _add_branded_footer(slide, slide_num: int, total_slides: int, show_branding:
 ### 1. Fondos con Gradiente
 
 #### Implementación
+
 ```python
 from pptx.dml.color import RGBColor
 from pptx.oxml.ns import qn
@@ -78,6 +80,7 @@ def _apply_gradient_background(slide, color1_hex: str, color2_hex: str, angle: i
 ```
 
 #### Paleta de Gradientes Predefinidos
+
 ```python
 GRADIENT_PRESETS = {
     "brand_primary": {
@@ -111,6 +114,7 @@ GRADIENT_PRESETS = {
 ### 2. Formas Decorativas
 
 #### Círculos Semi-Transparentes
+
 ```python
 from pptx.enum.shapes import MSO_SHAPE
 from pptx.util import Inches
@@ -150,6 +154,7 @@ def _add_decorative_circle(slide, left: float, top: float, size: float, color_he
 ```
 
 #### Líneas Decorativas
+
 ```python
 from pptx.enum.shapes import MSO_CONNECTOR
 
@@ -210,6 +215,7 @@ def _get_smart_bullet(content: str) -> str:
 ### 4. Tipografía Mejorada
 
 #### Sistema de Fuentes
+
 ```python
 FONT_SYSTEM = {
     "title": {
@@ -257,6 +263,7 @@ def _apply_font_style(paragraph, style_name: str):
 ### 4. Layouts Modernos
 
 #### Layout: Título con Imagen de Fondo
+
 ```python
 def _add_title_slide_modern(prs, slide_def: dict, image_bytes: Optional[bytes] = None):
     """
@@ -311,6 +318,7 @@ def _add_title_slide_modern(prs, slide_def: dict, image_bytes: Optional[bytes] =
 ```
 
 #### Layout: Estadísticas con Iconos
+
 ```python
 def _add_stats_slide_modern(prs, slide_def: dict):
     """
@@ -381,29 +389,29 @@ def _add_stats_slide_modern(prs, slide_def: dict):
 
 ### Slide de Título
 
-| Aspecto | Antes | Después |
-|---------|-------|---------|
-| Fondo | Sólido azul | Gradiente + imagen opcional |
-| Título | Arial negro | Calibri Light blanco con sombra |
-| Decoración | Ninguna | Círculos semi-transparentes |
-| Subtítulo | Pequeño gris | Brand color, mejor contraste |
+| Aspecto    | Antes        | Después                         |
+| ---------- | ------------ | ------------------------------- |
+| Fondo      | Sólido azul  | Gradiente + imagen opcional     |
+| Título     | Arial negro  | Calibri Light blanco con sombra |
+| Decoración | Ninguna      | Círculos semi-transparentes     |
+| Subtítulo  | Pequeño gris | Brand color, mejor contraste    |
 
 ### Slide de Contenido
 
-| Aspecto | Antes | Después |
-|---------|-------|---------|
-| Layout | Full-width texto | 60% texto / 40% imagen |
-| Bullets | Puntos básicos | Bullets con color brand |
-| Imagen | No hay | Unsplash relevante |
-| Fondo | Blanco | Gradiente sutil |
+| Aspecto | Antes            | Después                 |
+| ------- | ---------------- | ----------------------- |
+| Layout  | Full-width texto | 60% texto / 40% imagen  |
+| Bullets | Puntos básicos   | Bullets con color brand |
+| Imagen  | No hay           | Unsplash relevante      |
+| Fondo   | Blanco           | Gradiente sutil         |
 
 ### Slide de Stats
 
-| Aspecto | Antes | Después |
-|---------|-------|---------|
-| Números | Texto plano | Cards con bordes |
-| Layout | Lista vertical | Grid horizontal |
-| Colores | Monocromático | Paleta brand completa |
+| Aspecto | Antes          | Después               |
+| ------- | -------------- | --------------------- |
+| Números | Texto plano    | Cards con bordes      |
+| Layout  | Lista vertical | Grid horizontal       |
+| Colores | Monocromático  | Paleta brand completa |
 
 ---
 
@@ -486,4 +494,5 @@ THEMES = {
 ---
 
 ## Próximo Paso
+
 → [Etapa 3: Fix de Descarga](./3-download-fix.md)

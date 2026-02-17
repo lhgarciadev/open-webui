@@ -9,6 +9,7 @@ This is a white-labeled fork of Open WebUI, rebranded as **Cognitia** - an enter
 ## Development Commands
 
 ### Frontend (SvelteKit + Tailwind v4)
+
 ```bash
 npm run dev              # Start dev server with HMR (port 5173)
 npm run dev:5050         # Dev server on port 5050
@@ -21,6 +22,7 @@ npm run test:frontend    # Vitest unit tests
 ```
 
 ### Backend (FastAPI + Python 3.11)
+
 ```bash
 cd backend && ./dev.sh   # Start backend with hot reload (port 8080)
 # OR directly:
@@ -34,6 +36,7 @@ cd backend && pytest
 ```
 
 ### Docker
+
 ```bash
 # Standard build
 docker build -t cognitia .
@@ -49,6 +52,7 @@ docker-compose -f docker-compose.whitelabel.yaml up  # White-label
 ```
 
 ### Branding Compliance
+
 ```bash
 ./scripts/verify_compliance.sh  # Check for "Open WebUI" references
 ```
@@ -56,6 +60,7 @@ docker-compose -f docker-compose.whitelabel.yaml up  # White-label
 ## Architecture
 
 ### Frontend (`src/`)
+
 - **Framework**: SvelteKit 2.x with Svelte 5
 - **Styling**: Tailwind CSS v4 with custom brand colors
 - **State**: Svelte stores (`src/lib/stores/`)
@@ -66,9 +71,11 @@ docker-compose -f docker-compose.whitelabel.yaml up  # White-label
   - `s/[id]` - shared chat viewing
 
 ### Brand Identity (`src/lib/constants/identity.ts`)
+
 Centralized branding configuration with APP_NAME, colors, and URLs. All UI components import from here for dynamic branding.
 
 ### Backend (`backend/open_webui/`)
+
 - **Framework**: FastAPI with uvicorn
 - **Entry**: `main.py` - FastAPI app with middleware, CORS, routes
 - **Routers**: `routers/` - one file per domain (auth, chats, models, etc.)
@@ -78,12 +85,14 @@ Centralized branding configuration with APP_NAME, colors, and URLs. All UI compo
 - **Vector DBs**: `retrieval/vector/dbs/` - ChromaDB, PGVector, Qdrant, Milvus, etc.
 
 ### Key Integrations
+
 - **LLM Providers**: Ollama (`routers/ollama.py`), OpenAI (`routers/openai.py`)
 - **RAG**: `routers/retrieval.py` with 9 vector DB backends
 - **MCP**: Model Context Protocol support (`mcp==1.25.0`)
 - **Real-time**: Socket.IO for chat streaming (`socket/main.py`)
 
 ### Static Assets
+
 - `static/static/` - favicons, splash screens, PWA icons
 - `static/manifest.json` - PWA manifest
 - `backend/open_webui/static/` - backend static files
@@ -91,6 +100,7 @@ Centralized branding configuration with APP_NAME, colors, and URLs. All UI compo
 ## Styling System
 
 Tailwind v4 with CSS variables for theming:
+
 - Brand colors: `brand-50` through `brand-900` (blue palette)
 - Surface colors: `surface-base`, `surface-elevated`, `surface-overlay`
 - Primary scale: `primary-50` through `primary-950`
@@ -100,6 +110,7 @@ CSS variables defined in `src/app.css`, extended in `tailwind.config.js`.
 ## i18n
 
 Translation files in `src/lib/i18n/locales/`. To add new translation keys:
+
 ```bash
 npm run i18n:parse  # Extract keys and format files
 ```
@@ -107,6 +118,7 @@ npm run i18n:parse  # Extract keys and format files
 ## Environment Variables
 
 Key variables (see `backend/open_webui/env.py` for full list):
+
 - `WEBUI_NAME` - App display name (default: from identity.ts)
 - `OLLAMA_BASE_URL` - Ollama server URL
 - `OPENAI_API_KEY` / `OPENAI_API_BASE_URL` - OpenAI config
@@ -116,6 +128,7 @@ Key variables (see `backend/open_webui/env.py` for full list):
 ## Database Migrations
 
 Using Alembic for SQLAlchemy migrations:
+
 ```bash
 cd backend
 alembic revision -m "description"  # Create migration
@@ -127,6 +140,7 @@ Migrations auto-run on startup when `ENABLE_DB_MIGRATIONS=true`.
 ## White-Label Context
 
 This fork implements the Cognitia brand transformation (see `planning/agentic_master_plan.md`):
+
 - All "Open WebUI" references replaced with dynamic `APP_NAME`
 - Custom blue color palette (#3b82f6 primary)
 - Custom favicon/splash assets

@@ -395,7 +395,8 @@
 							const langPrefix = userLang.split('-')[0];
 
 							// Priority: exact match > language match > first available
-							voice = voices.find((v) => v.lang === userLang) ||
+							voice =
+								voices.find((v) => v.lang === userLang) ||
 								voices.find((v) => v.lang.startsWith(langPrefix)) ||
 								voices.find((v) => v.default) ||
 								voices[0];

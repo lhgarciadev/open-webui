@@ -31,8 +31,8 @@ Respuesta de error esperada:
 
 ```json
 {
-  "success": false,
-  "error": "No slide content provided. Send non-empty 'slides' or 'story_spec'."
+	"success": false,
+	"error": "No slide content provided. Send non-empty 'slides' or 'story_spec'."
 }
 ```
 

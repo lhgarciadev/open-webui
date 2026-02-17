@@ -13,6 +13,7 @@
 ### Task 0: Create dedicated worktree for implementation
 
 **Files:**
+
 - None
 
 **Step 1: Create worktree**
@@ -37,6 +38,7 @@ No commit needed.
 ### Task 1: Confirm pricepertoken API contract
 
 **Files:**
+
 - Modify: `docs/plans/2026-02-16-model-selector-pricing-implementation.md`
 
 **Step 1: Write the failing test**
@@ -61,6 +63,7 @@ Expected: FAIL with the placeholder assertion.
 **Step 3: Confirm API contract**
 
 Use `web.run` to check pricepertoken docs and confirm:
+
 - Endpoint(s)
 - Field names for input/output price per 1M tokens
 - Model id naming
@@ -79,6 +82,7 @@ git commit -m "test: add placeholder for pricing contract"
 ### Task 2: Add pricing table + model layer
 
 **Files:**
+
 - Create: `backend/open_webui/models/pricing.py`
 - Create: `backend/open_webui/migrations/versions/2026_02_16_add_model_pricing.py`
 - Test: `backend/open_webui/test/apps/webui/routers/test_pricing.py`
@@ -177,6 +181,7 @@ git commit -m "feat: add model_pricing table and model"
 ### Task 3: Add pricing router + cache API
 
 **Files:**
+
 - Create: `backend/open_webui/routers/pricing.py`
 - Modify: `backend/open_webui/main.py`
 - Modify: `backend/open_webui/config.py`
@@ -245,6 +250,7 @@ git commit -m "feat: add pricing API stub"
 ### Task 4: Implement pricepertoken fetch + scheduled refresh
 
 **Files:**
+
 - Create: `backend/open_webui/utils/pricing.py`
 - Modify: `backend/open_webui/routers/pricing.py`
 - Modify: `backend/open_webui/main.py`
@@ -366,6 +372,7 @@ git commit -m "feat: pricing refresh and scheduler"
 ### Task 5: Add frontend pricing API client
 
 **Files:**
+
 - Create: `src/lib/apis/pricing/index.ts`
 - Modify: `src/lib/apis/index.ts`
 
@@ -376,10 +383,10 @@ git commit -m "feat: pricing refresh and scheduler"
 import { describe, it, expect } from 'vitest';
 
 describe('pricing api client', () => {
-  it('exports getPricingModels', () => {
-    const mod = require('./index');
-    expect(typeof mod.getPricingModels).toBe('function');
-  });
+	it('exports getPricingModels', () => {
+		const mod = require('./index');
+		expect(typeof mod.getPricingModels).toBe('function');
+	});
 });
 ```
 
@@ -395,24 +402,24 @@ Expected: FAIL (module missing).
 import { WEBUI_API_BASE_URL } from '$lib/constants';
 
 export async function getPricingModels(token = '') {
-  const res = await fetch(`${WEBUI_API_BASE_URL}/pricing/models`, {
-    headers: token ? { Authorization: `Bearer ${token}` } : undefined
-  });
-  if (!res.ok) throw new Error('Failed to fetch pricing');
-  return res.json();
+	const res = await fetch(`${WEBUI_API_BASE_URL}/pricing/models`, {
+		headers: token ? { Authorization: `Bearer ${token}` } : undefined
+	});
+	if (!res.ok) throw new Error('Failed to fetch pricing');
+	return res.json();
 }
 
 export async function refreshPricingModels(token = '', model_ids: string[] = []) {
-  const res = await fetch(`${WEBUI_API_BASE_URL}/pricing/refresh`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      ...(token ? { Authorization: `Bearer ${token}` } : {})
-    },
-    body: JSON.stringify({ model_ids })
-  });
-  if (!res.ok) throw new Error('Failed to refresh pricing');
-  return res.json();
+	const res = await fetch(`${WEBUI_API_BASE_URL}/pricing/refresh`, {
+		method: 'POST',
+		headers: {
+			'Content-Type': 'application/json',
+			...(token ? { Authorization: `Bearer ${token}` } : {})
+		},
+		body: JSON.stringify({ model_ids })
+	});
+	if (!res.ok) throw new Error('Failed to refresh pricing');
+	return res.json();
 }
 ```
 
@@ -433,6 +440,7 @@ git add src/lib/apis/pricing/index.ts src/lib/apis/pricing/index.test.ts
 ### Task 6: Add curation + special category helpers
 
 **Files:**
+
 - Create: `src/lib/constants/modelCuration.ts`
 - Modify: `src/lib/constants/modelCategories.ts`
 - Modify: `src/lib/utils/modelUtils.ts`
@@ -446,15 +454,15 @@ import { describe, it, expect } from 'vitest';
 import { categorizeModel } from './modelUtils';
 
 describe('modelUtils', () => {
-  it('treats cognitia models as local', () => {
-    const result = categorizeModel({ id: 'cognitia_llm_zerogpu.phi3' });
-    expect(result.categories).toContain('local');
-  });
+	it('treats cognitia models as local', () => {
+		const result = categorizeModel({ id: 'cognitia_llm_zerogpu.phi3' });
+		expect(result.categories).toContain('local');
+	});
 
-  it('flags audio models as specials', () => {
-    const result = categorizeModel({ id: 'gpt-audio-mini' });
-    expect(result.categories).toContain('specials');
-  });
+	it('flags audio models as specials', () => {
+		const result = categorizeModel({ id: 'gpt-audio-mini' });
+		expect(result.categories).toContain('specials');
+	});
 });
 ```
 
@@ -470,15 +478,32 @@ Add curated map:
 ```ts
 // src/lib/constants/modelCuration.ts
 export const CURATED_MODELS_BY_CATEGORY: Record<string, string[]> = {
-  coding: ['gpt-5-codex', 'gpt-5.1-codex', 'cognitia_llm_zerogpu.mistral-7b'],
-  creative: ['gpt-4o', 'gpt-4.1', 'cognitia_llm_zerogpu.qwen2.5-7b'],
-  analysis: ['o3', 'o1', 'gpt-5'],
-  fast: ['gpt-4o-mini', 'gpt-5-mini', 'cognitia_llm_zerogpu.phi3', 'cognitia_llm_zerogpu.smollm2-1.7b'],
-  local: ['phi3:latest', 'cognitia_llm_zerogpu.phi3', 'cognitia_llm_zerogpu.qwen2.5-7b', 'cognitia_llm_zerogpu.smollm2-1.7b', 'cognitia_llm_zerogpu.mistral-7b'],
-  vision: ['gpt-4o', 'gpt-4o-mini'],
-  documents: ['gpt-4.1', 'gpt-5'],
-  general: ['gpt-4o', 'gpt-5-mini', 'cognitia_llm_zerogpu.qwen2.5-7b'],
-  specials: ['gpt-audio-mini', 'gpt-realtime-mini', 'gpt-image-1', 'omni-moderation-latest', 'gpt-4o-search-preview']
+	coding: ['gpt-5-codex', 'gpt-5.1-codex', 'cognitia_llm_zerogpu.mistral-7b'],
+	creative: ['gpt-4o', 'gpt-4.1', 'cognitia_llm_zerogpu.qwen2.5-7b'],
+	analysis: ['o3', 'o1', 'gpt-5'],
+	fast: [
+		'gpt-4o-mini',
+		'gpt-5-mini',
+		'cognitia_llm_zerogpu.phi3',
+		'cognitia_llm_zerogpu.smollm2-1.7b'
+	],
+	local: [
+		'phi3:latest',
+		'cognitia_llm_zerogpu.phi3',
+		'cognitia_llm_zerogpu.qwen2.5-7b',
+		'cognitia_llm_zerogpu.smollm2-1.7b',
+		'cognitia_llm_zerogpu.mistral-7b'
+	],
+	vision: ['gpt-4o', 'gpt-4o-mini'],
+	documents: ['gpt-4.1', 'gpt-5'],
+	general: ['gpt-4o', 'gpt-5-mini', 'cognitia_llm_zerogpu.qwen2.5-7b'],
+	specials: [
+		'gpt-audio-mini',
+		'gpt-realtime-mini',
+		'gpt-image-1',
+		'omni-moderation-latest',
+		'gpt-4o-search-preview'
+	]
 };
 ```
 
@@ -495,6 +520,7 @@ Add category in `modelCategories.ts`:
 ```
 
 Update `modelUtils.ts`:
+
 - Add `isCognitiaLocalModel(id)` for ids starting `cognitia_llm_`.
 - Add special-pattern detection for `audio`, `realtime`, `transcribe`, `image`, `moderation`, `search`, `sora`.
 - Add `specials` category when matched.
@@ -516,6 +542,7 @@ git commit -m "feat: add curated model list and specials category"
 ### Task 7: Render costs + curated view in selector
 
 **Files:**
+
 - Modify: `src/lib/components/chat/ModelSelector/Selector.svelte`
 - Modify: `src/lib/components/chat/ModelSelector/ModelItem.svelte`
 - Modify: `src/lib/components/chat/ModelSelector.svelte`
@@ -530,8 +557,8 @@ import { render } from '@testing-library/svelte';
 import Selector from './ModelSelector/Selector.svelte';
 
 test('shows pricing note', () => {
-  const { getByText } = render(Selector, { props: { items: [], value: '' } });
-  getByText('Precios estimados');
+	const { getByText } = render(Selector, { props: { items: [], value: '' } });
+	getByText('Precios estimados');
 });
 ```
 
@@ -555,11 +582,12 @@ Example snippet in `ModelItem.svelte`:
 
 ```svelte
 {#if pricing}
-  <div class="text-[11px] text-gray-500">
-    {$i18n.t('Costo aprox')}: COP {pricing.inputCopPer1k} / 1K (in) · COP {pricing.outputCopPer1k} / 1K (out)
-  </div>
+	<div class="text-[11px] text-gray-500">
+		{$i18n.t('Costo aprox')}: COP {pricing.inputCopPer1k} / 1K (in) · COP {pricing.outputCopPer1k} / 1K
+		(out)
+	</div>
 {:else}
-  <div class="text-[11px] text-gray-500">{$i18n.t('Sin precio aun')}</div>
+	<div class="text-[11px] text-gray-500">{$i18n.t('Sin precio aun')}</div>
 {/if}
 ```
 
@@ -580,6 +608,7 @@ git add src/lib/components/chat/ModelSelector/Selector.svelte src/lib/components
 ### Task 8: Hook refresh on missing prices
 
 **Files:**
+
 - Modify: `src/lib/components/chat/ModelSelector/Selector.svelte`
 - Modify: `src/lib/apis/pricing/index.ts`
 
@@ -593,7 +622,7 @@ import { refreshPricingModels } from '$lib/apis/pricing';
 vi.mock('$lib/apis/pricing');
 
 test('requests refresh for missing prices', async () => {
-  expect(refreshPricingModels).toBeDefined();
+	expect(refreshPricingModels).toBeDefined();
 });
 ```
 
@@ -624,6 +653,7 @@ git add src/lib/components/chat/ModelSelector/Selector.svelte src/lib/components
 ### Task 9: Final cleanup
 
 **Files:**
+
 - Modify: `docs/plans/2026-02-16-model-selector-pricing-design.md`
 - Modify: `docs/plans/2026-02-16-model-selector-pricing-implementation.md`
 

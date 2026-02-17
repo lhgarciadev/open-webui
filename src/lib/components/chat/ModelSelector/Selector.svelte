@@ -76,7 +76,10 @@
 
 	let showAllModels = false;
 	let pricingLoading = false;
-	let pricingMap: Record<string, { input_usd_per_million?: number; output_usd_per_million?: number }> = {};
+	let pricingMap: Record<
+		string,
+		{ input_usd_per_million?: number; output_usd_per_million?: number }
+	> = {};
 	let lastRefreshAt = 0;
 
 	const curatedModelIds = new Set<string>(Object.values(CURATED_MODELS_BY_CATEGORY).flat());
@@ -95,8 +98,10 @@
 		pricingLoading = true;
 		try {
 			const res = await getPricingModels(localStorage.token);
-			const map: Record<string, { input_usd_per_million?: number; output_usd_per_million?: number }> =
-				{};
+			const map: Record<
+				string,
+				{ input_usd_per_million?: number; output_usd_per_million?: number }
+			> = {};
 			for (const row of res?.items ?? []) {
 				if (row?.model_id) {
 					map[row.model_id] = row;
@@ -145,9 +150,8 @@
 	$: pinnedModels = $settings?.pinnedModels ?? [];
 
 	// Group filtered items by category when not searching
-	$: groupedItems = !searchValue && groupedView
-		? groupModelsByCategory(filteredItems, pinnedModels)
-		: null;
+	$: groupedItems =
+		!searchValue && groupedView ? groupModelsByCategory(filteredItems, pinnedModels) : null;
 
 	// Toggle category expansion
 	function toggleCategory(categoryId: string) {
@@ -231,9 +235,7 @@
 
 	$: filteredItems = (
 		searchValue
-			? fuse
-					.search(searchValue)
-					.map((e) => e.item)
+			? fuse.search(searchValue).map((e) => e.item)
 			: items.filter((item) => filterByCategory(item, selectedCategoryFilter, pinnedModels))
 	)
 		.filter((item) => !(item.model?.info?.meta?.hidden ?? false))
@@ -577,7 +579,9 @@
 							}
 						}}
 					>
-						<div class="flex flex-wrap gap-1 w-full text-center text-xs rounded-full bg-transparent px-1.5">
+						<div
+							class="flex flex-wrap gap-1 w-full text-center text-xs rounded-full bg-transparent px-1.5"
+						>
 							<button
 								class="min-w-fit outline-none px-2 py-1 rounded-lg transition text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800"
 								on:click={() => {
@@ -588,7 +592,8 @@
 							</button>
 							<!-- All button -->
 							<button
-								class="min-w-fit outline-none px-2 py-1 rounded-lg transition flex items-center gap-1 {selectedCategoryFilter === ''
+								class="min-w-fit outline-none px-2 py-1 rounded-lg transition flex items-center gap-1 {selectedCategoryFilter ===
+								''
 									? 'bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-white'
 									: 'text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800'}"
 								aria-pressed={selectedCategoryFilter === ''}
@@ -597,13 +602,16 @@
 								}}
 							>
 								{$i18n.t('All')}
-								<span class="text-[10px] opacity-70">{items.filter((item) => !(item.model?.info?.meta?.hidden ?? false)).length}</span>
+								<span class="text-[10px] opacity-70"
+									>{items.filter((item) => !(item.model?.info?.meta?.hidden ?? false)).length}</span
+								>
 							</button>
 
 							<!-- Favorites (if pinned models exist) -->
 							{#if pinnedModels.length > 0}
 								<button
-									class="min-w-fit outline-none px-2 py-1 rounded-lg transition flex items-center gap-1 {selectedCategoryFilter === 'favorites'
+									class="min-w-fit outline-none px-2 py-1 rounded-lg transition flex items-center gap-1 {selectedCategoryFilter ===
+									'favorites'
 										? 'bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-white'
 										: 'text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800'}"
 									aria-pressed={selectedCategoryFilter === 'favorites'}
@@ -618,14 +626,15 @@
 
 							<!-- Category pills -->
 							{#each categoryPills as category}
-								{@const categoryModels = items.filter(item => {
+								{@const categoryModels = items.filter((item) => {
 									const cats = categorizeModel(item.model ?? item);
 									return cats.categories.includes(category.id);
 								})}
 								{#if categoryModels.length > 0}
 									<Tooltip content={category.description}>
 										<button
-											class="min-w-fit outline-none px-2 py-1 rounded-lg transition flex items-center gap-1 {selectedCategoryFilter === category.id
+											class="min-w-fit outline-none px-2 py-1 rounded-lg transition flex items-center gap-1 {selectedCategoryFilter ===
+											category.id
 												? 'bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-white'
 												: 'text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800'}"
 											aria-pressed={selectedCategoryFilter === category.id}
@@ -633,7 +642,8 @@
 												selectedCategoryFilter = category.id;
 											}}
 										>
-											{category.emoji} {category.name.split(' ')[0]}
+											{category.emoji}
+											{category.name.split(' ')[0]}
 											<span class="text-[10px] opacity-70">{categoryModels.length}</span>
 										</button>
 									</Tooltip>
@@ -643,7 +653,6 @@
 					</div>
 				{/if}
 			</div>
-
 
 			<div class="px-2.5 group relative">
 				{#if filteredItems.length === 0}
@@ -674,9 +683,22 @@
 										<span class="uppercase tracking-wide">{category.name}</span>
 									</span>
 									<span class="text-gray-400 dark:text-gray-500">({categoryModels.length})</span>
-									<span class="ml-auto transition-transform {expandedCategories.has(categoryId) ? 'rotate-180' : ''}">
-										<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" class="size-3">
-											<path fill-rule="evenodd" d="M4.22 6.22a.75.75 0 0 1 1.06 0L8 8.94l2.72-2.72a.75.75 0 1 1 1.06 1.06l-3.25 3.25a.75.75 0 0 1-1.06 0L4.22 7.28a.75.75 0 0 1 0-1.06Z" clip-rule="evenodd" />
+									<span
+										class="ml-auto transition-transform {expandedCategories.has(categoryId)
+											? 'rotate-180'
+											: ''}"
+									>
+										<svg
+											xmlns="http://www.w3.org/2000/svg"
+											viewBox="0 0 16 16"
+											fill="currentColor"
+											class="size-3"
+										>
+											<path
+												fill-rule="evenodd"
+												d="M4.22 6.22a.75.75 0 0 1 1.06 0L8 8.94l2.72-2.72a.75.75 0 1 1 1.06 1.06l-3.25 3.25a.75.75 0 0 1-1.06 0L4.22 7.28a.75.75 0 0 1 0-1.06Z"
+												clip-rule="evenodd"
+											/>
 										</svg>
 									</span>
 								</button>
@@ -685,9 +707,11 @@
 								{#if expandedCategories.has(categoryId)}
 									<div class="pl-1">
 										{#each categoryModels as item, i (item.value)}
-											{@const globalIndex = filteredItems.findIndex(fi => fi.value === item.value)}
+											{@const globalIndex = filteredItems.findIndex(
+												(fi) => fi.value === item.value
+											)}
 											<ModelItem
-												selectedModelIdx={selectedModelIdx}
+												{selectedModelIdx}
 												{item}
 												index={globalIndex}
 												{value}

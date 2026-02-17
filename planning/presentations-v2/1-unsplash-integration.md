@@ -1,6 +1,7 @@
 # Etapa 1: Integración de Imágenes (Unsplash + Pexels)
 
 ## Objetivo
+
 Integrar APIs de imágenes gratuitas (Unsplash principal, Pexels backup) para agregar imágenes relevantes automáticamente a las presentaciones.
 
 **Documento previo:** [0-asis-tobe.md](./0-asis-tobe.md)
@@ -11,66 +12,71 @@ Integrar APIs de imágenes gratuitas (Unsplash principal, Pexels backup) para ag
 
 ### Comparación de APIs de Imágenes Gratuitas
 
-| API | Rate Limit | Ventajas | Desventajas |
-|-----|------------|----------|-------------|
+| API          | Rate Limit                   | Ventajas                      | Desventajas                     |
+| ------------ | ---------------------------- | ----------------------------- | ------------------------------- |
 | **Unsplash** | 50/hr (demo), 5000/hr (prod) | Mejor calidad, más artísticas | Proceso de aprobación para prod |
-| **Pexels** | 200/hr | Sin aprobación, fácil setup | Calidad variable |
-| **Pixabay** | 100/min | Alto rate limit | Requiere atribución visible |
+| **Pexels**   | 200/hr                       | Sin aprobación, fácil setup   | Calidad variable                |
+| **Pixabay**  | 100/min                      | Alto rate limit               | Requiere atribución visible     |
 
 **Decisión:** Unsplash como principal (mejor calidad), Pexels como backup.
 
 ---
 
 ### Unsplash API - Características
-| Característica | Detalle |
-|----------------|---------|
-| **Costo** | Gratis (Demo: 50 req/hora, Producción: 5000 req/hora) |
-| **Registro** | https://unsplash.com/developers |
-| **Endpoint principal** | `GET /search/photos` |
-| **Tamaños disponibles** | raw, full, regular (1080px), small (400px), thumb |
-| **Atribución** | Requerida (link a foto + fotógrafo) |
+
+| Característica          | Detalle                                               |
+| ----------------------- | ----------------------------------------------------- |
+| **Costo**               | Gratis (Demo: 50 req/hora, Producción: 5000 req/hora) |
+| **Registro**            | https://unsplash.com/developers                       |
+| **Endpoint principal**  | `GET /search/photos`                                  |
+| **Tamaños disponibles** | raw, full, regular (1080px), small (400px), thumb     |
+| **Atribución**          | Requerida (link a foto + fotógrafo)                   |
 
 ### Ejemplo de Request
+
 ```bash
 curl "https://api.unsplash.com/search/photos?query=technology&per_page=1" \
   -H "Authorization: Client-ID YOUR_ACCESS_KEY"
 ```
 
 ### Ejemplo de Response
+
 ```json
 {
-  "results": [
-    {
-      "id": "abc123",
-      "urls": {
-        "raw": "https://images.unsplash.com/...",
-        "regular": "https://images.unsplash.com/...?w=1080",
-        "small": "https://images.unsplash.com/...?w=400"
-      },
-      "user": {
-        "name": "John Doe",
-        "links": {
-          "html": "https://unsplash.com/@johndoe"
-        }
-      },
-      "links": {
-        "html": "https://unsplash.com/photos/abc123"
-      }
-    }
-  ]
+	"results": [
+		{
+			"id": "abc123",
+			"urls": {
+				"raw": "https://images.unsplash.com/...",
+				"regular": "https://images.unsplash.com/...?w=1080",
+				"small": "https://images.unsplash.com/...?w=400"
+			},
+			"user": {
+				"name": "John Doe",
+				"links": {
+					"html": "https://unsplash.com/@johndoe"
+				}
+			},
+			"links": {
+				"html": "https://unsplash.com/photos/abc123"
+			}
+		}
+	]
 }
 ```
 
 ### Pexels API - Características
-| Característica | Detalle |
-|----------------|---------|
-| **Costo** | Gratis (200 req/hora) |
-| **Registro** | https://www.pexels.com/api/ |
-| **Endpoint principal** | `GET /v1/search` |
+
+| Característica          | Detalle                                                            |
+| ----------------------- | ------------------------------------------------------------------ |
+| **Costo**               | Gratis (200 req/hora)                                              |
+| **Registro**            | https://www.pexels.com/api/                                        |
+| **Endpoint principal**  | `GET /v1/search`                                                   |
 | **Tamaños disponibles** | original, large2x, large, medium, small, portrait, landscape, tiny |
-| **Atribución** | Recomendada pero no requerida |
+| **Atribución**          | Recomendada pero no requerida                                      |
 
 ### Ejemplo Pexels Request
+
 ```bash
 curl "https://api.pexels.com/v1/search?query=technology&per_page=1" \
   -H "Authorization: YOUR_API_KEY"
@@ -83,6 +89,7 @@ curl "https://api.pexels.com/v1/search?query=technology&per_page=1" \
 ### Paso 1: Configuración
 
 #### 1.1 Variables de Entorno
+
 ```python
 # backend/open_webui/config.py
 
@@ -92,6 +99,7 @@ PEXELS_API_KEY = os.environ.get("PEXELS_API_KEY", "")  # Backup
 ```
 
 #### 1.2 Dependencias
+
 ```bash
 # Ya tenemos httpx instalado, verificar:
 pip show httpx
@@ -100,6 +108,7 @@ pip show httpx
 ### Paso 2: Cliente Unsplash
 
 #### 2.1 Crear módulo de cliente
+
 ```python
 # backend/open_webui/utils/unsplash.py
 
@@ -239,12 +248,14 @@ def extract_keywords(text: str, max_words: int = 3) -> str:
 ### Paso 3: Integración en presentations.py
 
 #### 3.1 Importar cliente
+
 ```python
 # Al inicio de presentations.py
 from open_webui.utils.unsplash import search_image, download_image, extract_keywords
 ```
 
 #### 3.2 Modificar generación de slides
+
 ```python
 async def _add_content_slide_with_image(prs, slide_def: dict):
     """
@@ -312,12 +323,14 @@ async def _add_content_slide_with_image(prs, slide_def: dict):
 ## Configuración Railway
 
 ### Variables de Entorno
+
 ```bash
 # En Railway Dashboard > Variables
 UNSPLASH_ACCESS_KEY=your_access_key_here
 ```
 
 ### Obtener API Key
+
 1. Ir a https://unsplash.com/developers
 2. Crear aplicación nueva
 3. Copiar "Access Key"
@@ -328,6 +341,7 @@ UNSPLASH_ACCESS_KEY=your_access_key_here
 ## Testing
 
 ### Test Local
+
 ```python
 # tests/test_unsplash.py
 import pytest
@@ -354,6 +368,7 @@ async def test_search_image():
 ```
 
 ### Test Manual
+
 ```bash
 # Con API key configurada
 curl "https://api.unsplash.com/search/photos?query=business&per_page=1" \
@@ -379,4 +394,5 @@ curl "https://api.unsplash.com/search/photos?query=business&per_page=1" \
 ---
 
 ## Próximo Paso
+
 → [Etapa 2: Mejoras de Diseño](./2-design-improvements.md)

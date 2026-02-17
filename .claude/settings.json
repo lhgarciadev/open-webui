@@ -1,21 +1,19 @@
 {
-  "$schema": "https://json.schemastore.org/claude-code-settings.json",
-  "permissions": {
-    "allow": [
-      "WebSearch",
-      "Bash(npm:*)",
-      "Bash(git:*)",
-      "Bash(curl:*)",
-      "Bash(docker:*)",
-      "Bash(railway:*)",
-      "Bash(python:*)",
-      "Bash(pip:*)",
-      "mcp__chrome-devtools__*",
-      "mcp__plugin_claude-mem_mcp-search__*"
-    ]
-  },
-  "enableAllProjectMcpServers": true,
-  "enabledMcpjsonServers": [
-    "supabase"
-  ]
+	"$schema": "https://json.schemastore.org/claude-code-settings.json",
+	"permissions": {
+		"allow": [
+			"WebSearch",
+			"Bash(npm:*)",
+			"Bash(git:*)",
+			"Bash(curl:*)",
+			"Bash(docker:*)",
+			"Bash(railway:*)",
+			"Bash(python:*)",
+			"Bash(pip:*)",
+			"mcp__chrome-devtools__*",
+			"mcp__plugin_claude-mem_mcp-search__*"
+		]
+	},
+	"enableAllProjectMcpServers": true,
+	"enabledMcpjsonServers": ["supabase"]
 }

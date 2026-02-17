@@ -942,7 +942,6 @@
 						</div>
 					</button>
 				</Tooltip>
-
 			</div>
 
 			<div
@@ -1393,7 +1392,9 @@
 				</Folder>
 			</div>
 
-			<div class="px-1.5 pt-1.5 pb-2 sticky bottom-0 z-50 -mt-3 sidebar bg-gray-50 dark:bg-gray-950">
+			<div
+				class="px-1.5 pt-1.5 pb-2 sticky bottom-0 z-50 -mt-3 sidebar bg-gray-50 dark:bg-gray-950"
+			>
 				<div class="flex flex-col font-primary">
 					{#if $user !== undefined && $user !== null}
 						<UserMenu

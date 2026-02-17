@@ -1,6 +1,7 @@
 # Etapa 7: Despliegue de Ollama + Phi3 para Pruebas Locales
 
 ## Objetivo
+
 Configurar un entorno de pruebas con Ollama corriendo modelos locales (Phi3) para validar seguridad y funcionamiento sin depender de APIs externas.
 
 ---
@@ -8,6 +9,7 @@ Configurar un entorno de pruebas con Ollama corriendo modelos locales (Phi3) par
 ## Justificacion
 
 ### Por que modelos locales?
+
 1. **Seguridad:** Datos sensibles no salen de la red local
 2. **Privacidad:** Sin telemetria a terceros
 3. **Costo:** $0 por inferencia
@@ -15,6 +17,7 @@ Configurar un entorno de pruebas con Ollama corriendo modelos locales (Phi3) par
 5. **Testing:** Pruebas sin consumir creditos de API
 
 ### Por que Phi3?
+
 - Modelo pequeno pero capaz (3.8B parametros)
 - Funciona en hardware modesto (8GB RAM)
 - Buen balance rendimiento/recursos
@@ -26,14 +29,16 @@ Configurar un entorno de pruebas con Ollama corriendo modelos locales (Phi3) par
 ## Pre-requisitos
 
 ### Hardware Minimo
-| Componente | Minimo | Recomendado |
-|------------|--------|-------------|
-| RAM | 8 GB | 16 GB |
-| Disco | 10 GB libre | 50 GB SSD |
-| CPU | 4 cores | 8 cores |
-| GPU | Opcional | NVIDIA 8GB+ |
+
+| Componente | Minimo      | Recomendado |
+| ---------- | ----------- | ----------- |
+| RAM        | 8 GB        | 16 GB       |
+| Disco      | 10 GB libre | 50 GB SSD   |
+| CPU        | 4 cores     | 8 cores     |
+| GPU        | Opcional    | NVIDIA 8GB+ |
 
 ### Software
+
 - macOS 12+, Linux, o Windows 11
 - Docker (opcional, para contenedor)
 - Open WebUI corriendo localmente
@@ -85,7 +90,7 @@ services:
     image: ollama/ollama:latest
     container_name: ollama
     ports:
-      - "11434:11434"
+      - '11434:11434'
     volumes:
       - ollama_data:/root/.ollama
     restart: unless-stopped
@@ -102,7 +107,7 @@ services:
     image: ghcr.io/open-webui/open-webui:main
     container_name: open-webui
     ports:
-      - "3000:8080"
+      - '3000:8080'
     environment:
       - OLLAMA_BASE_URL=http://ollama:11434
     volumes:
@@ -152,13 +157,13 @@ ollama pull qwen2.5
 
 ### Tabla de Modelos
 
-| Modelo | Tamano | RAM Requerida | Uso Principal |
-|--------|--------|---------------|---------------|
-| phi3 | 2.3 GB | 4 GB | General, rapido |
-| llama3.2 | 2.0 GB | 4 GB | Chat, instrucciones |
-| mistral | 4.1 GB | 8 GB | General, razonamiento |
-| deepseek-coder | 3.8 GB | 8 GB | Codigo |
-| qwen2.5 | 4.4 GB | 8 GB | Multilingue |
+| Modelo         | Tamano | RAM Requerida | Uso Principal         |
+| -------------- | ------ | ------------- | --------------------- |
+| phi3           | 2.3 GB | 4 GB          | General, rapido       |
+| llama3.2       | 2.0 GB | 4 GB          | Chat, instrucciones   |
+| mistral        | 4.1 GB | 8 GB          | General, razonamiento |
+| deepseek-coder | 3.8 GB | 8 GB          | Codigo                |
+| qwen2.5        | 4.4 GB | 8 GB          | Multilingue           |
 
 ---
 
@@ -344,6 +349,7 @@ INTEGRACION
 ## Siguiente Paso
 
 Una vez validado el entorno local:
+
 1. Ejecutar prompts 4.3 y 4.4 con modelo local
 2. Validar que todas las features funcionan offline
 3. Documentar diferencias de rendimiento vs APIs externas

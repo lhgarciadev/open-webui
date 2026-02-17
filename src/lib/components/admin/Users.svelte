@@ -111,7 +111,9 @@
 		</button>
 	</div>
 
-	<div class="flex-1 mt-1 lg:mt-0 px-[16px] lg:pr-[16px] lg:pl-0 overflow-y-auto overflow-x-hidden min-w-0">
+	<div
+		class="flex-1 mt-1 lg:mt-0 px-[16px] lg:pr-[16px] lg:pl-0 overflow-y-auto overflow-x-hidden min-w-0"
+	>
 		{#if selectedTab === 'overview'}
 			<UserList />
 		{:else if selectedTab === 'groups'}

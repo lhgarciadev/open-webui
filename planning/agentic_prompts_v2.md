@@ -9,10 +9,12 @@
 ## Instrucciones de Uso
 
 Cada etapa tiene dos prompts:
+
 1. **Prompt de Ejecucion (X.1)**: Realiza las tareas de la etapa
 2. **Prompt de Validacion (X.2)**: Verifica que la etapa se completo correctamente
 
 **Flujo recomendado**:
+
 ```
 Ejecutar Prompt X.1 → Revisar cambios → Ejecutar Prompt X.2 → Si falla, corregir y repetir
 ```
@@ -650,7 +652,7 @@ grep -rl "Agentic WebUI\|Open WebUI" src/lib/components/ | grep -v node_modules
 
 ### Prompt 5.1 - Ejecucion: Crear Sistema Docker White-Label
 
-```text
+````text
 **Rol**: DevOps / Ingeniero de Infraestructura
 **Contexto**: Crear sistema de build Docker personalizado para marca blanca
 
@@ -744,12 +746,12 @@ EXPOSE ${PORT}
 
 # Start command
 CMD ["python", "-m", "uvicorn", "open_webui.main:app", "--host", "0.0.0.0", "--port", "8080", "--forwarded-allow-ips", "*"]
-```
+````
 
 2. **Crear docker-compose.whitelabel.yaml**:
 
 ```yaml
-version: "3.8"
+version: '3.8'
 
 services:
   whitelabel-ai:
@@ -772,7 +774,7 @@ services:
       - ENABLE_SIGNUP=${ENABLE_SIGNUP:-true}
       - DEFAULT_USER_ROLE=${DEFAULT_USER_ROLE:-pending}
     ports:
-      - "${PORT:-3000}:8080"
+      - '${PORT:-3000}:8080'
     volumes:
       - mibrand-data:/app/backend/data
     networks:
@@ -879,11 +881,13 @@ OPENAI_API_KEY=
 ```
 
 **Archivos a crear**:
+
 - Dockerfile.whitelabel
 - docker-compose.whitelabel.yaml
 - scripts/build-whitelabel.sh
 - .env.whitelabel.example
-```
+
+````
 
 ### Prompt 5.2 - Validacion: Verificar Docker Build
 
@@ -947,7 +951,7 @@ OPENAI_API_KEY=
 - Error de sintaxis: Revisar Dockerfile y docker-compose
 - Build falla: Verificar que npm y pip funcionan
 - Container no inicia: Revisar logs con docker logs mibrand-ai
-```
+````
 
 ---
 
@@ -1281,16 +1285,16 @@ git tag -a v1.0.0-whitelabel -m "White-label release"
 
 ## Resumen de Prompts
 
-| Etapa | Prompt Ejecucion | Prompt Validacion |
-|-------|------------------|-------------------|
-| 0. Legal | 0.1 Registrar Decision | 0.2 Verificar Gate |
-| 1. Assets | 1.1 Crear/Reemplazar | 1.2 Verificar Assets |
-| 2. Config | 2.1 Actualizar Configs | 2.2 Verificar Configs |
-| 3. Estilos | 3.1 Implementar Colores | 3.2 Verificar Estilos |
-| 4. Componentes | 4.1 Actualizar Textos | 4.2 Verificar Componentes |
-| 5. Docker | 5.1 Crear Sistema | 5.2 Verificar Build |
-| 6. MCP | 6.1 Integrar PowerPoint | 6.2 Verificar MCP |
-| 7. QA | 7.1 Verificacion Completa | 7.2 Certificacion |
+| Etapa          | Prompt Ejecucion          | Prompt Validacion         |
+| -------------- | ------------------------- | ------------------------- |
+| 0. Legal       | 0.1 Registrar Decision    | 0.2 Verificar Gate        |
+| 1. Assets      | 1.1 Crear/Reemplazar      | 1.2 Verificar Assets      |
+| 2. Config      | 2.1 Actualizar Configs    | 2.2 Verificar Configs     |
+| 3. Estilos     | 3.1 Implementar Colores   | 3.2 Verificar Estilos     |
+| 4. Componentes | 4.1 Actualizar Textos     | 4.2 Verificar Componentes |
+| 5. Docker      | 5.1 Crear Sistema         | 5.2 Verificar Build       |
+| 6. MCP         | 6.1 Integrar PowerPoint   | 6.2 Verificar MCP         |
+| 7. QA          | 7.1 Verificacion Completa | 7.2 Certificacion         |
 
 **Total: 14 prompts**
 

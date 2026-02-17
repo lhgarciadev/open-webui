@@ -13,6 +13,7 @@ The Cognitia Ollama Hugging Face Space is successfully deployed and running on C
 **Issue**: Runtime error due to missing `curl` command in Docker container.
 
 **Fix**: Added `apt-get install curl` to Dockerfile:
+
 ```dockerfile
 RUN apt-get update && apt-get install -y curl && rm -rf /var/lib/apt/lists/*
 ```
@@ -21,65 +22,77 @@ RUN apt-get update && apt-get install -y curl && rm -rf /var/lib/apt/lists/*
 
 ## Models Available
 
-| Model | Parameters | Size | Quantization | Status |
-|-------|------------|------|--------------|--------|
-| phi3:latest | 3.8B | 2.03GB | Q4_0 | Available |
-| qwen2.5:7b | 7B | 4.7GB | - | CPU mode: Not loaded |
-| codellama:7b | 7B | 3.8GB | - | CPU mode: Not loaded |
+| Model        | Parameters | Size   | Quantization | Status               |
+| ------------ | ---------- | ------ | ------------ | -------------------- |
+| phi3:latest  | 3.8B       | 2.03GB | Q4_0         | Available            |
+| qwen2.5:7b   | 7B         | 4.7GB  | -            | CPU mode: Not loaded |
+| codellama:7b | 7B         | 3.8GB  | -            | CPU mode: Not loaded |
 
 **Note**: The Space is running on `cpu-basic` hardware. Only phi3 is loaded automatically in CPU mode per the start.sh logic. The 7B models (qwen2.5, codellama) require GPU upgrade.
 
 ## Performance Tests
 
 ### Test 1: Simple Spanish Response
+
 ```bash
 curl -s .../api/generate -d '{"model":"phi3","prompt":"Hola, responde solo con una oracion corta"}'
 ```
+
 - **Response**: "Hola!"
 - **Latency**: 7.86 seconds (cold start)
 
 ### Test 2: Code Generation
+
 ```bash
 curl -s .../api/generate -d '{"model":"phi3","prompt":"Escribe una funcion Python para sumar dos numeros"}'
 ```
+
 - **Response**:
+
 ```python
 def suma(num1, num2):
     return num1 + num2
 ```
+
 - **Latency**: 6.56 seconds
 
 ### Test 3: Knowledge Question (Warm)
+
 ```bash
 curl -s .../api/generate -d '{"model":"phi3","prompt":"Cual es la capital de Colombia?"}'
 ```
+
 - **Response**: "Bogota"
 - **Latency**: 2.69 seconds
 
 ### Test 4: Chat API
+
 ```bash
 curl -s .../api/chat -d '{"model":"phi3","messages":[{"role":"user","content":"Hola, como estas?"}]}'
 ```
+
 - **Response**: Full conversational response in Spanish
 - **Latency**: 11.94 seconds
 
 ## API Endpoints Verified
 
-| Endpoint | Method | Status |
-|----------|--------|--------|
-| /api/tags | GET | Working |
-| /api/generate | POST | Working |
-| /api/chat | POST | Working |
+| Endpoint      | Method | Status  |
+| ------------- | ------ | ------- |
+| /api/tags     | GET    | Working |
+| /api/generate | POST   | Working |
+| /api/chat     | POST   | Working |
 
 ## Checklist Results
 
 ### Verification
+
 - [x] /api/tags responds correctly
 - [x] phi3 available
 - [ ] qwen2.5:7b available (requires GPU)
 - [ ] codellama:7b available (requires GPU)
 
 ### Tests
+
 - [x] phi3 responds correctly
 - [x] Spanish language support works
 - [x] Code generation works
@@ -87,6 +100,7 @@ curl -s .../api/chat -d '{"model":"phi3","messages":[{"role":"user","content":"H
 - [x] Latency: 2-8 seconds (acceptable for CPU)
 
 ### Documentation
+
 - [x] Model list documented
 - [x] Response times recorded
 - [x] API endpoints verified

@@ -16,17 +16,18 @@
 
 El proyecto cumple con los criterios de la Clausula 5 de la licencia BSD de Open WebUI:
 
-| Criterio | Requisito | Estado |
-|----------|-----------|--------|
-| **Usuarios finales** | < 50 en periodo de 30 dias | CUMPLE |
-| **Tipo de deployment** | Interno/privado | CUMPLE |
-| **Distribucion** | No es distribucion amplia | CUMPLE |
+| Criterio               | Requisito                  | Estado |
+| ---------------------- | -------------------------- | ------ |
+| **Usuarios finales**   | < 50 en periodo de 30 dias | CUMPLE |
+| **Tipo de deployment** | Interno/privado            | CUMPLE |
+| **Distribucion**       | No es distribucion amplia  | CUMPLE |
 
 ---
 
 ## Implicaciones
 
 ### Permitido:
+
 - Remover completamente el logo de Open WebUI
 - Remover el nombre "Open WebUI" de la interfaz visible
 - Reemplazar favicon, splash screen, y assets visuales
@@ -34,11 +35,13 @@ El proyecto cumple con los criterios de la Clausula 5 de la licencia BSD de Open
 - Crear identidad visual completamente nueva
 
 ### Requerido (No Negociable):
+
 - Mantener avisos de copyright BSD en el codigo fuente del backend
 - Mantener archivo LICENSE original
 - No remover atribuciones en archivos de codigo fuente
 
 ### Prohibido:
+
 - Exceder 50 usuarios finales sin obtener licencia Enterprise
 - Remover avisos de copyright del codigo fuente
 - Distribuir ampliamente sin ajustar el path legal
@@ -75,11 +78,11 @@ Al proceder con Path A, el equipo se compromete a:
 
 ## Registro de Aprobacion
 
-| Rol | Fecha | Estado |
-|-----|-------|--------|
-| Product Owner | 2026-02-12 | APROBADO |
+| Rol                 | Fecha      | Estado      |
+| ------------------- | ---------- | ----------- |
+| Product Owner       | 2026-02-12 | APROBADO    |
 | Arquitecto (Claude) | 2026-02-12 | DOCUMENTADO |
-| Tech Lead | Pendiente | - |
+| Tech Lead           | Pendiente  | -           |
 
 ---
 

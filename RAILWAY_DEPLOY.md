@@ -34,20 +34,20 @@ Configure these in Railway Dashboard → Your Project → Variables:
 
 ### Required
 
-| Variable | Description | Example |
-|----------|-------------|---------|
-| `OPENAI_API_KEY` | Your OpenAI API key | `sk-proj-xxxx...` |
-| `WEBUI_SECRET_KEY` | JWT secret (generate with `openssl rand -hex 32`) | `a1b2c3d4...` |
+| Variable           | Description                                       | Example           |
+| ------------------ | ------------------------------------------------- | ----------------- |
+| `OPENAI_API_KEY`   | Your OpenAI API key                               | `sk-proj-xxxx...` |
+| `WEBUI_SECRET_KEY` | JWT secret (generate with `openssl rand -hex 32`) | `a1b2c3d4...`     |
 
 ### Optional
 
-| Variable | Default | Description |
-|----------|---------|-------------|
-| `WEBUI_NAME` | `Cognitia` | Brand name displayed in UI |
-| `OPENAI_API_BASE_URL` | `https://api.openai.com/v1` | OpenAI API endpoint |
-| `ENABLE_SIGNUP` | `true` | Allow new user registration |
-| `DEFAULT_USER_ROLE` | `pending` | Role for new users (`pending`, `user`, `admin`) |
-| `PORT` | `8080` | Server port (Railway sets this automatically) |
+| Variable              | Default                     | Description                                     |
+| --------------------- | --------------------------- | ----------------------------------------------- |
+| `WEBUI_NAME`          | `Cognitia`                  | Brand name displayed in UI                      |
+| `OPENAI_API_BASE_URL` | `https://api.openai.com/v1` | OpenAI API endpoint                             |
+| `ENABLE_SIGNUP`       | `true`                      | Allow new user registration                     |
+| `DEFAULT_USER_ROLE`   | `pending`                   | Role for new users (`pending`, `user`, `admin`) |
+| `PORT`                | `8080`                      | Server port (Railway sets this automatically)   |
 
 ### Generate Secret Key
 
@@ -77,6 +77,7 @@ DEFAULT_USER_ROLE=pending
 ## Estimated Costs
 
 Railway Hobby Plan ($5/month):
+
 - **Build**: ~5-10 min first deploy
 - **Memory**: ~512MB-1GB runtime
 - **Storage**: Uses Railway's ephemeral storage (data resets on redeploy)
@@ -101,15 +102,18 @@ Add a Railway PostgreSQL database:
 ## Troubleshooting
 
 ### Build fails
+
 - Check build logs in Railway dashboard
 - Ensure `Dockerfile.railway` exists in repo root
 
 ### App crashes on start
+
 - Verify `OPENAI_API_KEY` is set correctly
 - Check `WEBUI_SECRET_KEY` is set
 - View logs in Railway dashboard
 
 ### Models not appearing
+
 - Verify OpenAI API key is valid
 - Check Settings → Connections in the app
 
@@ -170,19 +174,19 @@ As of 2026-02-15, local LLM models run on Hugging Face Spaces with ZeroGPU inste
 
 ### Current Architecture
 
-| Service | Platform | URL |
-|---------|----------|-----|
-| Cognitia App | Railway | https://cognitia-production.up.railway.app |
-| Local LLMs | HF Spaces | https://Juansquiroga-cognitia-llm.hf.space |
+| Service      | Platform  | URL                                        |
+| ------------ | --------- | ------------------------------------------ |
+| Cognitia App | Railway   | https://cognitia-production.up.railway.app |
+| Local LLMs   | HF Spaces | https://Juansquiroga-cognitia-llm.hf.space |
 
 ### Available Local Models
 
-| Model | Parameters | Use Case |
-|-------|------------|----------|
-| Phi-3 | 3.8B | Fast general tasks |
-| Qwen 2.5 | 7B | High quality, excellent in Spanish |
-| SmolLM2 | 1.7B | Ultra-fast, efficient |
-| Mistral | 7B | Reasoning and code |
+| Model    | Parameters | Use Case                           |
+| -------- | ---------- | ---------------------------------- |
+| Phi-3    | 3.8B       | Fast general tasks                 |
+| Qwen 2.5 | 7B         | High quality, excellent in Spanish |
+| SmolLM2  | 1.7B       | Ultra-fast, efficient              |
+| Mistral  | 7B         | Reasoning and code                 |
 
 ### Hardware
 

@@ -13,33 +13,37 @@ This document outlines the architectural changes required to implement a robust 
 ### 1. `src/tailwind.css` (PRIMARY CHANGE)
 
 **Why here?**: Tailwind v4 only compiles CSS that is:
+
 - Inside `@layer` directives
 - Using `@apply` utilities
 - Standard CSS in the same file as `@import 'tailwindcss'`
 
 **Add inside `@layer base`:**
+
 ```css
 @layer base {
-  :root, [data-theme="light"] {
-    --color-surface-base: 249 250 251;
-    --color-surface-elevated: 255 255 255;
-    /* ... */
-  }
+	:root,
+	[data-theme='light'] {
+		--color-surface-base: 249 250 251;
+		--color-surface-elevated: 255 255 255;
+		/* ... */
+	}
 
-  .dark, [data-theme="dark"] {
-    --color-surface-base: 23 23 23;
-    /* ... */
-  }
+	.dark,
+	[data-theme='dark'] {
+		--color-surface-base: 23 23 23;
+		/* ... */
+	}
 
-  [data-theme="oled-dark"] {
-    --color-surface-base: 0 0 0;
-    /* ... */
-  }
+	[data-theme='oled-dark'] {
+		--color-surface-base: 0 0 0;
+		/* ... */
+	}
 
-  [data-theme="her"] {
-    --color-surface-base: 255 250 250;
-    /* ... */
-  }
+	[data-theme='her'] {
+		--color-surface-base: 255 250 250;
+		/* ... */
+	}
 }
 ```
 
@@ -50,14 +54,15 @@ This document outlines the architectural changes required to implement a robust 
 - **ADD**: Variable-based body style:
   ```css
   body {
-    background-color: rgb(var(--color-surface-base));
-    color: rgb(var(--color-text-primary));
+  	background-color: rgb(var(--color-surface-base));
+  	color: rgb(var(--color-text-primary));
   }
   ```
 
 ### 3. `tailwind.config.js` (NO CHANGES NEEDED)
 
 Already correctly configured:
+
 ```javascript
 surface: {
     base: 'var(--color-surface-base)',
@@ -69,6 +74,7 @@ surface: {
 ### 4. `General.svelte` (NO CHANGES NEEDED)
 
 The `applyTheme` function is already correct:
+
 - Sets `data-theme` attribute
 - Toggles `.dark` class appropriately
 - The issue was CSS not being compiled, not JS logic

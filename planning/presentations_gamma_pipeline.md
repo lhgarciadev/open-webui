@@ -14,14 +14,17 @@ Implementar un pipeline hibrido (narrativa + render) para producir presentacione
 ## Arquitectura
 
 1. Capa narrativa (Story Spec):
+
 - Entrada: lista de bloques semanticos (`cover`, `insight`, `metrics`, `comparison`, `timeline`, `quote`, `cta`).
 - Responsabilidad: definir mensaje por slide y secuencia argumental.
 
 2. Capa de render:
+
 - Convierte bloques a templates PPTX (`title`, `content`, `stats`, `two_column`, `section`, `quote`, `closing`).
 - Aplica branding y estilos consistentes.
 
 3. Capa de entrega:
+
 - Guarda archivo en `DATA_DIR/presentations`.
 - Expone descarga por `/api/v1/files/presentations/{filename}`.
 

@@ -1,6 +1,7 @@
 # Etapa 0: Análisis AS-IS / TO-BE
 
 ## Objetivo
+
 Documentar el estado actual del generador de presentaciones y definir el estado objetivo con mejoras visuales.
 
 ---
@@ -8,6 +9,7 @@ Documentar el estado actual del generador de presentaciones y definir el estado 
 ## AS-IS (Estado Actual)
 
 ### Arquitectura Actual
+
 ```
 [Usuario] → [Chat LLM] → [Tool: generate_presentation] → [python-pptx] → [.pptx file]
                               ↓
@@ -18,16 +20,17 @@ Documentar el estado actual del generador de presentaciones y definir el estado 
 
 ### Características Actuales
 
-| Aspecto | Estado Actual | Limitaciones |
-|---------|---------------|--------------|
-| **Contenido** | Texto plano con bullets | Sin imágenes, sin gráficos |
-| **Diseño** | Colores sólidos (#3b82f6, #1e40af) | Sin gradientes, sin formas decorativas |
-| **Tipografía** | Arial básico | Sin jerarquía visual clara |
-| **Layouts** | 7 tipos de slides | Estructura rígida |
-| **Imágenes** | No soportado | No hay integración con APIs de imágenes |
-| **Descarga** | URL relativa → sandbox: prefix | Bug conocido en producción |
+| Aspecto        | Estado Actual                      | Limitaciones                            |
+| -------------- | ---------------------------------- | --------------------------------------- |
+| **Contenido**  | Texto plano con bullets            | Sin imágenes, sin gráficos              |
+| **Diseño**     | Colores sólidos (#3b82f6, #1e40af) | Sin gradientes, sin formas decorativas  |
+| **Tipografía** | Arial básico                       | Sin jerarquía visual clara              |
+| **Layouts**    | 7 tipos de slides                  | Estructura rígida                       |
+| **Imágenes**   | No soportado                       | No hay integración con APIs de imágenes |
+| **Descarga**   | URL relativa → sandbox: prefix     | Bug conocido en producción              |
 
 ### Tipos de Slides Disponibles
+
 1. `title` - Slide de título principal
 2. `content` - Contenido con bullets
 3. `two_column` - Dos columnas
@@ -37,6 +40,7 @@ Documentar el estado actual del generador de presentaciones y definir el estado 
 7. `closing` - Slide de cierre
 
 ### Código Relevante - Generación de Slide de Contenido
+
 ```python
 def _add_content_slide(prs, slide_def: dict):
     """Slide con bullets - implementación actual"""
@@ -57,6 +61,7 @@ def _add_content_slide(prs, slide_def: dict):
 ```
 
 ### Problemas Identificados
+
 1. **Presentaciones "planas"** - Sin elementos visuales atractivos
 2. **Sin imágenes** - Todo es texto
 3. **Colores limitados** - Paleta básica sin gradientes
@@ -68,6 +73,7 @@ def _add_content_slide(prs, slide_def: dict):
 ## TO-BE (Estado Objetivo)
 
 ### Arquitectura Propuesta
+
 ```
 [Usuario] → [Chat LLM] → [Tool: generate_presentation]
                               ↓
@@ -87,22 +93,23 @@ def _add_content_slide(prs, slide_def: dict):
 
 ### Características Objetivo
 
-| Aspecto | Estado Objetivo | Beneficio |
-|---------|-----------------|-----------|
-| **Contenido** | Texto + imágenes contextuales | Presentaciones más atractivas |
-| **Diseño** | Gradientes, shapes decorativos | Look moderno tipo Gamma |
-| **Tipografía** | Jerarquía clara, fuentes modernas | Mejor legibilidad |
-| **Layouts** | Layouts con áreas de imagen | Mayor flexibilidad |
-| **Imágenes** | Unsplash + Pexels (backup) | Imágenes HD con fallback |
-| **Descarga** | URLs absolutas | Sin bugs en producción |
-| **Branding** | Footer "Powered by Cognitia" | Refuerzo de marca |
-| **Iconografía** | Emojis Unicode + bullets custom | Visual sin costo adicional |
-| **Navegación** | Indicador de progreso (1/10) | Mejor UX en presentación |
-| **Fallbacks** | Placeholders con gradiente | Graceful degradation |
+| Aspecto         | Estado Objetivo                   | Beneficio                     |
+| --------------- | --------------------------------- | ----------------------------- |
+| **Contenido**   | Texto + imágenes contextuales     | Presentaciones más atractivas |
+| **Diseño**      | Gradientes, shapes decorativos    | Look moderno tipo Gamma       |
+| **Tipografía**  | Jerarquía clara, fuentes modernas | Mejor legibilidad             |
+| **Layouts**     | Layouts con áreas de imagen       | Mayor flexibilidad            |
+| **Imágenes**    | Unsplash + Pexels (backup)        | Imágenes HD con fallback      |
+| **Descarga**    | URLs absolutas                    | Sin bugs en producción        |
+| **Branding**    | Footer "Powered by Cognitia"      | Refuerzo de marca             |
+| **Iconografía** | Emojis Unicode + bullets custom   | Visual sin costo adicional    |
+| **Navegación**  | Indicador de progreso (1/10)      | Mejor UX en presentación      |
+| **Fallbacks**   | Placeholders con gradiente        | Graceful degradation          |
 
 ### Nuevas Capacidades
 
 #### 1. Integración de Imágenes Automáticas
+
 ```python
 # Ejemplo de flujo propuesto
 async def _get_relevant_image(topic: str) -> bytes:
@@ -113,6 +120,7 @@ async def _get_relevant_image(topic: str) -> bytes:
 ```
 
 #### 2. Gradientes de Fondo
+
 ```python
 # Ejemplo: Fondo con gradiente
 def _apply_gradient_background(slide, color1, color2):
@@ -124,6 +132,7 @@ def _apply_gradient_background(slide, color1, color2):
 ```
 
 #### 3. Shapes Decorativos
+
 ```python
 # Círculos y líneas decorativas
 def _add_decorative_elements(slide):
@@ -139,6 +148,7 @@ def _add_decorative_elements(slide):
 ```
 
 #### 4. Footer de Branding (Premium Touch)
+
 ```python
 def _add_branded_footer(slide, slide_num: int, total_slides: int):
     """Agrega footer con branding y número de slide."""
@@ -156,6 +166,7 @@ def _add_branded_footer(slide, slide_num: int, total_slides: int):
 ```
 
 #### 5. Bullets Personalizados con Emojis
+
 ```python
 BULLET_ICONS = {
     "default": "•",
@@ -179,6 +190,7 @@ def _get_smart_bullet(content: str) -> str:
 ```
 
 #### 6. Placeholder de Imagen (Fallback Elegante)
+
 ```python
 def _add_image_placeholder(slide, left, top, width, height, theme_color):
     """Placeholder cuando la imagen no está disponible."""
@@ -235,19 +247,20 @@ def _add_image_placeholder(slide, left, top, width, height, theme_color):
 
 ## Métricas de Éxito
 
-| Métrica | Actual | Objetivo | Método de Medición |
-|---------|--------|----------|-------------------|
-| Tiempo generación | ~3s | <10s | Logs del servidor |
-| Imágenes por presentación | 0 | 2-4 | Conteo en archivo |
-| Costo por presentación | $0 | $0 | Monitoreo APIs |
-| Satisfacción visual | Baja | Alta | Feedback usuarios |
-| Descargas exitosas | ~80% | 100% | Métricas Railway |
+| Métrica                   | Actual | Objetivo | Método de Medición |
+| ------------------------- | ------ | -------- | ------------------ |
+| Tiempo generación         | ~3s    | <10s     | Logs del servidor  |
+| Imágenes por presentación | 0      | 2-4      | Conteo en archivo  |
+| Costo por presentación    | $0     | $0       | Monitoreo APIs     |
+| Satisfacción visual       | Baja   | Alta     | Feedback usuarios  |
+| Descargas exitosas        | ~80%   | 100%     | Métricas Railway   |
 
 ---
 
 ## Dependencias Técnicas
 
 ### Nuevas Dependencias
+
 ```python
 # requirements.txt adicionales
 httpx>=0.24.0      # Cliente HTTP async para Unsplash
@@ -255,14 +268,16 @@ pillow>=10.0.0     # Procesamiento de imágenes (ya instalado)
 ```
 
 ### APIs Externas
-| API | Costo | Rate Limit | Uso |
-|-----|-------|------------|-----|
+
+| API      | Costo  | Rate Limit                           | Uso                        |
+| -------- | ------ | ------------------------------------ | -------------------------- |
 | Unsplash | Gratis | 50 req/hora (demo), 5000/hora (prod) | Imágenes stock (principal) |
-| Pexels | Gratis | 200 req/hora | Imágenes stock (backup) |
+| Pexels   | Gratis | 200 req/hora                         | Imágenes stock (backup)    |
 
 > **Nota:** Pexels se usa como fallback cuando Unsplash no retorna resultados o está rate-limited.
 
 ### Configuración Requerida
+
 ```bash
 # Variables de entorno nuevas
 UNSPLASH_ACCESS_KEY=your_access_key_here
@@ -272,14 +287,15 @@ UNSPLASH_ACCESS_KEY=your_access_key_here
 
 ## Riesgos y Mitigaciones
 
-| Riesgo | Probabilidad | Impacto | Mitigación |
-|--------|-------------|---------|------------|
-| Rate limiting Unsplash | Media | Alto | Cache de imágenes por keywords |
-| Imágenes no relevantes | Media | Medio | Mejorar extracción de keywords |
-| Tamaño archivo grande | Baja | Bajo | Comprimir imágenes a 800px |
-| API Unsplash caída | Baja | Medio | Fallback a presentación sin imagen |
+| Riesgo                 | Probabilidad | Impacto | Mitigación                         |
+| ---------------------- | ------------ | ------- | ---------------------------------- |
+| Rate limiting Unsplash | Media        | Alto    | Cache de imágenes por keywords     |
+| Imágenes no relevantes | Media        | Medio   | Mejorar extracción de keywords     |
+| Tamaño archivo grande  | Baja         | Bajo    | Comprimir imágenes a 800px         |
+| API Unsplash caída     | Baja         | Medio   | Fallback a presentación sin imagen |
 
 ---
 
 ## Próximo Paso
+
 → [Etapa 1: Integración Unsplash](./1-unsplash-integration.md)

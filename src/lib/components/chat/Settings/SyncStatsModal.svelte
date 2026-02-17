@@ -370,12 +370,15 @@
 
 			<div class="px-5 pt-2 pb-5">
 				<div class="text-sm text-gray-500 dark:text-gray-400">
-					{$i18n.t('Do you want to sync your usage stats with {{name}} Community?', { name: APP_NAME })}
+					{$i18n.t('Do you want to sync your usage stats with {{name}} Community?', {
+						name: APP_NAME
+					})}
 				</div>
 
 				<div class="mt-2 text-xs text-gray-500">
 					{$i18n.t(
-						'Participate in community leaderboards and evaluations! Syncing aggregated usage stats helps drive research and improvements to {{name}}. Your privacy is paramount: no message content is ever shared.', { name: APP_NAME }
+						'Participate in community leaderboards and evaluations! Syncing aggregated usage stats helps drive research and improvements to {{name}}. Your privacy is paramount: no message content is ever shared.',
+						{ name: APP_NAME }
 					)}
 				</div>
 

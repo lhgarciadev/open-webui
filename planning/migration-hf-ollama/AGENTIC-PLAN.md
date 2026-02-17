@@ -5,11 +5,13 @@
 **Objetivo**: Migrar el servicio Ollama desde Railway a Hugging Face Spaces con ZeroGPU, habilitando inferencia GPU gratuita para modelos LLM.
 
 **Entradas**:
+
 - Configuración Docker actual (`ollama-service/`)
 - Variables de entorno Railway
 - Modelos actuales (phi3)
 
 **Salidas**:
+
 - HF Space con Ollama funcionando
 - Modelos opensource descargados
 - Cognitia conectado a HF Space
@@ -22,6 +24,7 @@
 ### 0.1 Verificar Prerrequisitos
 
 **Ejecutar**:
+
 ```bash
 # Verificar cuenta HF
 # Ir a https://huggingface.co/settings/tokens
@@ -36,6 +39,7 @@ huggingface-cli login
 ```
 
 **Validar**:
+
 ```bash
 # Confirmar login exitoso
 huggingface-cli whoami
@@ -45,6 +49,7 @@ huggingface-cli whoami
 ### 0.2 Documentar Estado Actual
 
 **Ejecutar**:
+
 ```bash
 # Desde el directorio del proyecto
 cd /Users/juan.quiroga/Desktop/Estudio/MAIN/GIT/open-webui
@@ -60,6 +65,7 @@ cat ollama-service/railway.json
 ```
 
 **Validar**:
+
 - [ ] Dockerfile documentado
 - [ ] Variables de entorno listadas
 - [ ] Modelos actuales identificados (phi3)
@@ -71,6 +77,7 @@ cat ollama-service/railway.json
 ### 1.1 Crear Repositorio Space
 
 **Ejecutar** (opción CLI):
+
 ```bash
 # Crear Space con Docker SDK
 huggingface-cli repo create cognitia-ollama \
@@ -83,6 +90,7 @@ cd cognitia-ollama
 ```
 
 **Ejecutar** (opción Web):
+
 1. Ir a https://huggingface.co/new-space
 2. Nombre: `cognitia-ollama`
 3. SDK: `Docker`
@@ -93,6 +101,7 @@ cd cognitia-ollama
 ### 1.2 Crear Dockerfile para HF
 
 **Crear archivo** `Dockerfile`:
+
 ```dockerfile
 FROM ollama/ollama:latest
 
@@ -127,6 +136,7 @@ CMD ["/app/start.sh"]
 ### 1.3 Crear Script de Inicio
 
 **Crear archivo** `start.sh`:
+
 ```bash
 #!/bin/bash
 set -e
@@ -198,7 +208,8 @@ wait $OLLAMA_PID
 ### 1.4 Crear README.md (Metadata HF)
 
 **Crear archivo** `README.md`:
-```yaml
+
+````yaml
 ---
 title: Cognitia Ollama
 emoji: 🦙
@@ -232,12 +243,13 @@ curl https://[usuario]-cognitia-ollama.hf.space/api/tags
 # Generar respuesta
 curl https://[usuario]-cognitia-ollama.hf.space/api/generate \
   -d '{"model": "qwen2.5:7b", "prompt": "Hola, cómo estás?"}'
-```
+````
 
 ## Hardware
 
 Este Space usa ZeroGPU para inferencia acelerada por GPU.
-```
+
+````
 
 ### 1.5 Push al Space
 
@@ -253,9 +265,10 @@ git commit -m "feat: Initial Ollama setup with ZeroGPU support"
 
 # Push
 git push origin main
-```
+````
 
 **Validar**:
+
 1. Ir a `https://huggingface.co/spaces/[TU_USUARIO]/cognitia-ollama`
 2. Verificar que el build inicie
 3. Esperar a que el Space esté "Running"
@@ -267,6 +280,7 @@ git push origin main
 ### 2.1 Habilitar ZeroGPU
 
 **Ejecutar** (desde HF Web):
+
 1. Ir a Settings del Space
 2. En "Space Hardware", seleccionar `ZeroGPU`
 3. Guardar cambios
@@ -277,6 +291,7 @@ git push origin main
 ### 2.2 Verificar Hardware
 
 **Ejecutar**:
+
 ```bash
 # Verificar que el Space tiene GPU
 curl https://[usuario]-cognitia-ollama.hf.space/api/tags
@@ -292,6 +307,7 @@ curl https://[usuario]-cognitia-ollama.hf.space/api/tags
 ### 3.1 Test Local
 
 **Ejecutar**:
+
 ```bash
 # Test desde terminal local
 export HF_SPACE_URL="https://[usuario]-cognitia-ollama.hf.space"
@@ -321,6 +337,7 @@ curl $HF_SPACE_URL/api/generate \
 ### 3.2 Medir Latencia
 
 **Ejecutar**:
+
 ```bash
 # Medir tiempo de respuesta
 time curl -s $HF_SPACE_URL/api/generate \
@@ -334,6 +351,7 @@ time curl -s http://ollama.railway.internal:11434/api/generate \
 ```
 
 **Validar**:
+
 - [ ] HF responde en <2s (vs 3-5s Railway)
 - [ ] Modelos listados correctamente
 - [ ] Respuestas coherentes
@@ -345,6 +363,7 @@ time curl -s http://ollama.railway.internal:11434/api/generate \
 ### 4.1 Actualizar Variables Railway
 
 **Ejecutar** (desde Railway Dashboard):
+
 1. Ir al servicio `cognitia`
 2. Variables → Editar
 3. Actualizar:
@@ -354,6 +373,7 @@ time curl -s http://ollama.railway.internal:11434/api/generate \
 4. Guardar y redesplegar
 
 **O vía CLI**:
+
 ```bash
 # Si tienes Railway CLI configurado
 railway variables set OLLAMA_BASE_URL="https://[usuario]-cognitia-ollama.hf.space"
@@ -379,6 +399,7 @@ if HF_TOKEN:
 ### 4.3 Validar Conexión End-to-End
 
 **Ejecutar**:
+
 1. Ir a `https://cognitia-production.up.railway.app`
 2. Iniciar sesión
 3. Crear nuevo chat
@@ -387,6 +408,7 @@ if HF_TOKEN:
 6. Verificar respuesta
 
 **Validar**:
+
 - [ ] Modelos aparecen en selector
 - [ ] Respuestas se generan correctamente
 - [ ] Latencia mejorada vs Railway CPU
@@ -426,12 +448,14 @@ fi
 HF Spaces entran en sleep después de inactividad. Para ZeroGPU esto es normal y ahorra cuota.
 
 **Opciones**:
+
 1. **Aceptar sleep** (recomendado): Cold start ~30s, ahorra cuota
 2. **Keep alive** (PRO): Requiere upgrade, más cuota
 
 ### 5.3 Monitorear Uso
 
 **Verificar cuota**:
+
 1. Ir a https://huggingface.co/settings/billing
 2. Ver "ZeroGPU Usage"
 3. Si se agota frecuentemente, considerar PRO ($9/mes)
@@ -441,6 +465,7 @@ HF Spaces entran en sleep después de inactividad. Para ZeroGPU esto es normal y
 **Objetivo**: Mostrar costos estimados en COP y reducir ruido con curación de modelos.
 
 **Ejecutar**:
+
 1. Configurar variables de entorno:
    - `PRICEPERTOKEN_MCP_URL=https://api.pricepertoken.com/mcp/mcp`
    - `PRICING_REFRESH_INTERVAL_SECONDS=43200`
@@ -452,6 +477,7 @@ HF Spaces entran en sleep después de inactividad. Para ZeroGPU esto es normal y
    - `POST /api/v1/pricing/refresh` con IDs de modelos visibles.
 
 **Validar**:
+
 - [ ] Nota educativa de precios visible (COP)
 - [ ] Curación activa por defecto
 - [ ] “Ver todos” muestra categoría Especiales
@@ -464,6 +490,7 @@ HF Spaces entran en sleep después de inactividad. Para ZeroGPU esto es normal y
 ### 6.1 Desactivar Ollama en Railway (Opcional)
 
 **Ejecutar** (solo después de validar HF funciona):
+
 ```bash
 # Opción 1: Pausar servicio (reversible)
 # En Railway Dashboard: Ollama Service → Settings → Pause
@@ -475,14 +502,17 @@ HF Spaces entran en sleep después de inactividad. Para ZeroGPU esto es normal y
 ### 6.2 Actualizar Documentación
 
 **Actualizar** `RAILWAY_DEPLOY.md`:
+
 ```markdown
 ## Servicios
 
 ### Cognitia App (Railway)
+
 - URL: https://cognitia-production.up.railway.app
 - Dockerfile: Dockerfile.railway
 
 ### Ollama Service (Hugging Face)
+
 - URL: https://[usuario]-cognitia-ollama.hf.space
 - Hardware: ZeroGPU (H200)
 - Modelos: qwen2.5:7b, phi3, codellama:7b
@@ -501,6 +531,7 @@ git push
 ## Checklist Final
 
 ### Migración Completada
+
 - [ ] HF Space creado y funcionando
 - [ ] ZeroGPU habilitado
 - [ ] Modelos descargados (qwen2.5:7b, phi3, codellama:7b)
@@ -510,6 +541,7 @@ git push
 - [ ] Ollama Railway desactivado (opcional)
 
 ### Métricas de Éxito
+
 - [ ] Latencia: <1s (vs 3-5s anterior)
 - [ ] Modelos: 3+ disponibles (vs 1 anterior)
 - [ ] Costo: $0-9/mes (vs $5-10 anterior)
@@ -535,23 +567,23 @@ railway up
 
 ### Tier Gratuito (ZeroGPU Free)
 
-| Modelo | Tamaño | Mejor Para | Cuota/Request |
-|--------|--------|------------|---------------|
-| **phi3** | 2.3GB | Respuestas rápidas | Baja |
-| **llama3.2:3b** | 2GB | Chat ligero | Baja |
-| **qwen2.5:7b** | 4.7GB | Balance calidad | Media |
-| **codellama:7b** | 3.8GB | Programación | Media |
+| Modelo           | Tamaño | Mejor Para         | Cuota/Request |
+| ---------------- | ------ | ------------------ | ------------- |
+| **phi3**         | 2.3GB  | Respuestas rápidas | Baja          |
+| **llama3.2:3b**  | 2GB    | Chat ligero        | Baja          |
+| **qwen2.5:7b**   | 4.7GB  | Balance calidad    | Media         |
+| **codellama:7b** | 3.8GB  | Programación       | Media         |
 
 ### Tier PRO ($9/mes)
 
 Con PRO tienes 8x más cuota, permitiendo:
 
-| Modelo | Tamaño | Mejor Para |
-|--------|--------|------------|
-| **gemma2:9b** | 5.4GB | Razonamiento |
-| **mistral:7b** | 4.1GB | Versatilidad |
-| **llama3.1:70b** | 40GB | Máxima calidad |
-| **qwen2.5:72b** | 41GB | Coding avanzado |
+| Modelo           | Tamaño | Mejor Para      |
+| ---------------- | ------ | --------------- |
+| **gemma2:9b**    | 5.4GB  | Razonamiento    |
+| **mistral:7b**   | 4.1GB  | Versatilidad    |
+| **llama3.1:70b** | 40GB   | Máxima calidad  |
+| **qwen2.5:72b**  | 41GB   | Coding avanzado |
 
 ---
 
@@ -563,5 +595,5 @@ Con PRO tienes 8x más cuota, permitiendo:
 
 ---
 
-*Plan generado: 2026-02-15*
-*Versión: 1.0*
+_Plan generado: 2026-02-15_
+_Versión: 1.0_

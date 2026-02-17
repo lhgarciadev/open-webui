@@ -190,7 +190,10 @@
 									{$i18n.t('Help')}
 								</div>
 								<div class=" text-xs text-gray-500">
-									{$i18n.t('Discover how to use {{APP_NAME}} and seek support from the community.', { APP_NAME })}
+									{$i18n.t(
+										'Discover how to use {{APP_NAME}} and seek support from the community.',
+										{ APP_NAME }
+									)}
 								</div>
 							</div>
 

@@ -1170,8 +1170,8 @@
 								shadow-lg dark:shadow-[var(--color-chatbox-shadow)]
 								ring-1 ring-gray-200/50 dark:ring-[rgb(var(--color-chatbox-ring))]
 								{$temporaryChatEnabled
-									? 'border-dashed border-gray-300 dark:border-gray-500/30 hover:border-gray-400 dark:hover:border-gray-400/50 focus-within:border-blue-500/50'
-									: 'border-gray-200 dark:border-white/5 hover:border-gray-300 dark:hover:border-white/10 focus-within:border-blue-500/40 focus-within:shadow-[0_0_30px_rgba(59,130,246,0.2)]'}"
+								? 'border-dashed border-gray-300 dark:border-gray-500/30 hover:border-gray-400 dark:hover:border-gray-400/50 focus-within:border-blue-500/50'
+								: 'border-gray-200 dark:border-white/5 hover:border-gray-300 dark:hover:border-white/10 focus-within:border-blue-500/40 focus-within:shadow-[0_0_30px_rgba(59,130,246,0.2)]'}"
 							dir={$settings?.chatDirection ?? 'auto'}
 						>
 							{#if atSelectedModel !== undefined}
@@ -1869,13 +1869,18 @@
 																stream = null;
 
 																// Check TTS configuration and show helpful warning if not configured
-																const hasTTSEngine = $config?.audio?.tts?.engine !== '' && $config?.audio?.tts?.engine !== undefined;
-																const hasUserTTSEngine = $settings.audio?.tts?.engine === 'browser-kokoro';
+																const hasTTSEngine =
+																	$config?.audio?.tts?.engine !== '' &&
+																	$config?.audio?.tts?.engine !== undefined;
+																const hasUserTTSEngine =
+																	$settings.audio?.tts?.engine === 'browser-kokoro';
 
 																if (!hasTTSEngine && !hasUserTTSEngine) {
 																	// No TTS configured - will use browser speechSynthesis as fallback
 																	toast.info(
-																		$i18n.t('Voice mode will use browser speech synthesis. For better quality, configure TTS in Settings > Audio.'),
+																		$i18n.t(
+																			'Voice mode will use browser speech synthesis. For better quality, configure TTS in Settings > Audio.'
+																		),
 																		{ duration: 5000 }
 																	);
 																}

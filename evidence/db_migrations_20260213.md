@@ -4,6 +4,7 @@ Fecha: 2026-02-13
 Repositorio: open-webui (fork Cognitia)
 
 ## 1) Configuracion de despliegue persistente aplicada
+
 - Archivo agregado: `docker-compose.persistence.yaml`
 - Integracion validada con:
 
@@ -14,6 +15,7 @@ docker compose -f docker-compose.whitelabel.yaml -f docker-compose.persistence.y
 Resultado: `OK` (archivo compuesto generado en `/tmp/cognitia-compose-persistence-config.yaml`, 152 lineas).
 
 ## 2) Intento de migracion en entorno objetivo PostgreSQL
+
 Comando ejecutado:
 
 ```bash
@@ -39,6 +41,7 @@ permission denied while trying to connect to the Docker daemon socket at unix://
 ```
 
 ## 2.1) Ejecucion exitosa en host local del usuario (Docker activo)
+
 Comando ejecutado en host local:
 
 ```bash
@@ -47,12 +50,14 @@ docker compose -f docker-compose.whitelabel.yaml -f docker-compose.persistence.y
 ```
 
 Evidencia observada en logs:
+
 - Contenedores `cognitia-postgres`, `cognitia-redis` y `cognitia-ai` iniciados y saludables.
 - Alembic ejecutado sobre `PostgresqlImpl`.
 - Secuencia completa de migraciones aplicada hasta `c440947495f3` (`Add chat_file table`).
 - Backend levantado con `Started server process` y `Waiting for application startup`.
 
 ## 3) Intento alterno de ejecutar Alembic local
+
 Comando ejecutado:
 
 ```bash

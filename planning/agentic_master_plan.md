@@ -11,24 +11,24 @@
 
 ## Configuracion de Marca
 
-| Variable | Valor |
-|----------|-------|
-| **BRAND_NAME** | Cognitia |
-| **BRAND_SHORT** | Cognitia |
-| **brand** | cognitia |
-| **Dominio** | cognitia.ai |
-| **Color Primary** | #3b82f6 |
+| Variable          | Valor       |
+| ----------------- | ----------- |
+| **BRAND_NAME**    | Cognitia    |
+| **BRAND_SHORT**   | Cognitia    |
+| **brand**         | cognitia    |
+| **Dominio**       | cognitia.ai |
+| **Color Primary** | #3b82f6     |
 
 ---
 
 ## Gate Legal: COMPLETADO
 
-| Item | Estado |
-|------|--------|
-| Path seleccionado | **A** |
-| Usuarios maximos | < 50 |
-| Branding removal | **AUTORIZADO** |
-| Documento legal | `planning/LEGAL_DECISION.md` |
+| Item              | Estado                       |
+| ----------------- | ---------------------------- |
+| Path seleccionado | **A**                        |
+| Usuarios maximos  | < 50                         |
+| Branding removal  | **AUTORIZADO**               |
+| Documento legal   | `planning/LEGAL_DECISION.md` |
 
 ---
 
@@ -67,22 +67,22 @@ Este documento presenta un plan agentico completo para transformar el fork de Op
 
 ### 1.2 Inventario de Branding Actual
 
-| Categoria | Ubicacion | Estado Actual | Prioridad |
-|-----------|-----------|---------------|-----------|
-| **Nombre App** | `src/lib/constants/identity.ts` | "Agentic WebUI" | CRITICA |
-| **Tab Title** | `src/app.html:88` | "Agentic WebUI" | CRITICA |
-| **Splash Screen** | `static/static/splash.png` | Logo Open WebUI | CRITICA |
-| **Splash Dark** | `static/static/splash-dark.png` | Logo Open WebUI | CRITICA |
-| **Favicon** | `static/static/favicon.png` | Icono Open WebUI | CRITICA |
-| **Favicon Dark** | `static/static/favicon-dark.png` | Icono Open WebUI | CRITICA |
-| **Favicon ICO** | `static/static/favicon.ico` | Icono Open WebUI | ALTA |
-| **Favicon SVG** | `static/static/favicon.svg` | Base64 PNG | ALTA |
-| **Apple Touch** | `static/static/apple-touch-icon.png` | Icono Open WebUI | ALTA |
-| **PWA Icons** | `static/static/web-app-manifest-*.png` | Iconos Open WebUI | ALTA |
-| **Manifest** | `static/manifest.json` | Nombres PWA | ALTA |
-| **Backend Manifest** | `backend/open_webui/static/site.webmanifest` | "Open WebUI" | ALTA |
-| **Colores** | `src/app.css` + `tailwind.config.js` | Stock colors | MEDIA |
-| **Textos UI** | 13+ componentes Svelte | Referencias varias | MEDIA |
+| Categoria            | Ubicacion                                    | Estado Actual      | Prioridad |
+| -------------------- | -------------------------------------------- | ------------------ | --------- |
+| **Nombre App**       | `src/lib/constants/identity.ts`              | "Agentic WebUI"    | CRITICA   |
+| **Tab Title**        | `src/app.html:88`                            | "Agentic WebUI"    | CRITICA   |
+| **Splash Screen**    | `static/static/splash.png`                   | Logo Open WebUI    | CRITICA   |
+| **Splash Dark**      | `static/static/splash-dark.png`              | Logo Open WebUI    | CRITICA   |
+| **Favicon**          | `static/static/favicon.png`                  | Icono Open WebUI   | CRITICA   |
+| **Favicon Dark**     | `static/static/favicon-dark.png`             | Icono Open WebUI   | CRITICA   |
+| **Favicon ICO**      | `static/static/favicon.ico`                  | Icono Open WebUI   | ALTA      |
+| **Favicon SVG**      | `static/static/favicon.svg`                  | Base64 PNG         | ALTA      |
+| **Apple Touch**      | `static/static/apple-touch-icon.png`         | Icono Open WebUI   | ALTA      |
+| **PWA Icons**        | `static/static/web-app-manifest-*.png`       | Iconos Open WebUI  | ALTA      |
+| **Manifest**         | `static/manifest.json`                       | Nombres PWA        | ALTA      |
+| **Backend Manifest** | `backend/open_webui/static/site.webmanifest` | "Open WebUI"       | ALTA      |
+| **Colores**          | `src/app.css` + `tailwind.config.js`         | Stock colors       | MEDIA     |
+| **Textos UI**        | 13+ componentes Svelte                       | Referencias varias | MEDIA     |
 
 ### 1.3 Componentes con Referencias de Marca
 
@@ -129,6 +129,7 @@ FROM python:3.11.14-slim-bookworm AS base
 ```
 
 **Build Args Disponibles:**
+
 - `USE_CUDA` / `USE_CUDA_VER` - Soporte GPU NVIDIA
 - `USE_OLLAMA` - Bundle Ollama
 - `USE_SLIM` - Sin modelos preinstalados
@@ -145,50 +146,50 @@ FROM python:3.11.14-slim-bookworm AS base
 
 ```css
 /* Primary Blues */
---brand-primary-50:  #eff6ff;   /* Lightest */
+--brand-primary-50: #eff6ff; /* Lightest */
 --brand-primary-100: #dbeafe;
 --brand-primary-200: #bfdbfe;
 --brand-primary-300: #93c5fd;
 --brand-primary-400: #60a5fa;
---brand-primary-500: #3b82f6;   /* Primary */
---brand-primary-600: #2563eb;   /* Primary Dark */
+--brand-primary-500: #3b82f6; /* Primary */
+--brand-primary-600: #2563eb; /* Primary Dark */
 --brand-primary-700: #1d4ed8;
 --brand-primary-800: #1e40af;
---brand-primary-900: #1e3a8a;   /* Darkest */
+--brand-primary-900: #1e3a8a; /* Darkest */
 
 /* Surface Colors (Dark Mode Default) */
---surface-base:      #0f172a;   /* Slate 900 */
---surface-elevated:  #1e293b;   /* Slate 800 */
---surface-overlay:   #334155;   /* Slate 700 */
+--surface-base: #0f172a; /* Slate 900 */
+--surface-elevated: #1e293b; /* Slate 800 */
+--surface-overlay: #334155; /* Slate 700 */
 
 /* Accent */
---accent-success:    #22c55e;
---accent-warning:    #f59e0b;
---accent-error:      #ef4444;
+--accent-success: #22c55e;
+--accent-warning: #f59e0b;
+--accent-error: #ef4444;
 ```
 
 ### 2.2 Nuevos Assets Requeridos
 
-| Asset | Dimensiones | Formato | Descripcion |
-|-------|-------------|---------|-------------|
-| `logo.svg` | Vector | SVG | Logo principal vectorial |
-| `logo-dark.svg` | Vector | SVG | Logo modo oscuro |
-| `favicon.png` | 192x192 | PNG | Favicon principal |
-| `favicon-dark.png` | 192x192 | PNG | Favicon modo oscuro |
-| `favicon-96x96.png` | 96x96 | PNG | Favicon pequeno |
-| `favicon.ico` | Multi | ICO | Favicon legacy |
-| `favicon.svg` | Vector | SVG | Favicon vectorial |
-| `splash.png` | 512x512 | PNG | Splash screen light |
-| `splash-dark.png` | 512x512 | PNG | Splash screen dark |
-| `apple-touch-icon.png` | 180x180 | PNG | iOS icon |
-| `web-app-manifest-192x192.png` | 192x192 | PNG | PWA icon |
-| `web-app-manifest-512x512.png` | 512x512 | PNG | PWA icon large |
+| Asset                          | Dimensiones | Formato | Descripcion              |
+| ------------------------------ | ----------- | ------- | ------------------------ |
+| `logo.svg`                     | Vector      | SVG     | Logo principal vectorial |
+| `logo-dark.svg`                | Vector      | SVG     | Logo modo oscuro         |
+| `favicon.png`                  | 192x192     | PNG     | Favicon principal        |
+| `favicon-dark.png`             | 192x192     | PNG     | Favicon modo oscuro      |
+| `favicon-96x96.png`            | 96x96       | PNG     | Favicon pequeno          |
+| `favicon.ico`                  | Multi       | ICO     | Favicon legacy           |
+| `favicon.svg`                  | Vector      | SVG     | Favicon vectorial        |
+| `splash.png`                   | 512x512     | PNG     | Splash screen light      |
+| `splash-dark.png`              | 512x512     | PNG     | Splash screen dark       |
+| `apple-touch-icon.png`         | 180x180     | PNG     | iOS icon                 |
+| `web-app-manifest-192x192.png` | 192x192     | PNG     | PWA icon                 |
+| `web-app-manifest-512x512.png` | 512x512     | PNG     | PWA icon large           |
 
 ### 2.3 Docker Build Personalizado
 
 ```yaml
 # Nuevo: docker-compose.whitelabel.yaml
-version: "3.8"
+version: '3.8'
 services:
   whitelabel-webui:
     build:
@@ -204,7 +205,7 @@ services:
       - WEBUI_NAME=MiBrand AI
       - WEBUI_FAVICON_URL=/static/favicon.png
     ports:
-      - "${PORT:-3000}:8080"
+      - '${PORT:-3000}:8080'
     volumes:
       - whitelabel-data:/app/backend/data
 ```
@@ -235,16 +236,16 @@ services:
 
 ### 3.1 Brechas Identificadas
 
-| # | Area | Gap | Impacto | Esfuerzo |
-|---|------|-----|---------|----------|
-| G1 | **Splash/Loading** | Logo OpenWebUI visible al cargar | ALTO | BAJO |
-| G2 | **Favicon Tab** | Icono identifica como OpenWebUI | ALTO | BAJO |
-| G3 | **Colores** | Paleta generica sin identidad | MEDIO | MEDIO |
-| G4 | **PWA Manifest** | Nombres "Open WebUI" | MEDIO | BAJO |
-| G5 | **Textos UI** | 13+ referencias en componentes | MEDIO | MEDIO |
-| G6 | **Docker Build** | Sin personalizacion de marca | ALTO | MEDIO |
-| G7 | **MCP Presentations** | No existe capacidad | BAJO | ALTO |
-| G8 | **Backend Manifest** | site.webmanifest con branding | BAJO | BAJO |
+| #   | Area                  | Gap                              | Impacto | Esfuerzo |
+| --- | --------------------- | -------------------------------- | ------- | -------- |
+| G1  | **Splash/Loading**    | Logo OpenWebUI visible al cargar | ALTO    | BAJO     |
+| G2  | **Favicon Tab**       | Icono identifica como OpenWebUI  | ALTO    | BAJO     |
+| G3  | **Colores**           | Paleta generica sin identidad    | MEDIO   | MEDIO    |
+| G4  | **PWA Manifest**      | Nombres "Open WebUI"             | MEDIO   | BAJO     |
+| G5  | **Textos UI**         | 13+ referencias en componentes   | MEDIO   | MEDIO    |
+| G6  | **Docker Build**      | Sin personalizacion de marca     | ALTO    | MEDIO    |
+| G7  | **MCP Presentations** | No existe capacidad              | BAJO    | ALTO     |
+| G8  | **Backend Manifest**  | site.webmanifest con branding    | BAJO    | BAJO     |
 
 ### 3.2 Matriz de Riesgos
 
@@ -269,6 +270,7 @@ services:
 **Objetivo**: Confirmar Path A de licencia antes de proceder.
 
 **Verificacion Requerida:**
+
 - [ ] Confirmar < 50 usuarios finales en periodo de 30 dias
 - [ ] O confirmar acuerdo Enterprise existente
 - [ ] Documentar decision en PR/planning
@@ -297,6 +299,7 @@ mkdir -p branding/assets/{png,svg,ico}
 ```
 
 **Especificaciones de Diseno:**
+
 - Estilo: Minimalista, geometrico
 - Color primario: #3b82f6 (blue-500)
 - Color secundario: #1e40af (blue-800)
@@ -304,19 +307,19 @@ mkdir -p branding/assets/{png,svg,ico}
 
 #### Tarea 1.2: Reemplazo de Archivos
 
-| Archivo Original | Nuevo Archivo | Accion |
-|------------------|---------------|--------|
-| `static/static/splash.png` | `branding/splash.png` | REPLACE |
-| `static/static/splash-dark.png` | `branding/splash-dark.png` | REPLACE |
-| `static/static/favicon.png` | `branding/favicon-192.png` | REPLACE |
-| `static/static/favicon-dark.png` | `branding/favicon-dark-192.png` | REPLACE |
-| `static/static/favicon-96x96.png` | `branding/favicon-96.png` | REPLACE |
-| `static/static/favicon.ico` | `branding/favicon.ico` | REPLACE |
-| `static/static/favicon.svg` | `branding/favicon.svg` | REPLACE |
-| `static/static/apple-touch-icon.png` | `branding/apple-touch-180.png` | REPLACE |
-| `static/static/web-app-manifest-192x192.png` | `branding/pwa-192.png` | REPLACE |
-| `static/static/web-app-manifest-512x512.png` | `branding/pwa-512.png` | REPLACE |
-| `static/static/logo.png` | `branding/logo.png` | REPLACE |
+| Archivo Original                             | Nuevo Archivo                   | Accion  |
+| -------------------------------------------- | ------------------------------- | ------- |
+| `static/static/splash.png`                   | `branding/splash.png`           | REPLACE |
+| `static/static/splash-dark.png`              | `branding/splash-dark.png`      | REPLACE |
+| `static/static/favicon.png`                  | `branding/favicon-192.png`      | REPLACE |
+| `static/static/favicon-dark.png`             | `branding/favicon-dark-192.png` | REPLACE |
+| `static/static/favicon-96x96.png`            | `branding/favicon-96.png`       | REPLACE |
+| `static/static/favicon.ico`                  | `branding/favicon.ico`          | REPLACE |
+| `static/static/favicon.svg`                  | `branding/favicon.svg`          | REPLACE |
+| `static/static/apple-touch-icon.png`         | `branding/apple-touch-180.png`  | REPLACE |
+| `static/static/web-app-manifest-192x192.png` | `branding/pwa-192.png`          | REPLACE |
+| `static/static/web-app-manifest-512x512.png` | `branding/pwa-512.png`          | REPLACE |
+| `static/static/logo.png`                     | `branding/logo.png`             | REPLACE |
 
 #### Prompt Agentico 1.1:
 
@@ -344,20 +347,20 @@ mkdir -p branding/assets/{png,svg,ico}
 export const APP_NAME = 'MiBrand AI';
 
 export const BRANDING = {
-  name: 'MiBrand AI',
-  shortName: 'MiBrand',
-  description: 'Plataforma de Inteligencia Artificial Empresarial',
-  colors: {
-    primary: '#3b82f6',
-    primaryDark: '#1e40af',
-    surface: '#0f172a',
-    surfaceElevated: '#1e293b'
-  },
-  urls: {
-    website: 'https://mibrand.ai',
-    docs: 'https://docs.mibrand.ai',
-    support: 'https://support.mibrand.ai'
-  }
+	name: 'MiBrand AI',
+	shortName: 'MiBrand',
+	description: 'Plataforma de Inteligencia Artificial Empresarial',
+	colors: {
+		primary: '#3b82f6',
+		primaryDark: '#1e40af',
+		surface: '#0f172a',
+		surfaceElevated: '#1e293b'
+	},
+	urls: {
+		website: 'https://mibrand.ai',
+		docs: 'https://docs.mibrand.ai',
+		support: 'https://support.mibrand.ai'
+	}
 };
 ```
 
@@ -365,25 +368,25 @@ export const BRANDING = {
 
 ```json
 {
-  "name": "MiBrand AI",
-  "short_name": "MiBrand",
-  "description": "Plataforma de Inteligencia Artificial Empresarial",
-  "start_url": "/",
-  "display": "standalone",
-  "background_color": "#0f172a",
-  "theme_color": "#3b82f6",
-  "icons": [
-    {
-      "src": "/static/web-app-manifest-192x192.png",
-      "sizes": "192x192",
-      "type": "image/png"
-    },
-    {
-      "src": "/static/web-app-manifest-512x512.png",
-      "sizes": "512x512",
-      "type": "image/png"
-    }
-  ]
+	"name": "MiBrand AI",
+	"short_name": "MiBrand",
+	"description": "Plataforma de Inteligencia Artificial Empresarial",
+	"start_url": "/",
+	"display": "standalone",
+	"background_color": "#0f172a",
+	"theme_color": "#3b82f6",
+	"icons": [
+		{
+			"src": "/static/web-app-manifest-192x192.png",
+			"sizes": "192x192",
+			"type": "image/png"
+		},
+		{
+			"src": "/static/web-app-manifest-512x512.png",
+			"sizes": "512x512",
+			"type": "image/png"
+		}
+	]
 }
 ```
 
@@ -391,15 +394,15 @@ export const BRANDING = {
 
 ```json
 {
-  "name": "MiBrand AI",
-  "short_name": "MiBrand",
-  "icons": [
-    {"src": "/android-chrome-192x192.png", "sizes": "192x192", "type": "image/png"},
-    {"src": "/android-chrome-512x512.png", "sizes": "512x512", "type": "image/png"}
-  ],
-  "theme_color": "#3b82f6",
-  "background_color": "#0f172a",
-  "display": "standalone"
+	"name": "MiBrand AI",
+	"short_name": "MiBrand",
+	"icons": [
+		{ "src": "/android-chrome-192x192.png", "sizes": "192x192", "type": "image/png" },
+		{ "src": "/android-chrome-512x512.png", "sizes": "512x512", "type": "image/png" }
+	],
+	"theme_color": "#3b82f6",
+	"background_color": "#0f172a",
+	"display": "standalone"
 }
 ```
 
@@ -425,20 +428,20 @@ export const BRANDING = {
 
 ```css
 :root {
-  /* Brand Colors */
-  --color-brand-primary: 59 130 246;      /* blue-500 */
-  --color-brand-primary-hover: 37 99 235; /* blue-600 */
-  --color-brand-accent: 30 64 175;        /* blue-800 */
+	/* Brand Colors */
+	--color-brand-primary: 59 130 246; /* blue-500 */
+	--color-brand-primary-hover: 37 99 235; /* blue-600 */
+	--color-brand-accent: 30 64 175; /* blue-800 */
 
-  /* Surface Colors */
-  --color-surface-base: 15 23 42;         /* slate-900 */
-  --color-surface-elevated: 30 41 59;     /* slate-800 */
-  --color-surface-overlay: 51 65 85;      /* slate-700 */
+	/* Surface Colors */
+	--color-surface-base: 15 23 42; /* slate-900 */
+	--color-surface-elevated: 30 41 59; /* slate-800 */
+	--color-surface-overlay: 51 65 85; /* slate-700 */
 
-  /* Text Colors */
-  --color-text-primary: 248 250 252;      /* slate-50 */
-  --color-text-secondary: 148 163 184;    /* slate-400 */
-  --color-text-muted: 100 116 139;        /* slate-500 */
+	/* Text Colors */
+	--color-text-primary: 248 250 252; /* slate-50 */
+	--color-text-secondary: 148 163 184; /* slate-400 */
+	--color-text-muted: 100 116 139; /* slate-500 */
 }
 ```
 
@@ -446,25 +449,25 @@ export const BRANDING = {
 
 ```javascript
 module.exports = {
-  theme: {
-    extend: {
-      colors: {
-        brand: {
-          50: '#eff6ff',
-          100: '#dbeafe',
-          200: '#bfdbfe',
-          300: '#93c5fd',
-          400: '#60a5fa',
-          500: '#3b82f6',
-          600: '#2563eb',
-          700: '#1d4ed8',
-          800: '#1e40af',
-          900: '#1e3a8a',
-        }
-      }
-    }
-  }
-}
+	theme: {
+		extend: {
+			colors: {
+				brand: {
+					50: '#eff6ff',
+					100: '#dbeafe',
+					200: '#bfdbfe',
+					300: '#93c5fd',
+					400: '#60a5fa',
+					500: '#3b82f6',
+					600: '#2563eb',
+					700: '#1d4ed8',
+					800: '#1e40af',
+					900: '#1e3a8a'
+				}
+			}
+		}
+	}
+};
 ```
 
 #### Prompt Agentico 3.1:
@@ -487,21 +490,21 @@ module.exports = {
 
 #### Lista de Componentes a Modificar:
 
-| Componente | Linea | Cambio |
-|------------|-------|--------|
-| `OnBoarding.svelte` | 22,49 | URL favicon |
-| `NotificationToast.svelte` | - | Icon path |
-| `AppSidebar.svelte` | 29,53 | Logo paths |
-| `Sidebar.svelte` | - | Logo paths |
-| `Placeholder.svelte` | - | Textos de bienvenida |
-| `ChatPlaceholder.svelte` | - | Brand text |
-| `ShareChatModal.svelte` | - | Community URL |
-| `ToolServersModal.svelte` | - | Description text |
-| `Settings/General.svelte` | - | Translation link |
-| `Settings/About.svelte` | - | Team link |
-| `Settings/Connections.svelte` | - | CORS text |
-| `admin/Functions.svelte` | - | Community text |
-| `admin/Users/UserList.svelte` | - | License text |
+| Componente                    | Linea | Cambio               |
+| ----------------------------- | ----- | -------------------- |
+| `OnBoarding.svelte`           | 22,49 | URL favicon          |
+| `NotificationToast.svelte`    | -     | Icon path            |
+| `AppSidebar.svelte`           | 29,53 | Logo paths           |
+| `Sidebar.svelte`              | -     | Logo paths           |
+| `Placeholder.svelte`          | -     | Textos de bienvenida |
+| `ChatPlaceholder.svelte`      | -     | Brand text           |
+| `ShareChatModal.svelte`       | -     | Community URL        |
+| `ToolServersModal.svelte`     | -     | Description text     |
+| `Settings/General.svelte`     | -     | Translation link     |
+| `Settings/About.svelte`       | -     | Team link            |
+| `Settings/Connections.svelte` | -     | CORS text            |
+| `admin/Functions.svelte`      | -     | Community text       |
+| `admin/Users/UserList.svelte` | -     | License text         |
 
 #### Prompt Agentico 4.1:
 
@@ -596,7 +599,7 @@ CMD ["python", "-m", "uvicorn", "open_webui.main:app", "--host", "0.0.0.0", "--p
 #### Tarea 5.2: docker-compose.whitelabel.yaml
 
 ```yaml
-version: "3.8"
+version: '3.8'
 
 services:
   whitelabel-ai:
@@ -616,7 +619,7 @@ services:
       - WEBUI_SECRET_KEY=${SECRET_KEY:-changeme}
       - OLLAMA_BASE_URL=${OLLAMA_URL:-http://ollama:11434}
     ports:
-      - "${PORT:-3000}:8080"
+      - '${PORT:-3000}:8080'
     volumes:
       - mibrand-data:/app/backend/data
     networks:
@@ -690,26 +693,29 @@ echo "Build complete: ${REGISTRY}/mibrand-ai:${VERSION}"
 #### Opcion Recomendada: Office-PowerPoint-MCP-Server
 
 **Instalacion:**
+
 ```bash
 pip install office-powerpoint-mcp-server
 ```
 
 **Configuracion MCP:**
+
 ```json
 {
-  "mcpServers": {
-    "powerpoint": {
-      "command": "python",
-      "args": ["-m", "office_powerpoint_mcp_server"],
-      "env": {
-        "OUTPUT_DIR": "/app/backend/data/presentations"
-      }
-    }
-  }
+	"mcpServers": {
+		"powerpoint": {
+			"command": "python",
+			"args": ["-m", "office_powerpoint_mcp_server"],
+			"env": {
+				"OUTPUT_DIR": "/app/backend/data/presentations"
+			}
+		}
+	}
 }
 ```
 
 **Capacidades:**
+
 - Crear presentaciones nuevas
 - Agregar slides con diferentes layouts
 - Insertar texto, imagenes, tablas
@@ -719,14 +725,15 @@ pip install office-powerpoint-mcp-server
 #### Alternativa SaaS: SlideSpeak MCP
 
 **Para integracion sin instalacion local:**
+
 ```json
 {
-  "mcpServers": {
-    "slidespeak": {
-      "url": "https://mcp.slidespeak.co/v1",
-      "apiKey": "${SLIDESPEAK_API_KEY}"
-    }
-  }
+	"mcpServers": {
+		"slidespeak": {
+			"url": "https://mcp.slidespeak.co/v1",
+			"apiKey": "${SLIDESPEAK_API_KEY}"
+		}
+	}
 }
 ```
 
@@ -809,12 +816,14 @@ ETAPA 7: QA                 ████████ (1 dia)
 ## PARTE 6: ARCHIVOS A CREAR/MODIFICAR
 
 ### Nuevos Archivos:
+
 - `Dockerfile.whitelabel`
 - `docker-compose.whitelabel.yaml`
 - `scripts/build-whitelabel.sh`
 - `branding/` (directorio con assets)
 
 ### Archivos a Modificar:
+
 - `src/lib/constants/identity.ts`
 - `src/app.html`
 - `src/app.css`
@@ -824,6 +833,7 @@ ETAPA 7: QA                 ████████ (1 dia)
 - 13+ componentes Svelte
 
 ### Assets a Reemplazar:
+
 - 12 archivos de imagen en `static/static/`
 
 ---
@@ -831,12 +841,14 @@ ETAPA 7: QA                 ████████ (1 dia)
 ## PARTE 7: FUENTES Y REFERENCIAS
 
 ### MCP para Presentaciones:
+
 - [Office-PowerPoint-MCP-Server](https://github.com/GongRzhe/Office-PowerPoint-MCP-Server)
 - [SlideSpeak MCP](https://slidespeak.co/blog/2025/04/02/introducing-slidespeak-mcp-for-presentations)
 - [FlashDocs MCP](https://www.flashdocs.com/post/flashdocs-model-context-protocol-mcp)
 - [PowerPoint MCP Server Guide](https://skywork.ai/skypage/en/powerpoint-mcp-server-guide/1978636141368823808)
 
 ### Documentacion Tecnica:
+
 - Open WebUI License: `LICENSE` (BSD 3-Clause + Branding Clauses)
 - SvelteKit: https://kit.svelte.dev
 - FastAPI: https://fastapi.tiangolo.com
@@ -846,11 +858,11 @@ ETAPA 7: QA                 ████████ (1 dia)
 
 ## Aprobacion
 
-| Rol | Nombre | Fecha | Firma |
-|-----|--------|-------|-------|
-| Arquitecto | Claude (Opus 4.5) | 2026-02-12 | [AUTO] |
-| Product Owner | | | |
-| Tech Lead | | | |
+| Rol           | Nombre            | Fecha      | Firma  |
+| ------------- | ----------------- | ---------- | ------ |
+| Arquitecto    | Claude (Opus 4.5) | 2026-02-12 | [AUTO] |
+| Product Owner |                   |            |        |
+| Tech Lead     |                   |            |        |
 
 ---
 
@@ -860,13 +872,13 @@ ETAPA 7: QA                 ████████ (1 dia)
 
 ## Historial de Ejecución
 
-| Etapa | Fecha | Estado | Notas |
-|-------|-------|--------|-------|
-| 0 - Legal Gate | 2026-02-12 | ✅ PASS | Path A confirmado |
-| 1 - Assets | 2026-02-12 | ✅ PASS | Todos los assets reemplazados |
-| 2 - Config | 2026-02-12 | ✅ PASS | identity.ts, manifests actualizados |
-| 3 - Estilos | 2026-02-12 | ✅ PASS | CSS/Tailwind colors implementados |
-| 4 - Componentes | 2026-02-12 | ✅ PASS | 13+ componentes actualizados |
-| 5 - Docker | 2026-02-13 | ✅ PASS | Build exitoso, health check pasó |
-| 6 - MCP | 2026-02-12 | ⏸️ DEFERRED | python-pptx OK, MCP server no instalado |
-| 7 - QA Final | 2026-02-13 | ✅ PASS | Compliance verified, build OK, Docker OK |
+| Etapa           | Fecha      | Estado      | Notas                                    |
+| --------------- | ---------- | ----------- | ---------------------------------------- |
+| 0 - Legal Gate  | 2026-02-12 | ✅ PASS     | Path A confirmado                        |
+| 1 - Assets      | 2026-02-12 | ✅ PASS     | Todos los assets reemplazados            |
+| 2 - Config      | 2026-02-12 | ✅ PASS     | identity.ts, manifests actualizados      |
+| 3 - Estilos     | 2026-02-12 | ✅ PASS     | CSS/Tailwind colors implementados        |
+| 4 - Componentes | 2026-02-12 | ✅ PASS     | 13+ componentes actualizados             |
+| 5 - Docker      | 2026-02-13 | ✅ PASS     | Build exitoso, health check pasó         |
+| 6 - MCP         | 2026-02-12 | ⏸️ DEFERRED | python-pptx OK, MCP server no instalado  |
+| 7 - QA Final    | 2026-02-13 | ✅ PASS     | Compliance verified, build OK, Docker OK |

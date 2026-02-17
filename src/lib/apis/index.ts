@@ -1683,7 +1683,7 @@ export interface ModelMeta {
 	[key: string]: any;
 }
 
-export interface ModelParams { }
+export interface ModelParams {}
 
 export type GlobalModelConfig = ModelConfig[];
 

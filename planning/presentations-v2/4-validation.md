@@ -1,6 +1,7 @@
 # Etapa 4: Validación y QA
 
 ## Objetivo
+
 Verificar que todas las mejoras implementadas funcionan correctamente en producción antes del release final.
 
 **Documento previo:** [3-download-fix.md](./3-download-fix.md)
@@ -12,6 +13,7 @@ Verificar que todas las mejoras implementadas funcionan correctamente en producc
 ### Fase 1: Testing Unitario
 
 #### Tests de Unsplash Client
+
 ```python
 # tests/test_unsplash.py
 
@@ -69,6 +71,7 @@ class TestUnsplashAPI:
 ```
 
 #### Tests de Generación PPTX
+
 ```python
 # tests/test_presentations.py
 
@@ -105,15 +108,16 @@ class TestURLGeneration:
 
 #### Checklist de Integración
 
-| Test | Comando/Acción | Resultado Esperado |
-|------|---------------|-------------------|
-| Backend inicia | `cd backend && ./dev.sh` | Sin errores de import |
-| Unsplash conecta | Generar presentación | Imágenes se descargan |
-| PPTX válido | Abrir en PowerPoint | Sin errores de corrupción |
-| URL absoluta | Verificar JSON response | URL completa con dominio |
-| Descarga funciona | Click en enlace | Archivo se descarga |
+| Test              | Comando/Acción           | Resultado Esperado        |
+| ----------------- | ------------------------ | ------------------------- |
+| Backend inicia    | `cd backend && ./dev.sh` | Sin errores de import     |
+| Unsplash conecta  | Generar presentación     | Imágenes se descargan     |
+| PPTX válido       | Abrir en PowerPoint      | Sin errores de corrupción |
+| URL absoluta      | Verificar JSON response  | URL completa con dominio  |
+| Descarga funciona | Click en enlace          | Archivo se descarga       |
 
 #### Script de Test de Integración
+
 ```bash
 #!/bin/bash
 # scripts/test_presentations_integration.sh
@@ -159,6 +163,7 @@ echo "=== Integration Test Complete ==="
 #### Casos de Prueba
 
 ##### Caso 1: Presentación Simple
+
 ```
 Prompt: "Genera una presentación de 3 slides sobre inteligencia artificial"
 
@@ -171,6 +176,7 @@ Verificar:
 ```
 
 ##### Caso 2: Presentación con Estadísticas
+
 ```
 Prompt: "Crea una presentación con estadísticas del mercado colombiano de tecnología"
 
@@ -181,6 +187,7 @@ Verificar:
 ```
 
 ##### Caso 3: Presentación Larga
+
 ```
 Prompt: "Genera una presentación completa de 10 slides sobre transformación digital"
 
@@ -192,6 +199,7 @@ Verificar:
 ```
 
 ##### Caso 4: Edge Cases
+
 ```
 Verificar:
 [ ] Título con caracteres especiales (ñ, á, é, etc.)
@@ -206,20 +214,20 @@ Verificar:
 
 ### Métricas Cuantitativas
 
-| Métrica | Objetivo | Método de Medición |
-|---------|----------|-------------------|
-| Tiempo de generación | < 10s (sin imágenes), < 30s (con imágenes) | Logs del servidor |
-| Tasa de éxito descarga | 100% | Monitoreo de 404s |
-| Tamaño archivo | < 5MB promedio | Análisis de archivos generados |
-| Errores en producción | 0 | Railway logs |
+| Métrica                | Objetivo                                   | Método de Medición             |
+| ---------------------- | ------------------------------------------ | ------------------------------ |
+| Tiempo de generación   | < 10s (sin imágenes), < 30s (con imágenes) | Logs del servidor              |
+| Tasa de éxito descarga | 100%                                       | Monitoreo de 404s              |
+| Tamaño archivo         | < 5MB promedio                             | Análisis de archivos generados |
+| Errores en producción  | 0                                          | Railway logs                   |
 
 ### Métricas Cualitativas
 
-| Aspecto | Evaluación | Responsable |
-|---------|------------|-------------|
-| Atractivo visual | Escala 1-5, objetivo > 4 | Feedback usuarios |
+| Aspecto             | Evaluación               | Responsable       |
+| ------------------- | ------------------------ | ----------------- |
+| Atractivo visual    | Escala 1-5, objetivo > 4 | Feedback usuarios |
 | Relevancia imágenes | Escala 1-5, objetivo > 3 | Feedback usuarios |
-| Profesionalismo | Comparación con Gamma | Revisión interna |
+| Profesionalismo     | Comparación con Gamma    | Revisión interna  |
 
 ---
 
@@ -228,11 +236,13 @@ Verificar:
 ### Si hay problemas críticos
 
 1. **Revertir cambios en presentations.py**
+
    ```bash
    git revert HEAD~N  # N = número de commits
    ```
 
 2. **Desactivar imágenes**
+
    ```bash
    # Railway > Variables
    UNSPLASH_ACCESS_KEY=  # Dejar vacío
@@ -249,23 +259,27 @@ Verificar:
 ## Checklist Final de Release
 
 ### Pre-Deployment
+
 - [ ] Todos los tests unitarios pasan
 - [ ] Tests de integración pasan
 - [ ] Code review completado
 - [ ] Documentación actualizada
 
 ### Deployment
+
 - [ ] Variables de entorno configuradas en Railway
 - [ ] Deploy exitoso sin errores
 - [ ] Health check pasa
 
 ### Post-Deployment
+
 - [ ] Test manual de generación de presentación
 - [ ] Test manual de descarga
 - [ ] Verificar logs sin errores
 - [ ] Confirmar imágenes se cargan (si API key presente)
 
 ### Comunicación
+
 - [ ] Actualizar README si hay nuevas features
 - [ ] Documentar nuevos parámetros de la tool
 - [ ] Notificar a usuarios sobre mejoras

@@ -23,8 +23,9 @@
 @layer base {
 	html,
 	pre {
-		font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Vazirmatn', ui-sans-serif, system-ui,
-			'Segoe UI', Roboto, Ubuntu, Cantarell, 'Noto Sans', sans-serif, 'Helvetica Neue', Arial,
+		font-family:
+			-apple-system, BlinkMacSystemFont, 'Inter', 'Vazirmatn', ui-sans-serif, system-ui, 'Segoe UI',
+			Roboto, Ubuntu, Cantarell, 'Noto Sans', sans-serif, 'Helvetica Neue', Arial,
 			'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
 	}
 
@@ -81,7 +82,7 @@
 
 /* Light Theme (Default) */
 :root,
-[data-theme="light"] {
+[data-theme='light'] {
 	/* Surface Colors */
 	--color-surface-base: 249 250 251;
 	--color-surface-elevated: 255 255 255;
@@ -121,7 +122,7 @@
 
 /* Dark Theme */
 .dark,
-[data-theme="dark"] {
+[data-theme='dark'] {
 	/* Surface Colors */
 	--color-surface-base: 23 23 23;
 	--color-surface-elevated: 38 38 38;
@@ -148,7 +149,7 @@
 }
 
 /* OLED Dark Theme - True Black */
-[data-theme="oled-dark"] {
+[data-theme='oled-dark'] {
 	/* Surface Colors - Pure black for OLED screens */
 	--color-surface-base: 0 0 0;
 	--color-surface-elevated: 5 5 5;
@@ -167,7 +168,7 @@
 }
 
 /* Her Theme - Rose/Pink */
-[data-theme="her"] {
+[data-theme='her'] {
 	/* Surface Colors - Warm rose tints */
 	--color-surface-base: 255 250 250;
 	--color-surface-elevated: 255 255 255;
@@ -205,7 +206,7 @@
 
 /* Chatbox & Title - Light Theme */
 :root,
-[data-theme="light"] {
+[data-theme='light'] {
 	/* Chatbox */
 	--color-chatbox-bg: 255 255 255;
 	--color-chatbox-text: 23 23 23;
@@ -219,7 +220,7 @@
 
 /* Chatbox & Title - Dark Theme */
 .dark,
-[data-theme="dark"] {
+[data-theme='dark'] {
 	/* Chatbox */
 	--color-chatbox-bg: 10 10 10 / 0.8;
 	--color-chatbox-text: 243 244 246;
@@ -232,7 +233,7 @@
 }
 
 /* Chatbox & Title - OLED Dark Theme */
-[data-theme="oled-dark"] {
+[data-theme='oled-dark'] {
 	/* Chatbox */
 	--color-chatbox-bg: 0 0 0 / 0.9;
 	--color-chatbox-text: 248 250 252;
@@ -245,7 +246,7 @@
 }
 
 /* Chatbox & Title - Her Theme */
-[data-theme="her"] {
+[data-theme='her'] {
 	/* Chatbox */
 	--color-chatbox-bg: 255 250 250;
 	--color-chatbox-text: 23 23 23;

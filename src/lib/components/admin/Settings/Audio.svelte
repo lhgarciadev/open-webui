@@ -628,7 +628,9 @@
 								</div>
 							</div>
 							<div class="mt-2 mb-1 text-xs text-gray-400 dark:text-gray-500">
-								{$i18n.t(`{{name}} uses SpeechT5 and CMU Arctic speaker embeddings.`, { name: APP_NAME })}
+								{$i18n.t(`{{name}} uses SpeechT5 and CMU Arctic speaker embeddings.`, {
+									name: APP_NAME
+								})}
 
 								To learn more about SpeechT5,
 

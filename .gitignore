@@ -317,3 +317,6 @@ cypress/screenshots
 # Claude Code local settings (may contain tokens)
 .claude/settings.local.json
 
+# Old node_modules backup (corrupted, pending manual deletion)
+node_modules_old_*
+

@@ -1,378 +1,407 @@
-# Theme System Implementation Plan
+# Theme & Styling System Implementation Plan
 
-**Date:** 2026-02-16
-**Estimated Effort:** 2-4 hours
-**Files to Modify:** 3 files
-**Risk Level:** Medium (visual changes across entire app)
-
----
-
-## Pre-Implementation Checklist
-
-- [ ] Backup current state: `git stash` or commit current changes
-- [ ] Ensure dev server is running: `npm run dev`
-- [ ] Have browser DevTools open for live testing
-- [ ] Test current broken state to establish baseline
+**Date:** 2026-02-17
+**Version:** 2.0
+**Total Stages:** 5
+**Files to Modify:** ~20 files
 
 ---
 
-## Phase 1: Move Theme Variables to Tailwind Layer
+## Overview
 
-### Step 1.1: Update `src/tailwind.css`
+Este plan implementa las correcciones identificadas en `ASIS_TOBE_ANALYSIS.md` en 5 etapas secuenciales. Cada etapa tiene un prompt de ejecucion y uno de validacion.
 
-**File:** `src/tailwind.css`
-
-**Action:** Add theme variable definitions inside `@layer base` block.
-
-**Insert AFTER** the existing `@layer base` block (around line 72), add a NEW `@layer base` block:
-
-```css
-@layer base {
-  /* ============================================
-     THEME SYSTEM - CSS Custom Properties
-     These variables drive the entire color system.
-     They MUST be in @layer base for Tailwind v4 to compile them.
-     ============================================ */
-
-  /* Light Theme (Default) */
-  :root,
-  [data-theme="light"] {
-    /* Surface Colors */
-    --color-surface-base: 249 250 251;
-    --color-surface-elevated: 255 255 255;
-    --color-surface-overlay: 229 231 235;
-
-    /* Text Colors */
-    --color-text-primary: 15 23 42;
-    --color-text-secondary: 71 85 105;
-    --color-text-muted: 100 116 139;
-
-    /* Gray Scale */
-    --color-gray-50: 249 249 249;
-    --color-gray-100: 236 236 236;
-    --color-gray-200: 227 227 227;
-    --color-gray-300: 205 205 205;
-    --color-gray-400: 180 180 180;
-    --color-gray-500: 155 155 155;
-    --color-gray-600: 103 103 103;
-    --color-gray-700: 78 78 78;
-    --color-gray-800: 51 51 51;
-    --color-gray-850: 38 38 38;
-    --color-gray-900: 23 23 23;
-    --color-gray-950: 13 13 13;
-
-    /* Brand Colors - Cognitia Blue */
-    --color-brand-50: 239 246 255;
-    --color-brand-100: 219 234 254;
-    --color-brand-200: 191 219 254;
-    --color-brand-300: 147 197 253;
-    --color-brand-400: 96 165 250;
-    --color-brand-500: 59 130 246;
-    --color-brand-600: 37 99 235;
-    --color-brand-700: 29 78 216;
-    --color-brand-800: 30 64 175;
-    --color-brand-900: 30 58 138;
-  }
-
-  /* Dark Theme */
-  .dark,
-  [data-theme="dark"] {
-    /* Surface Colors */
-    --color-surface-base: 23 23 23;
-    --color-surface-elevated: 38 38 38;
-    --color-surface-overlay: 51 51 51;
-
-    /* Text Colors */
-    --color-text-primary: 248 250 252;
-    --color-text-secondary: 148 163 184;
-    --color-text-muted: 100 116 139;
-
-    /* Gray Scale - Inverted for dark */
-    --color-gray-50: 249 249 249;
-    --color-gray-100: 236 236 236;
-    --color-gray-200: 227 227 227;
-    --color-gray-300: 205 205 205;
-    --color-gray-400: 180 180 180;
-    --color-gray-500: 155 155 155;
-    --color-gray-600: 103 103 103;
-    --color-gray-700: 78 78 78;
-    --color-gray-800: 51 51 51;
-    --color-gray-850: 38 38 38;
-    --color-gray-900: 23 23 23;
-    --color-gray-950: 13 13 13;
-  }
-
-  /* OLED Dark Theme - True Black */
-  [data-theme="oled-dark"] {
-    /* Surface Colors - Pure black for OLED */
-    --color-surface-base: 0 0 0;
-    --color-surface-elevated: 5 5 5;
-    --color-surface-overlay: 16 16 16;
-
-    /* Text Colors */
-    --color-text-primary: 248 250 252;
-    --color-text-secondary: 148 163 184;
-    --color-text-muted: 100 116 139;
-
-    /* Gray Scale - Deep blacks */
-    --color-gray-800: 16 16 16;
-    --color-gray-850: 5 5 5;
-    --color-gray-900: 0 0 0;
-    --color-gray-950: 0 0 0;
-  }
-
-  /* Her Theme - Rose/Pink */
-  [data-theme="her"] {
-    /* Surface Colors - Warm rose tints */
-    --color-surface-base: 255 250 250;
-    --color-surface-elevated: 255 255 255;
-    --color-surface-overlay: 255 228 230;
-
-    /* Text Colors */
-    --color-text-primary: 23 23 23;
-    --color-text-secondary: 71 85 105;
-    --color-text-muted: 100 116 139;
-
-    /* Brand Colors - Rose palette */
-    --color-brand-50: 255 241 242;
-    --color-brand-100: 255 228 230;
-    --color-brand-200: 254 205 211;
-    --color-brand-300: 253 164 175;
-    --color-brand-400: 251 113 133;
-    --color-brand-500: 244 63 94;
-    --color-brand-600: 225 29 72;
-    --color-brand-700: 190 18 60;
-    --color-brand-800: 159 18 57;
-    --color-brand-900: 136 19 55;
-  }
-
-  /* Semantic Colors - Shared across all themes */
-  :root {
-    --color-success: 34 197 94;
-    --color-warning: 245 158 11;
-    --color-error: 239 68 68;
-    --color-info: 59 130 246;
-  }
-}
 ```
-
-### Step 1.2: Verification
-
-After saving, check browser DevTools:
-
-```javascript
-// Should return a value like "23 23 23" for dark theme
-getComputedStyle(document.documentElement).getPropertyValue('--color-surface-base')
+┌─────────────────────────────────────────────────────────────────┐
+│                    FLUJO DE IMPLEMENTACION                       │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│  ETAPA 1: Variables CSS Chatbox & Titulo                        │
+│     ├── Agregar variables chatbox a tailwind.css                │
+│     ├── Agregar variables gradient titulo                       │
+│     └── Validar compilacion                                     │
+│                                                                 │
+│  ETAPA 2: ChatBox Theme-Aware                                   │
+│     ├── Actualizar MessageInput.svelte                          │
+│     └── Validar en 4 temas                                      │
+│                                                                 │
+│  ETAPA 3: Titulo Gradient Theme-Aware                           │
+│     ├── Actualizar Placeholder.svelte                           │
+│     ├── Actualizar ChatPlaceholder.svelte                       │
+│     └── Validar visibilidad                                     │
+│                                                                 │
+│  ETAPA 4: Sticky Headers & Fondos Solidos                       │
+│     ├── Sidebar.svelte header/footer                            │
+│     ├── Admin headers (5 archivos)                              │
+│     └── Eliminar gradient workaround                            │
+│                                                                 │
+│  ETAPA 5: Transparencias & Responsiveness                       │
+│     ├── Eliminar opacidades problematicas                       │
+│     ├── Agregar breakpoints responsivos                         │
+│     └── Validacion final                                        │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘
 ```
 
 ---
 
-## Phase 2: Update Body Styles in `app.css`
+## Etapa 1: Variables CSS (Chatbox & Titulo)
 
-### Step 2.1: Remove Hardcoded Body Colors
+### Objetivo
+Agregar variables CSS para chatbox y gradiente de titulo en `tailwind.css`.
 
-**File:** `src/app.css`
+### Archivos a Modificar
+| Archivo | Accion | Lineas |
+|---------|--------|--------|
+| `src/tailwind.css` | AGREGAR | +50 lineas |
 
-**Find and REMOVE** these lines (around lines 882-890):
+### Cambios Especificos
 
-```css
-/* DELETE THIS BLOCK */
-body {
-	background: #fff;
-	color: #000;
-}
-
-.dark body {
-	background: #171717;
-	color: #eee;
-}
-```
-
-### Step 2.2: Add Variable-Based Body Styles
-
-**Replace with:**
+**Agregar DESPUES del bloque existente de variables de tema (aproximadamente linea 193):**
 
 ```css
-body {
-	background-color: rgb(var(--color-surface-base));
-	color: rgb(var(--color-text-primary));
-	transition: background-color 0.2s ease, color 0.2s ease;
-}
-```
+/* ============================================
+   CHATBOX COLORS - Theme-aware input styling
+   ============================================ */
 
-### Step 2.3: Remove Duplicate Theme Variable Definitions
-
-**Find and REMOVE** the `[data-theme]` blocks in `app.css` (lines ~38-206) since they're now in `tailwind.css`:
-
-```css
-/* DELETE ALL THESE BLOCKS - they're now in tailwind.css */
-
-/* Default (Light) Theme */
+/* Light Theme */
 :root,
-[data-theme='light'] {
-  /* ... all variables ... */
+[data-theme="light"] {
+  --color-chatbox-bg: 255 255 255;
+  --color-chatbox-text: 23 23 23;
+  --color-chatbox-border: 229 231 235;
+  --color-chatbox-ring: 59 130 246 / 0.2;
+  --color-chatbox-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.1);
+
+  /* Title Gradient */
+  --color-title-gradient-start: 55 65 81;
+  --color-title-gradient-end: 107 114 128;
 }
 
-[data-theme='dark'] {
-  /* ... all variables ... */
+/* Dark Theme */
+.dark,
+[data-theme="dark"] {
+  --color-chatbox-bg: 10 10 10 / 0.8;
+  --color-chatbox-text: 243 244 246;
+  --color-chatbox-border: 255 255 255 / 0.05;
+  --color-chatbox-ring: 255 255 255 / 0.1;
+  --color-chatbox-shadow: 0 10px 40px -5px rgba(0, 0, 0, 0.5);
+
+  /* Title Gradient */
+  --color-title-gradient-start: 236 236 236;
+  --color-title-gradient-end: 155 155 155;
 }
 
-[data-theme='oled-dark'] {
-  /* ... all variables ... */
+/* OLED Dark Theme */
+[data-theme="oled-dark"] {
+  --color-chatbox-bg: 0 0 0 / 0.9;
+  --color-chatbox-text: 248 250 252;
+  --color-chatbox-border: 255 255 255 / 0.05;
+  --color-chatbox-ring: 255 255 255 / 0.1;
+  --color-chatbox-shadow: 0 10px 40px -5px rgba(0, 0, 0, 0.8);
+
+  /* Title Gradient - same as dark */
+  --color-title-gradient-start: 236 236 236;
+  --color-title-gradient-end: 155 155 155;
 }
 
-[data-theme='her'] {
-  /* ... all variables ... */
+/* Her Theme */
+[data-theme="her"] {
+  --color-chatbox-bg: 255 250 250;
+  --color-chatbox-text: 23 23 23;
+  --color-chatbox-border: 254 205 211;
+  --color-chatbox-ring: 244 63 94 / 0.2;
+  --color-chatbox-shadow: 0 4px 20px -2px rgba(244, 63, 94, 0.1);
+
+  /* Title Gradient */
+  --color-title-gradient-start: 136 19 55;
+  --color-title-gradient-end: 190 18 60;
 }
 ```
 
-**KEEP** only:
-- The `@reference` directive at the top
-- Font definitions
-- The `--app-text-scale` variable in `:root`
-- All other utility classes and styles
+### Criterios de Validacion
+- [ ] No errores de compilacion CSS
+- [ ] Variables accesibles via DevTools
+- [ ] Hot reload funciona correctamente
+
+### Prompts
+- Ejecutar: `prompts/1.1-css-variables-ejecutar.md`
+- Validar: `prompts/1.2-css-variables-validar.md`
 
 ---
 
-## Phase 3: Update Splash Screen in `app.html`
+## Etapa 2: ChatBox Theme-Aware
 
-### Step 3.1: Update Splash Background
+### Objetivo
+Actualizar MessageInput.svelte para usar variables CSS en lugar de colores hardcodeados.
 
-**File:** `src/app.html`
+### Archivos a Modificar
+| Archivo | Accion | Lineas |
+|---------|--------|--------|
+| `src/lib/components/chat/MessageInput.svelte` | MODIFICAR | ~10 lineas |
 
-**Find** the inline style block (around line 152-164):
+### Cambios Especificos
 
-```css
-#splash-screen {
-	background: #fff;
-}
-
-html.dark #splash-screen {
-	background: #000;
-}
+**Buscar (linea ~1167):**
+```svelte
+<div id="message-input-container"
+  class="flex-1 flex flex-col relative w-full rounded-[2.5rem] border transition px-2 py-1 text-gray-100 backdrop-blur-3xl bg-[#0a0a0a]/80 shadow-[0_10px_40px_-5px_rgba(0,0,0,0.5)] ring-1 ring-white/10 {$temporaryChatEnabled
+    ? 'border-dashed border-gray-500/30 hover:border-gray-400/50 focus-within:border-blue-500/50'
+    : 'border-white/5 hover:border-white/10 focus-within:border-blue-500/40 focus-within:shadow-[0_0_30px_rgba(59,130,246,0.3)]'}"
 ```
 
-**Replace with:**
-
-```css
-#splash-screen {
-	background: rgb(var(--color-surface-base, 255 255 255));
-}
+**Reemplazar con:**
+```svelte
+<div id="message-input-container"
+  class="flex-1 flex flex-col relative w-full rounded-[2.5rem] border transition px-2 py-1 backdrop-blur-3xl
+         text-gray-900 dark:text-gray-100
+         bg-white/95 dark:bg-[rgb(var(--color-chatbox-bg))]
+         shadow-lg dark:shadow-[var(--color-chatbox-shadow)]
+         ring-1 ring-gray-200/50 dark:ring-[rgb(var(--color-chatbox-ring))]
+         {$temporaryChatEnabled
+           ? 'border-dashed border-gray-300 dark:border-gray-500/30 hover:border-gray-400 dark:hover:border-gray-400/50 focus-within:border-blue-500/50'
+           : 'border-gray-200 dark:border-white/5 hover:border-gray-300 dark:hover:border-white/10 focus-within:border-blue-500/40 focus-within:shadow-[0_0_30px_rgba(59,130,246,0.2)]'}"
 ```
 
-This uses CSS variable with a fallback for initial load.
+### Criterios de Validacion
+- [ ] Light theme: Chatbox blanco con texto oscuro
+- [ ] Dark theme: Chatbox oscuro con texto claro
+- [ ] OLED theme: Chatbox negro puro
+- [ ] Her theme: Chatbox con tinte rose
+- [ ] Input funcional en todos los temas
+
+### Prompts
+- Ejecutar: `prompts/2.1-chatbox-theme-ejecutar.md`
+- Validar: `prompts/2.2-chatbox-theme-validar.md`
 
 ---
 
-## Phase 4: Testing & Validation
+## Etapa 3: Titulo Gradient Theme-Aware
 
-### Step 4.1: Manual Testing Checklist
+### Objetivo
+Actualizar el gradiente del titulo para ser visible en todos los temas.
 
-Open browser to `http://localhost:8080` and test each theme:
+### Archivos a Modificar
+| Archivo | Accion | Lineas |
+|---------|--------|--------|
+| `src/lib/components/chat/Placeholder.svelte` | MODIFICAR | ~5 lineas |
+| `src/lib/components/chat/ChatPlaceholder.svelte` | MODIFICAR | ~5 lineas |
 
-| Theme | Background Expected | Test Result |
-|-------|---------------------|-------------|
-| Light | Light gray `#f9fafb` | [ ] Pass / [ ] Fail |
-| Dark | Dark gray `#171717` | [ ] Pass / [ ] Fail |
-| OLED Dark | Pure black `#000000` | [ ] Pass / [ ] Fail |
-| Her | Rose tint `#fffafa` | [ ] Pass / [ ] Fail |
+### Cambios Especificos
 
-### Step 4.2: DevTools Verification
-
-Run in browser console:
-
-```javascript
-// Test 1: Check data-theme is set
-console.log('data-theme:', document.documentElement.getAttribute('data-theme'));
-
-// Test 2: Check surface variable changes
-['light', 'dark', 'oled-dark', 'her'].forEach(theme => {
-  document.documentElement.setAttribute('data-theme', theme);
-  if (theme === 'dark' || theme === 'oled-dark') {
-    document.documentElement.classList.add('dark');
-  } else {
-    document.documentElement.classList.remove('dark');
-  }
-  const surfaceBase = getComputedStyle(document.documentElement)
-    .getPropertyValue('--color-surface-base').trim();
-  const bodyBg = getComputedStyle(document.body).backgroundColor;
-  console.log(`${theme}: surface=${surfaceBase}, body=${bodyBg}`);
-});
+**En ambos archivos, buscar:**
+```svelte
+<h1 class="text-6xl md:text-7xl font-secondary font-light tracking-tight pb-2"
+    style="background: linear-gradient(to bottom, rgb(236, 236, 236), rgba(155, 155, 155, 0.8)); -webkit-background-clip: text; background-clip: text; color: transparent;">
 ```
 
-**Expected output:**
-```
-light: surface=249 250 251, body=rgb(249, 250, 251)
-dark: surface=23 23 23, body=rgb(23, 23, 23)
-oled-dark: surface=0 0 0, body=rgb(0, 0, 0)
-her: surface=255 250 250, body=rgb(255, 250, 250)
+**Reemplazar con:**
+```svelte
+<h1 class="text-6xl md:text-7xl font-secondary font-light tracking-tight pb-2"
+    style="background: linear-gradient(to bottom, rgb(var(--color-title-gradient-start)), rgb(var(--color-title-gradient-end) / 0.8)); -webkit-background-clip: text; background-clip: text; color: transparent;">
 ```
 
-### Step 4.3: Persistence Test
+### Criterios de Validacion
+- [ ] Light theme: Titulo gris oscuro legible
+- [ ] Dark theme: Titulo gris claro (como antes)
+- [ ] Her theme: Titulo rose
 
-1. Select "OLED Dark" theme in Settings
-2. Reload the page
-3. Verify background is still pure black
-4. Verify localStorage.theme === 'oled-dark'
+### Prompts
+- Ejecutar: `prompts/3.1-title-gradient-ejecutar.md`
+- Validar: `prompts/3.2-title-gradient-validar.md`
 
 ---
 
-## Phase 5: Cleanup
+## Etapa 4: Sticky Headers & Fondos Solidos
 
-### Step 5.1: Remove Unused Code
+### Objetivo
+Agregar fondos solidos a headers sticky y eliminar workarounds de gradient.
 
-After verification, ensure these are cleaned up:
+### Archivos a Modificar
+| Archivo | Accion | Lineas |
+|---------|--------|--------|
+| `src/lib/components/layout/Sidebar.svelte` | MODIFICAR | ~8 lineas |
+| `src/lib/components/admin/Evaluations/Leaderboard.svelte` | MODIFICAR | ~2 lineas |
+| `src/lib/components/admin/Users/UserList.svelte` | MODIFICAR | ~2 lineas |
+| `src/lib/components/admin/Analytics/UserUsage.svelte` | MODIFICAR | ~2 lineas |
+| `src/lib/components/admin/Analytics/ModelUsage.svelte` | MODIFICAR | ~2 lineas |
+| `src/lib/components/admin/Analytics/Dashboard.svelte` | MODIFICAR | ~2 lineas |
 
-- [ ] No duplicate CSS variable definitions
-- [ ] No hardcoded color values for body/background
-- [ ] No console.log statements left in theme code
+### Cambios Especificos
 
-### Step 5.2: Commit Changes
+#### Sidebar.svelte
+
+**1. Header sticky (linea ~903):**
+```svelte
+<!-- BUSCAR -->
+<div class="sidebar px-[0.5625rem] pt-2 pb-1.5 flex justify-between space-x-1 text-gray-600 dark:text-gray-400 sticky top-0 z-10 -mb-3">
+
+<!-- REEMPLAZAR CON -->
+<div class="sidebar px-[0.5625rem] pt-2 pb-1.5 flex justify-between space-x-1 text-gray-600 dark:text-gray-400 sticky top-0 z-10 -mb-3 bg-gray-50 dark:bg-gray-950">
+```
+
+**2. Eliminar gradient workaround (lineas ~946-950):**
+```svelte
+<!-- ELIMINAR COMPLETAMENTE ESTE BLOQUE -->
+<div
+  class="{scrollTop > 0
+    ? 'visible'
+    : 'invisible'} sidebar-bg-gradient-to-b bg-linear-to-b from-gray-50 dark:from-gray-950 to-transparent from-50% pointer-events-none absolute inset-0 -z-10 -mb-6"
+></div>
+```
+
+**3. Footer sticky (lineas ~1401-1404):**
+```svelte
+<!-- BUSCAR -->
+<div class="px-1.5 pt-1.5 pb-2 sticky bottom-0 z-50 -mt-3 sidebar">
+  <div class="sidebar-bg-gradient-to-t bg-linear-to-t from-gray-50 dark:from-gray-950 to-transparent from-50% pointer-events-none absolute inset-0 -z-10 -mt-6"></div>
+
+<!-- REEMPLAZAR CON -->
+<div class="px-1.5 pt-1.5 pb-2 sticky bottom-0 z-50 -mt-3 sidebar bg-gray-50 dark:bg-gray-950">
+  <!-- Eliminar el div del gradient -->
+```
+
+#### Admin Components (5 archivos)
+
+**Patron a buscar:**
+```svelte
+class="... sticky top-0 z-10 bg-white dark:bg-gray-900"
+```
+
+**Reemplazar con:**
+```svelte
+class="... sticky top-0 z-10 bg-gray-50 dark:bg-gray-950"
+```
+
+### Criterios de Validacion
+- [ ] Sidebar header: Fondo solido sin superposicion
+- [ ] Sidebar footer: Fondo solido sin superposicion
+- [ ] Admin headers: Paleta consistente con sidebar
+- [ ] Scroll en sidebar: Sin texto visible a traves del header
+
+### Prompts
+- Ejecutar: `prompts/4.1-sticky-headers-ejecutar.md`
+- Validar: `prompts/4.2-sticky-headers-validar.md`
+
+---
+
+## Etapa 5: Transparencias & Responsiveness
+
+### Objetivo
+Eliminar transparencias problematicas y agregar breakpoints responsivos.
+
+### Archivos a Modificar
+| Archivo | Accion | Cambios |
+|---------|--------|---------|
+| `src/lib/components/chat/MessageInput/VoiceRecording.svelte` | MODIFICAR | Eliminar `/50` |
+| `src/lib/components/chat/MessageInput/FilesOverlay.svelte` | MODIFICAR | Eliminar `/50` |
+| `src/lib/components/chat/MessageInput/InputMenu.svelte` | MODIFICAR | Eliminar `/50` en hovers |
+| `src/lib/components/chat/MessageInput/IntegrationsMenu.svelte` | MODIFICAR | Eliminar `/50` en hovers |
+| `src/lib/components/chat/MessageInput.svelte` | MODIFICAR | Eliminar opacidades en queue |
+| `src/lib/components/chat/Messages/Message.svelte` | MODIFICAR | Agregar breakpoints |
+
+### Cambios Especificos
+
+#### Patron de Transparencias a Reemplazar
+
+**Buscar y reemplazar globalmente:**
+| Buscar | Reemplazar |
+|--------|------------|
+| `bg-gray-100/50` | `bg-gray-100` |
+| `dark:bg-gray-850/50` | `dark:bg-gray-850` |
+| `dark:hover:bg-gray-800/50` | `dark:hover:bg-gray-800` |
+| `hover:bg-gray-100/50` | `hover:bg-gray-100` |
+| `dark:hover:bg-gray-850/50` | `dark:hover:bg-gray-850` |
+
+#### MessageInput.svelte - Queue Container (linea ~1151)
+
+**Buscar:**
+```svelte
+class="mb-1 mx-2 py-0.5 px-1.5 rounded-2xl bg-gray-900/60 border border-gray-800/50 overflow-hidden"
+```
+
+**Reemplazar:**
+```svelte
+class="mb-1 mx-2 py-0.5 px-1.5 rounded-2xl bg-gray-100 dark:bg-gray-900 border border-gray-200 dark:border-gray-800 overflow-hidden"
+```
+
+#### Responsiveness - Message.svelte
+
+**Buscar:**
+```svelte
+class="... max-w-5xl ..."
+```
+
+**Reemplazar:**
+```svelte
+class="... max-w-full sm:max-w-xl md:max-w-2xl lg:max-w-4xl xl:max-w-5xl ..."
+```
+
+### Criterios de Validacion
+- [ ] Hovers sin transparencia problematica
+- [ ] Queue container visible en light mode
+- [ ] Mensajes responsivos en mobile (320px, 375px, 414px)
+- [ ] No texto superpuesto en ningun componente
+
+### Prompts
+- Ejecutar: `prompts/5.1-transparency-responsive-ejecutar.md`
+- Validar: `prompts/5.2-transparency-responsive-validar.md`
+
+---
+
+## Checklist de Validacion Final
+
+### Visual (Todos los Temas)
+| Test | Light | Dark | OLED | Her |
+|------|-------|------|------|-----|
+| Chatbox legible | [ ] | [ ] | [ ] | [ ] |
+| Titulo visible | [ ] | [ ] | [ ] | [ ] |
+| Sidebar sin overlap | [ ] | [ ] | [ ] | [ ] |
+| Admin headers | [ ] | [ ] | [ ] | [ ] |
+| Hovers funcionan | [ ] | [ ] | [ ] | [ ] |
+
+### Responsiveness
+| Viewport | Test |
+|----------|------|
+| 320px (iPhone SE) | [ ] Chat legible |
+| 375px (iPhone) | [ ] Menus funcionales |
+| 768px (Tablet) | [ ] Sidebar comportamiento |
+| 1024px+ (Desktop) | [ ] Layout completo |
+
+### Funcional
+- [ ] Theme switching funciona
+- [ ] Theme persiste en reload
+- [ ] No errores en consola
+- [ ] Build production exitoso
+
+---
+
+## Rollback
+
+Si algo falla en cualquier etapa:
 
 ```bash
-git add src/tailwind.css src/app.css src/app.html
-git commit -m "fix(theme): move CSS variables to @layer base for Tailwind v4 compatibility
+# Revertir todos los cambios
+git checkout HEAD -- src/
 
-- Move all [data-theme] variable definitions to tailwind.css @layer base
-- Replace hardcoded body colors with CSS variable references
-- Update splash screen to use CSS variables
-- Fixes OLED dark theme showing wrong background
-- Fixes surface colors not changing between themes
-
-Co-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>"
+# O revertir archivos especificos
+git checkout HEAD -- src/tailwind.css
+git checkout HEAD -- src/lib/components/chat/MessageInput.svelte
+git checkout HEAD -- src/lib/components/layout/Sidebar.svelte
 ```
 
 ---
 
-## Rollback Plan
+## Orden de Ejecucion
 
-If issues arise:
-
-```bash
-# Revert all changes
-git checkout HEAD -- src/tailwind.css src/app.css src/app.html
-
-# Or restore from stash if you stashed before starting
-git stash pop
+```
+1. [  ] Etapa 1: Variables CSS
+2. [  ] Etapa 2: ChatBox
+3. [  ] Etapa 3: Titulo
+4. [  ] Etapa 4: Sticky Headers
+5. [  ] Etapa 5: Transparencias
+6. [  ] Validacion Final
+7. [  ] Commit
 ```
 
----
-
-## Post-Implementation Monitoring
-
-1. **Visual QA**: Check all major pages (chat, settings, admin) in each theme
-2. **Mobile Testing**: Verify themes work on mobile viewport
-3. **Performance**: Check no layout shifts on theme change
-4. **Accessibility**: Verify contrast ratios meet WCAG AA standards
-
----
-
-## Files Modified Summary
-
-| File | Changes |
-|------|---------|
-| `src/tailwind.css` | Add ~100 lines of theme variables in @layer base |
-| `src/app.css` | Remove ~170 lines of [data-theme] blocks, update body styles |
-| `src/app.html` | Update splash screen background to use CSS variable |
-
-**Total Lines Changed:** ~280 lines (mostly removals and reorganization)
+**IMPORTANTE:** Las etapas son secuenciales. No saltar pasos.

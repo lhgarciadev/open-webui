@@ -8,6 +8,7 @@
 		type AllBudgetsItem,
 		type SpendingTransaction
 	} from '$lib/apis/budgets';
+	import { getUsers } from '$lib/apis/users';
 
 	const i18n = getContext('i18n');
 
@@ -29,6 +30,30 @@
 
 	let newBudgetUserId = '';
 	let showNewBudgetForm = false;
+
+	// User list for selector
+	let allUsers: { id: string; name: string; email: string }[] = [];
+	let userSearchQuery = '';
+	let showUserDropdown = false;
+
+	$: filteredUsers = userSearchQuery.length > 0
+		? allUsers.filter(
+				(u) =>
+					u.name.toLowerCase().includes(userSearchQuery.toLowerCase()) ||
+					u.email.toLowerCase().includes(userSearchQuery.toLowerCase())
+			)
+		: allUsers;
+
+	const loadUsers = async () => {
+		try {
+			const result = await getUsers(localStorage.token);
+			if (result) {
+				allUsers = result.map((u: any) => ({ id: u.id, name: u.name, email: u.email }));
+			}
+		} catch (err) {
+			console.error('Failed to load users:', err);
+		}
+	};
 
 	const loadBudgets = async () => {
 		loading = true;
@@ -80,6 +105,7 @@
 			toast.success($i18n.t('Budget created'));
 			showNewBudgetForm = false;
 			newBudgetUserId = '';
+			userSearchQuery = '';
 			await loadBudgets();
 		} catch (err) {
 			toast.error(`${err}`);
@@ -88,6 +114,7 @@
 
 	onMount(() => {
 		loadBudgets();
+		loadUsers();
 	});
 </script>
 
@@ -107,14 +134,39 @@
 
 	{#if showNewBudgetForm}
 		<div class="border dark:border-gray-700 rounded-lg p-4 space-y-3">
-			<div>
-				<label class="block text-sm font-medium mb-1">{$i18n.t('User ID')}</label>
+			<div class="relative">
+				<label class="block text-sm font-medium mb-1">{$i18n.t('Select User')}</label>
 				<input
 					type="text"
-					bind:value={newBudgetUserId}
+					bind:value={userSearchQuery}
+					on:focus={() => { showUserDropdown = true; }}
+					on:blur={() => { setTimeout(() => { showUserDropdown = false; }, 200); }}
 					class="w-full px-3 py-2 border dark:border-gray-600 rounded-lg bg-transparent"
-					placeholder={$i18n.t('Enter user ID')}
+					placeholder={$i18n.t('Search by name or email...')}
 				/>
+				{#if newBudgetUserId}
+					<div class="mt-1 text-xs text-green-600 dark:text-green-400">
+						{allUsers.find(u => u.id === newBudgetUserId)?.name ?? newBudgetUserId}
+						({allUsers.find(u => u.id === newBudgetUserId)?.email ?? ''})
+					</div>
+				{/if}
+				{#if showUserDropdown && filteredUsers.length > 0}
+					<div class="absolute z-10 w-full mt-1 max-h-48 overflow-auto bg-white dark:bg-gray-800 border dark:border-gray-600 rounded-lg shadow-lg">
+						{#each filteredUsers as user}
+							<button
+								class="w-full text-left px-3 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-700 transition"
+								on:mousedown|preventDefault={() => {
+									newBudgetUserId = user.id;
+									userSearchQuery = user.name;
+									showUserDropdown = false;
+								}}
+							>
+								<span class="font-medium">{user.name}</span>
+								<span class="text-gray-500 ml-2">{user.email}</span>
+							</button>
+						{/each}
+					</div>
+				{/if}
 			</div>
 			<div>
 				<label class="block text-sm font-medium mb-1">{$i18n.t('Initial Budget (USD)')}</label>

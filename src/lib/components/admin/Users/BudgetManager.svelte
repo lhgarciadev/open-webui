@@ -48,7 +48,8 @@
 		try {
 			const result = await getAllUsers(localStorage.token);
 			if (result) {
-				allUsers = result.map((u: any) => ({ id: u.id, name: u.name, email: u.email }));
+				const users = Array.isArray(result) ? result : result.users ?? [];
+				allUsers = users.map((u: any) => ({ id: u.id, name: u.name, email: u.email }));
 			}
 		} catch (err) {
 			console.error('Failed to load users:', err);

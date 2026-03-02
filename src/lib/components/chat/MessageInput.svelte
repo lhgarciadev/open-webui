@@ -31,7 +31,8 @@
 		user as _user,
 		showControls,
 		TTSWorker,
-		temporaryChatEnabled
+		temporaryChatEnabled,
+		userBudget
 	} from '$lib/stores';
 
 	import {
@@ -1139,6 +1140,12 @@
 							dispatch('submit', prompt);
 						}}
 					>
+						{#if $userBudget && $userBudget.current_balance <= 0}
+							<div class="text-red-500 text-sm text-center py-2">
+								{$i18n.t('Budget exhausted. Contact your administrator to top up your balance.')}
+							</div>
+						{/if}
+
 						<button
 							id="generate-message-pair-button"
 							class="hidden"
@@ -1918,11 +1925,12 @@
 												<Tooltip content={$i18n.t('Send message')}>
 													<button
 														id="send-message-button"
-														class="{!(prompt === '' && files.length === 0)
+														class="{!(prompt === '' && files.length === 0) && !($userBudget && $userBudget.current_balance <= 0)
 															? 'bg-black text-white hover:bg-gray-900 dark:bg-white dark:text-black dark:hover:bg-gray-100 '
 															: 'text-white bg-gray-200 dark:text-gray-900 dark:bg-gray-700 disabled'} transition rounded-full p-1.5 self-center"
 														type="submit"
-														disabled={prompt === '' && files.length === 0}
+														disabled={(prompt === '' && files.length === 0) ||
+															($userBudget !== null && $userBudget.current_balance <= 0)}
 													>
 														<svg
 															xmlns="http://www.w3.org/2000/svg"

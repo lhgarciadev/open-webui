@@ -2,6 +2,7 @@ import { APP_NAME } from '$lib/constants';
 import { type Writable, writable } from 'svelte/store';
 import type { ModelConfig } from '$lib/apis';
 import type { Banner } from '$lib/types';
+import type { UserBudget } from '$lib/apis/budgets';
 import { Socket } from 'socket.io-client';
 
 import emojiShortCodes from '$lib/emoji-shortcodes.json';
@@ -78,6 +79,8 @@ export const settings: Writable<Settings> = writable({});
 export const audioQueue = writable(null);
 
 export const sidebarWidth = writable(200);
+
+export const userBudget: Writable<UserBudget | null> = writable(null);
 
 export const showSidebar = writable(false);
 export const showSearch = writable(false);

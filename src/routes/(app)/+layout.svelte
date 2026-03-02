@@ -13,6 +13,7 @@
 	import { getTools } from '$lib/apis/tools';
 	import { getBanners } from '$lib/apis/configs';
 	import { getUserSettings } from '$lib/apis/users';
+	import { getUserBudget } from '$lib/apis/budgets';
 
 	import { WEBUI_VERSION } from '$lib/constants';
 	import { compareVersion } from '$lib/utils';
@@ -34,7 +35,8 @@
 		temporaryChatEnabled,
 		toolServers,
 		showSearch,
-		showSidebar
+		showSidebar,
+		userBudget
 	} from '$lib/stores';
 
 	import Sidebar from '$lib/components/layout/Sidebar.svelte';
@@ -141,6 +143,15 @@
 		tools.set(toolsData);
 	};
 
+	const setBudget = async () => {
+		try {
+			const budget = await getUserBudget(localStorage.token);
+			userBudget.set(budget);
+		} catch {
+			userBudget.set(null);
+		}
+	};
+
 	onMount(async () => {
 		if ($user === undefined || $user === null) {
 			await goto('/auth');
@@ -155,6 +166,7 @@
 			checkLocalDBChats(),
 			setBanners(),
 			setTools(),
+			setBudget(),
 			setUserSettings(async () => {
 				await Promise.all([setModels(), setToolServers()]);
 			})

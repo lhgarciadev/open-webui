@@ -33,6 +33,7 @@
 
 	import ChatBubbleDotted from '../icons/ChatBubbleDotted.svelte';
 	import ChatBubbleDottedChecked from '../icons/ChatBubbleDottedChecked.svelte';
+	import BalanceIndicator from '../budget/BalanceIndicator.svelte';
 
 	import EllipsisHorizontal from '../icons/EllipsisHorizontal.svelte';
 	import ChatPlus from '../icons/ChatPlus.svelte';
@@ -218,6 +219,8 @@
 							</button>
 						</Tooltip>
 					{/if}
+
+					<BalanceIndicator />
 
 					{#if $user !== undefined && $user !== null}
 						<UserMenu

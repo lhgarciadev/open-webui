@@ -56,6 +56,7 @@ from open_webui.utils.misc import (
 )
 
 from open_webui.utils.auth import get_admin_user, get_verified_user
+from open_webui.utils.budget import check_user_budget, debit_user_budget
 from open_webui.utils.headers import include_user_info_headers
 
 log = logging.getLogger(__name__)
@@ -941,6 +942,9 @@ async def generate_chat_completion(
     if BYPASS_MODEL_ACCESS_CONTROL:
         bypass_filter = True
 
+    # Pre-flight budget check: reject if user has exhausted their budget
+    check_user_budget(user.id)
+
     idx = 0
 
     payload = {**form_data}
@@ -1106,8 +1110,47 @@ async def generate_chat_completion(
         # Check if response is SSE
         if "text/event-stream" in r.headers.get("Content-Type", ""):
             streaming = True
+
+            async def budget_stream_wrapper(inner_stream, uid, mid):
+                """Wrap stream to extract usage and debit budget after streaming."""
+                usage_data = {}
+                try:
+                    async for chunk in inner_stream:
+                        # Try to extract usage from SSE chunks
+                        if isinstance(chunk, bytes):
+                            chunk_str = chunk.decode("utf-8", errors="ignore")
+                        else:
+                            chunk_str = str(chunk)
+                        for line in chunk_str.split("\n"):
+                            if line.startswith("data: ") and line.strip() != "data: [DONE]":
+                                try:
+                                    data = json.loads(line[6:])
+                                    if isinstance(data, dict) and "usage" in data:
+                                        usage_data = data["usage"]
+                                except (json.JSONDecodeError, ValueError):
+                                    pass
+                        yield chunk
+                finally:
+                    if usage_data:
+                        debit_user_budget(
+                            user_id=uid,
+                            model_id=mid,
+                            chat_id=metadata.get("chat_id", "") if metadata else "",
+                            message_id=metadata.get("message_id", "") if metadata else "",
+                            input_tokens=usage_data.get("prompt_tokens", 0),
+                            output_tokens=usage_data.get("completion_tokens", 0),
+                        )
+                    else:
+                        log.debug(
+                            "No usage data in stream for user=%s model=%s", uid, mid
+                        )
+
             return StreamingResponse(
-                stream_wrapper(r, session, stream_chunks_handler),
+                budget_stream_wrapper(
+                    stream_wrapper(r, session, stream_chunks_handler),
+                    user.id,
+                    model_id,
+                ),
                 status_code=r.status,
                 headers=dict(r.headers),
             )
@@ -1127,6 +1170,19 @@ async def generate_chat_completion(
             # Convert Responses API result to simple format
             if is_responses and isinstance(response, dict):
                 response = convert_responses_result(response)
+
+            # Post-completion budget debit for non-streaming responses
+            if isinstance(response, dict):
+                usage = response.get("usage", {})
+                if usage:
+                    debit_user_budget(
+                        user_id=user.id,
+                        model_id=model_id,
+                        chat_id=metadata.get("chat_id", "") if metadata else "",
+                        message_id=metadata.get("message_id", "") if metadata else "",
+                        input_tokens=usage.get("prompt_tokens", 0),
+                        output_tokens=usage.get("completion_tokens", 0),
+                    )
 
             return response
     except Exception as e:

@@ -110,6 +110,64 @@ FALLBACK_PRICING_DATA = [
     {"model_id": "cognitia_llm_zerogpu.mistral-7b", "provider": "cognitia", "input_cost_per_million": 0.0, "output_cost_per_million": 0.0, "context_window": 32768},
     # Ollama local models (with :latest suffix)
     {"model_id": "phi3:latest", "provider": "ollama", "input_cost_per_million": 0.0, "output_cost_per_million": 0.0, "context_window": 4096},
+    # OpenRouter models (provider/model format)
+    # OpenAI via OpenRouter
+    {"model_id": "openai/gpt-4o", "provider": "openrouter", "input_cost_per_million": 2.50, "output_cost_per_million": 10.00, "context_window": 128000},
+    {"model_id": "openai/gpt-4o-mini", "provider": "openrouter", "input_cost_per_million": 0.15, "output_cost_per_million": 0.60, "context_window": 128000},
+    {"model_id": "openai/gpt-4o-2024-08-06", "provider": "openrouter", "input_cost_per_million": 2.50, "output_cost_per_million": 10.00, "context_window": 128000},
+    {"model_id": "openai/gpt-4-turbo", "provider": "openrouter", "input_cost_per_million": 10.00, "output_cost_per_million": 30.00, "context_window": 128000},
+    {"model_id": "openai/gpt-4.1", "provider": "openrouter", "input_cost_per_million": 2.00, "output_cost_per_million": 8.00, "context_window": 1000000},
+    {"model_id": "openai/gpt-4.1-mini", "provider": "openrouter", "input_cost_per_million": 0.40, "output_cost_per_million": 1.60, "context_window": 1000000},
+    {"model_id": "openai/gpt-4.1-nano", "provider": "openrouter", "input_cost_per_million": 0.10, "output_cost_per_million": 0.40, "context_window": 1000000},
+    {"model_id": "openai/o1", "provider": "openrouter", "input_cost_per_million": 15.00, "output_cost_per_million": 60.00, "context_window": 200000},
+    {"model_id": "openai/o1-mini", "provider": "openrouter", "input_cost_per_million": 3.00, "output_cost_per_million": 12.00, "context_window": 128000},
+    {"model_id": "openai/o3", "provider": "openrouter", "input_cost_per_million": 10.00, "output_cost_per_million": 40.00, "context_window": 200000},
+    {"model_id": "openai/o3-mini", "provider": "openrouter", "input_cost_per_million": 1.10, "output_cost_per_million": 4.40, "context_window": 200000},
+    {"model_id": "openai/o4-mini", "provider": "openrouter", "input_cost_per_million": 1.10, "output_cost_per_million": 4.40, "context_window": 200000},
+    # Anthropic via OpenRouter
+    {"model_id": "anthropic/claude-3.5-sonnet", "provider": "openrouter", "input_cost_per_million": 3.00, "output_cost_per_million": 15.00, "context_window": 200000},
+    {"model_id": "anthropic/claude-3.5-sonnet:beta", "provider": "openrouter", "input_cost_per_million": 3.00, "output_cost_per_million": 15.00, "context_window": 200000},
+    {"model_id": "anthropic/claude-3.5-haiku", "provider": "openrouter", "input_cost_per_million": 0.80, "output_cost_per_million": 4.00, "context_window": 200000},
+    {"model_id": "anthropic/claude-3-opus", "provider": "openrouter", "input_cost_per_million": 15.00, "output_cost_per_million": 75.00, "context_window": 200000},
+    {"model_id": "anthropic/claude-opus-4", "provider": "openrouter", "input_cost_per_million": 15.00, "output_cost_per_million": 75.00, "context_window": 200000},
+    {"model_id": "anthropic/claude-sonnet-4", "provider": "openrouter", "input_cost_per_million": 3.00, "output_cost_per_million": 15.00, "context_window": 200000},
+    {"model_id": "anthropic/claude-haiku-4", "provider": "openrouter", "input_cost_per_million": 1.00, "output_cost_per_million": 5.00, "context_window": 200000},
+    # Google via OpenRouter
+    {"model_id": "google/gemini-2.0-flash-001", "provider": "openrouter", "input_cost_per_million": 0.10, "output_cost_per_million": 0.40, "context_window": 1048576},
+    {"model_id": "google/gemini-2.0-flash", "provider": "openrouter", "input_cost_per_million": 0.10, "output_cost_per_million": 0.40, "context_window": 1048576},
+    {"model_id": "google/gemini-1.5-pro", "provider": "openrouter", "input_cost_per_million": 1.25, "output_cost_per_million": 5.00, "context_window": 2097152},
+    {"model_id": "google/gemini-1.5-flash", "provider": "openrouter", "input_cost_per_million": 0.075, "output_cost_per_million": 0.30, "context_window": 1048576},
+    {"model_id": "google/gemini-2.5-pro-preview", "provider": "openrouter", "input_cost_per_million": 1.25, "output_cost_per_million": 10.00, "context_window": 1048576},
+    # DeepSeek via OpenRouter
+    {"model_id": "deepseek/deepseek-chat", "provider": "openrouter", "input_cost_per_million": 0.27, "output_cost_per_million": 1.10, "context_window": 64000},
+    {"model_id": "deepseek/deepseek-r1", "provider": "openrouter", "input_cost_per_million": 0.55, "output_cost_per_million": 2.19, "context_window": 64000},
+    {"model_id": "deepseek/deepseek-v3-0324", "provider": "openrouter", "input_cost_per_million": 0.25, "output_cost_per_million": 0.38, "context_window": 64000},
+    # Meta via OpenRouter
+    {"model_id": "meta-llama/llama-3.3-70b-instruct", "provider": "openrouter", "input_cost_per_million": 0.10, "output_cost_per_million": 0.10, "context_window": 131072},
+    {"model_id": "meta-llama/llama-3.1-405b-instruct", "provider": "openrouter", "input_cost_per_million": 2.00, "output_cost_per_million": 2.00, "context_window": 131072},
+    {"model_id": "meta-llama/llama-3.1-70b-instruct", "provider": "openrouter", "input_cost_per_million": 0.10, "output_cost_per_million": 0.10, "context_window": 131072},
+    {"model_id": "meta-llama/llama-3.1-8b-instruct", "provider": "openrouter", "input_cost_per_million": 0.02, "output_cost_per_million": 0.02, "context_window": 131072},
+    {"model_id": "meta-llama/llama-4-maverick", "provider": "openrouter", "input_cost_per_million": 0.20, "output_cost_per_million": 0.60, "context_window": 1048576},
+    {"model_id": "meta-llama/llama-4-scout", "provider": "openrouter", "input_cost_per_million": 0.15, "output_cost_per_million": 0.40, "context_window": 512000},
+    # Mistral via OpenRouter
+    {"model_id": "mistralai/mistral-large", "provider": "openrouter", "input_cost_per_million": 2.00, "output_cost_per_million": 6.00, "context_window": 128000},
+    {"model_id": "mistralai/mistral-small", "provider": "openrouter", "input_cost_per_million": 0.10, "output_cost_per_million": 0.30, "context_window": 128000},
+    {"model_id": "mistralai/mistral-nemo", "provider": "openrouter", "input_cost_per_million": 0.03, "output_cost_per_million": 0.03, "context_window": 128000},
+    {"model_id": "mistralai/codestral-latest", "provider": "openrouter", "input_cost_per_million": 0.30, "output_cost_per_million": 0.90, "context_window": 256000},
+    # xAI via OpenRouter
+    {"model_id": "x-ai/grok-2", "provider": "openrouter", "input_cost_per_million": 2.00, "output_cost_per_million": 10.00, "context_window": 131072},
+    {"model_id": "x-ai/grok-2-mini", "provider": "openrouter", "input_cost_per_million": 0.30, "output_cost_per_million": 0.50, "context_window": 131072},
+    {"model_id": "x-ai/grok-3", "provider": "openrouter", "input_cost_per_million": 3.00, "output_cost_per_million": 15.00, "context_window": 131072},
+    {"model_id": "x-ai/grok-3-mini", "provider": "openrouter", "input_cost_per_million": 0.30, "output_cost_per_million": 0.50, "context_window": 131072},
+    # Qwen via OpenRouter
+    {"model_id": "qwen/qwen-2.5-72b-instruct", "provider": "openrouter", "input_cost_per_million": 0.15, "output_cost_per_million": 0.15, "context_window": 131072},
+    {"model_id": "qwen/qwen-2.5-coder-32b-instruct", "provider": "openrouter", "input_cost_per_million": 0.07, "output_cost_per_million": 0.07, "context_window": 32768},
+    {"model_id": "qwen/qwq-32b", "provider": "openrouter", "input_cost_per_million": 0.12, "output_cost_per_million": 0.18, "context_window": 131072},
+    # Free models on OpenRouter (rate-limited)
+    {"model_id": "deepseek/deepseek-r1:free", "provider": "openrouter", "input_cost_per_million": 0.0, "output_cost_per_million": 0.0, "context_window": 64000},
+    {"model_id": "meta-llama/llama-3.3-70b-instruct:free", "provider": "openrouter", "input_cost_per_million": 0.0, "output_cost_per_million": 0.0, "context_window": 131072},
+    {"model_id": "google/gemma-3-27b-it:free", "provider": "openrouter", "input_cost_per_million": 0.0, "output_cost_per_million": 0.0, "context_window": 96000},
+    {"model_id": "qwen/qwen-2.5-72b-instruct:free", "provider": "openrouter", "input_cost_per_million": 0.0, "output_cost_per_million": 0.0, "context_window": 131072},
 ]
 
 

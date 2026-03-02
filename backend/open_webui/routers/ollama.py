@@ -58,6 +58,7 @@ from open_webui.utils.payload import (
     apply_system_prompt_to_body,
 )
 from open_webui.utils.auth import get_admin_user, get_verified_user
+from open_webui.utils.budget import check_user_budget, debit_user_budget
 from open_webui.config import (
     UPLOAD_DIR,
 )
@@ -1298,6 +1299,9 @@ async def generate_chat_completion(
     if BYPASS_MODEL_ACCESS_CONTROL:
         bypass_filter = True
 
+    # Pre-flight budget check: reject if user has exhausted their budget
+    check_user_budget(user.id)
+
     metadata = form_data.pop("metadata", None)
     try:
         form_data = GenerateChatCompletionForm(**form_data)
@@ -1371,7 +1375,7 @@ async def generate_chat_completion(
     if prefix_id:
         payload["model"] = payload["model"].replace(f"{prefix_id}.", "")
 
-    return await send_post_request(
+    response = await send_post_request(
         url=f"{url}/api/chat",
         payload=json.dumps(payload),
         stream=form_data.stream,
@@ -1380,6 +1384,22 @@ async def generate_chat_completion(
         user=user,
         metadata=metadata,
     )
+
+    # Post-completion budget debit for non-streaming Ollama responses
+    if not form_data.stream and isinstance(response, dict):
+        input_tokens = response.get("prompt_eval_count", 0)
+        output_tokens = response.get("eval_count", 0)
+        if input_tokens or output_tokens:
+            debit_user_budget(
+                user_id=user.id,
+                model_id=model_id,
+                chat_id=metadata.get("chat_id", "") if metadata else "",
+                message_id=metadata.get("message_id", "") if metadata else "",
+                input_tokens=input_tokens,
+                output_tokens=output_tokens,
+            )
+
+    return response
 
 
 # TODO: we should update this part once Ollama supports other types
@@ -1505,6 +1525,10 @@ async def generate_openai_chat_completion(
     # Database operations (get_model_by_id, AccessGrants.has_access) manage their own short-lived sessions.
     # This prevents holding a connection during the entire LLM call (30-60+ seconds),
     # which would exhaust the connection pool under concurrent load.
+
+    # Pre-flight budget check: reject if user has exhausted their budget
+    check_user_budget(user.id)
+
     metadata = form_data.pop("metadata", None)
 
     try:
@@ -1570,14 +1594,30 @@ async def generate_openai_chat_completion(
     if prefix_id:
         payload["model"] = payload["model"].replace(f"{prefix_id}.", "")
 
-    return await send_post_request(
+    is_stream = payload.get("stream", False)
+    response = await send_post_request(
         url=f"{url}/v1/chat/completions",
         payload=json.dumps(payload),
-        stream=payload.get("stream", False),
+        stream=is_stream,
         key=get_api_key(url_idx, url, request.app.state.config.OLLAMA_API_CONFIGS),
         user=user,
         metadata=metadata,
     )
+
+    # Post-completion budget debit for non-streaming OpenAI-format responses
+    if not is_stream and isinstance(response, dict):
+        usage = response.get("usage", {})
+        if usage:
+            debit_user_budget(
+                user_id=user.id,
+                model_id=model_id,
+                chat_id=metadata.get("chat_id", "") if metadata else "",
+                message_id=metadata.get("message_id", "") if metadata else "",
+                input_tokens=usage.get("prompt_tokens", 0),
+                output_tokens=usage.get("completion_tokens", 0),
+            )
+
+    return response
 
 
 @router.get("/v1/models")

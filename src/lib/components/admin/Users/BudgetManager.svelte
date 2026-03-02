@@ -8,7 +8,7 @@
 		type AllBudgetsItem,
 		type SpendingTransaction
 	} from '$lib/apis/budgets';
-	import { getUsers } from '$lib/apis/users';
+	import { getAllUsers } from '$lib/apis/users';
 
 	const i18n = getContext('i18n');
 
@@ -46,7 +46,7 @@
 
 	const loadUsers = async () => {
 		try {
-			const result = await getUsers(localStorage.token);
+			const result = await getAllUsers(localStorage.token);
 			if (result) {
 				allUsers = result.map((u: any) => ({ id: u.id, name: u.name, email: u.email }));
 			}
@@ -97,7 +97,7 @@
 
 	const handleNewBudget = async () => {
 		if (!newBudgetUserId.trim()) {
-			toast.error($i18n.t('Please enter a user ID'));
+			toast.error($i18n.t('Please select a user'));
 			return;
 		}
 		try {
@@ -126,6 +126,11 @@
 			on:click={() => {
 				showNewBudgetForm = !showNewBudgetForm;
 				editForm = { initial_budget: 5.0, hard_limit: true, reset_balance: false };
+				if (!showNewBudgetForm) {
+					newBudgetUserId = '';
+					userSearchQuery = '';
+					showUserDropdown = false;
+				}
 			}}
 		>
 			{showNewBudgetForm ? $i18n.t('Cancel') : $i18n.t('Add Budget')}

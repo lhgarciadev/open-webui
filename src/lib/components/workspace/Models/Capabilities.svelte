@@ -50,6 +50,12 @@
 			description: $i18n.t(
 				'Automatically inject system tools in native function calling mode (e.g., timestamps, memory, chat history, notes, etc.)'
 			)
+		},
+		function_calling: {
+			label: $i18n.t('Function Calling'),
+			description: $i18n.t(
+				'Enable native function calling (tool use) for this model. Disable if the model or provider does not support tools.'
+			)
 		}
 	};
 
@@ -64,6 +70,7 @@
 		citations?: boolean;
 		status_updates?: boolean;
 		builtin_tools?: boolean;
+		function_calling?: boolean;
 	} = {};
 
 	// Hide file_context when file_upload is disabled
